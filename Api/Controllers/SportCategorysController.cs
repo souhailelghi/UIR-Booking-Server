@@ -3,7 +3,6 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.RegularExpressions;
 
 namespace Api.Controllers
 {
@@ -12,12 +11,11 @@ namespace Api.Controllers
     public class SportCategorysController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public SportCategorysController(IMediator mediator)
         {
             _mediator = mediator;
-            
         }
-
 
         [HttpGet("list")]
         public async Task<IActionResult> GetSportCategorysList()
@@ -32,6 +30,5 @@ namespace Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
-
     }
 }

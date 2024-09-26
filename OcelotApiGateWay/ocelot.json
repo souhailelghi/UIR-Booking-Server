@@ -1,0 +1,33 @@
+{
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:7063"
+  },
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/gateway/Categorys",
+      "UpstreamHttpMethod": [ "Get" ],
+      "DownstreamPathTemplate": "/api/SportCategorys/list",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ],
+      "RateLimitOptions": {
+        "EnableRateLimiting": true,
+        "Period": "10s",
+        "Limit": 3,
+        "PeriodTimespan": 10
+
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 10
+      }
+
+
+
+
+    }
+  ]
+}
