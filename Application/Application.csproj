@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Broker\" />
-    <Folder Include="Features\SportCategoryFeature\Commands\" />
   </ItemGroup>
 
   <ItemGroup>

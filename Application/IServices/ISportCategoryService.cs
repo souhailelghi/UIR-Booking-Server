@@ -11,5 +11,10 @@ namespace Application.IServices
     public interface ISportCategoryService
     {
         Task<List<SportCategory>> GetSportCategorysList();
+        Task<SportCategory> GetSportCategoryByIdAsync(Guid id);
+        Task<SportCategory> AddSportCategoryAsync(SportCategory sportCategory);
+        Task UpdateSportCategoryAsync(SportCategory sportCategory);
+        Task DeleteSportCategoryAsync(Guid id);
+        
     }
 }
