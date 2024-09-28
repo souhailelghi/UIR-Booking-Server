@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.IServices
+﻿namespace Application.IServices
 {
     public interface IUnitOfService
     {
         ISportCategoryService SportCategoryService { get; }
         ISportService SportService { get; }
+
+        IStudentService StudentService { get; }
     }
 }

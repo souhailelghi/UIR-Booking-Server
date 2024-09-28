@@ -6,11 +6,6 @@ using Infrastructure.UnitOfWorks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure
 {
@@ -21,6 +16,7 @@ namespace Infrastructure
 
             services.AddScoped<ISportCategoryRepository, SportCategoryRepository>();
             services.AddScoped<ISportRepository, SportRepository>();
+            services.AddScoped<IStudentRepository, StudentRepository>();
 
             string? con = configuration.GetConnectionString("DefaultSQLConnection");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(con));

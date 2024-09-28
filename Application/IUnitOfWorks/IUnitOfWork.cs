@@ -11,6 +11,7 @@ namespace Application.IUnitOfWorks
     {
         ISportCategoryRepository SportCategoryRepository { get; }
         ISportRepository SportRepository { get; }
+        IStudentRepository StudentRepository { get; }
 
         void Commit();
         Task CommitAsync();
