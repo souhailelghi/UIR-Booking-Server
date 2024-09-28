@@ -18,10 +18,13 @@ namespace Infrastructure.UnitOfWorks
 
         public ISportCategoryRepository SportCategoryRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportRepository)
+        public ISportRepository SportRepository { get; }
+
+        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository)
         {
              _dbContext = dbContext;
-            SportCategoryRepository = sportRepository;
+            SportCategoryRepository = sportCategoryRepository;
+            SportRepository = sportRepository;
         }
 
         public void Commit()

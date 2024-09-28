@@ -20,6 +20,7 @@ namespace Infrastructure
         {
 
             services.AddScoped<ISportCategoryRepository, SportCategoryRepository>();
+            services.AddScoped<ISportRepository, SportRepository>();
 
             string? con = configuration.GetConnectionString("DefaultSQLConnection");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(con));

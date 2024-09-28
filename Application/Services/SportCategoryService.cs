@@ -52,10 +52,7 @@ namespace Application.Services
             }
         }
 
-        public Task<SportCategory> GetSportCategoryById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
+   
 
         public async Task<SportCategory> GetSportCategoryByIdAsync(Guid id)
         {

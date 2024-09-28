@@ -15,6 +15,7 @@ namespace Application
             // Register the Unit of Service
             services.AddScoped<IUnitOfService, UnitOfService>();
             services.AddTransient<ISportCategoryService, SportCategoryService>();
+            services.AddTransient<ISportService, SportService>();
             //configuration of mediator
             services.AddMediatR(Assembly.GetExecutingAssembly());
             //configuration of auto mapper

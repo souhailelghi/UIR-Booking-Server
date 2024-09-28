@@ -1,14 +1,9 @@
 ﻿using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
+using Application.Features.SportFeature.Commands.AddSport;
+using Application.Features.SportFeature.Commands.UpdateSport;
 using AutoMapper;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Application.Mapping
 {
@@ -16,8 +11,23 @@ namespace Application.Mapping
     {
         public AutoMapperProfile()
         {
+
+            //sport Category 
             CreateMap<AddSportCategoryCommand, SportCategory>().ReverseMap();
             CreateMap<UpdateSportCategoryCommand, SportCategory>();
+
+
+
+
+            //sport
+            CreateMap<AddSportCommand, Sport>().ReverseMap();
+            CreateMap<UpdateSportCommand, Sport>();
+
+
+
+
+
+
         }
         
     }

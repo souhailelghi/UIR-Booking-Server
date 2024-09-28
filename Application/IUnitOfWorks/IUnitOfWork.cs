@@ -10,6 +10,7 @@ namespace Application.IUnitOfWorks
     public interface IUnitOfWork
     {
         ISportCategoryRepository SportCategoryRepository { get; }
+        ISportRepository SportRepository { get; }
 
         void Commit();
         Task CommitAsync();

@@ -5,7 +5,7 @@
   "Routes": [
     {
       "UpstreamPathTemplate": "/gateway/Categorys",
-      "UpstreamHttpMethod": [ "Get" ],
+      "UpstreamHttpMethod": [ "GET" ],
       "DownstreamPathTemplate": "/api/SportCategorys/list",
       "DownstreamScheme": "https",
       "DownstreamHostAndPorts": [
@@ -19,15 +19,58 @@
         "Period": "10s",
         "Limit": 3,
         "PeriodTimespan": 10
-
       },
       "FileCacheOptions": {
-        "TtlSeconds": 10
+        "TtlSeconds": 30
       }
-
-
-
-
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Categorys/add",
+      "UpstreamHttpMethod": [ "POST" ],
+      "DownstreamPathTemplate": "/api/SportCategorys/add",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Categorys/update",
+      "UpstreamHttpMethod": [ "PUT" ],
+      "DownstreamPathTemplate": "/api/SportCategorys/update",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Categorys/delete/{id}",
+      "UpstreamHttpMethod": [ "DELETE" ],
+      "DownstreamPathTemplate": "/api/SportCategorys/delete/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ]
+    },
+    {
+      "UpstreamPathTemplate": "/gateway/Categorys/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/SportCategorys/{id}",
+      "DownstreamScheme": "https",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7125
+        }
+      ]
     }
   ]
 }

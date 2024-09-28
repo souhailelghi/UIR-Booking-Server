@@ -8,10 +8,13 @@ namespace Application.Services
         public IMapper Mapper { get; set; }
         public ISportCategoryService SportCategoryService { get; set; }
 
-        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService)
+        public ISportService SportService { get; set; }
+
+        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService)
         {
             Mapper = mapper;
             SportCategoryService = sportCategoryService;
+            SportService = sportService;
         }
         
     }
