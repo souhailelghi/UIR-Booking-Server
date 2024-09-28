@@ -22,12 +22,15 @@ namespace Infrastructure.UnitOfWorks
 
         public IStudentRepository StudentRepository  { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository)
+        public IReservationRepository ReservationRepository { get; }
+
+        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository)
         {
              _dbContext = dbContext;
             SportCategoryRepository = sportCategoryRepository;
             SportRepository = sportRepository;
             StudentRepository = studentRepository;
+            ReservationRepository = reservationRepository;
         }
 
         public void Commit()

@@ -1,4 +1,5 @@
 using Application;
+using Application.Services;
 using Infrastructure;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +24,10 @@ builder.Services.AddCors(options =>
                           .AllowCredentials());
 });
 
+//Converters TimeSpan 
+builder.Services.AddControllers().AddJsonOptions(options => {
+    options.JsonSerializerOptions.Converters.Add(new TimeSpanConverterService());
+});
 
 var app = builder.Build();
 app.UseCors("AllowSpecificOrigin");

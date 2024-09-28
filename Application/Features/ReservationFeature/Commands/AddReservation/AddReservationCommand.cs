@@ -1,15 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Domain.Entities;
+using MediatR;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Entities
+namespace Application.Features.ReservationFeature.Commands.AddReservation
 {
-    public class Reservation
+    public class AddReservationCommand  : IRequest<Reservation>
     {
-        [Key]
-        public Guid Id { get; set; }
-        [ForeignKey("Student")]
+        
         public Guid StudentId { get; set; }
-        [ForeignKey("Sport")]
+       
         public Guid SportId { get; set; }
         public DateTime ReservationDate { get; set; }
         public TimeSpan HourStart { get; set; }
@@ -19,7 +18,7 @@ namespace Domain.Entities
         //public List<Guid> StudentIdList { get; set; }
         public List<Guid> StudentIdList { get; set; }
         public DateTime DateCreation { get; set; }
-        public DateTime DateModification { get; set; }              
+        public DateTime DateModification { get; set; }
+
     }
 }
-   

@@ -12,12 +12,15 @@ namespace Application.Services
 
         public IStudentService StudentService {  get; set; }
 
-        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService)
+        public IReservationService ReservationService {  get; set; }
+
+        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IReservationService reservationService)
         {
             Mapper = mapper;
             SportCategoryService = sportCategoryService;
             SportService = sportService;
             StudentService = studentService;
+            ReservationService = reservationService;
         }
         
     }

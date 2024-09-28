@@ -1,4 +1,5 @@
-﻿using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
+﻿using Application.Features.ReservationFeature.Commands.AddReservation;
+using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.SportFeature.Commands.UpdateSport;
@@ -26,6 +27,10 @@ namespace Application.Mapping
 
             //Student
             CreateMap<AddStudentCommand, Student>().ReverseMap();
+
+            //Reservation
+            CreateMap<AddReservationCommand, Reservation>().ReverseMap();
+
 
 
 

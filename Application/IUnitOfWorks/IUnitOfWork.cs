@@ -13,6 +13,8 @@ namespace Application.IUnitOfWorks
         ISportRepository SportRepository { get; }
         IStudentRepository StudentRepository { get; }
 
+        IReservationRepository ReservationRepository { get; }
+
         void Commit();
         Task CommitAsync();
         void Rollback();

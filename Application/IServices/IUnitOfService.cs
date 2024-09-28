@@ -6,5 +6,7 @@
         ISportService SportService { get; }
 
         IStudentService StudentService { get; }
+
+        IReservationService ReservationService { get; }
     }
 }
