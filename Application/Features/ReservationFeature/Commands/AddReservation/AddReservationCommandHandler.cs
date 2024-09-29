@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.ReservationFeature.Commands.AddReservation
 {
-    public class AddReservationCommandHandler : IRequestHandler<AddReservationCommand, Reservation>
+    public class AddReservationCommandHandler : IRequestHandler<AddReservationCommand, bool>
     {
 
         private readonly IUnitOfService _unitOfService;
@@ -21,17 +21,25 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             _unitOfService = unitOfService;
             _mapper = mapper;
         }
-        public async Task<Reservation> Handle(AddReservationCommand request, CancellationToken cancellationToken)
+        public async Task<bool> Handle(AddReservationCommand request, CancellationToken cancellationToken)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request), "Reservation cannot be null.");
             }
 
+            Reservation reservationMapped = _mapper.Map<Reservation>(request);
+            bool isReservationSuccessful = await _unitOfService.ReservationService.ReservationAsync(
+                reservationMapped.StudentId,
+                reservationMapped.ReservationDate,
+                reservationMapped.HourStart,
+                reservationMapped.HourEnd,
+                reservationMapped.StudentIdList,
+                reservationMapped.SportId
+            );
 
-            Reservation ReservationMapped = _mapper.Map<Reservation>(request);
-            Reservation addedReservation = await _unitOfService.ReservationService.AddReservationAsync(ReservationMapped);
-            return addedReservation;
+            return isReservationSuccessful;
         }
+
     }
 }
