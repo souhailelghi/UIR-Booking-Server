@@ -1,9 +1,10 @@
 ﻿using Application.IServices;
 using Application.IUnitOfWorks;
 using AutoMapper;
-using Domain.Common;
 using Domain.Entities;
-using Microsoft.EntityFrameworkCore;
+
+
+
 
 namespace Application.Services
 {
@@ -29,41 +30,46 @@ namespace Application.Services
         public async Task<bool> CanTeamOrUserReservationAsync(Guid studentId, List<Guid> studentIdList, Guid sportId)
         {
             var sport = await _unitOfWork.SportRepository.GetAsNoTracking(u => u.Id == sportId);
-
             if (sport == null)
             {
                 return false; // Sport not found
             }
 
             var delayTime = DateTime.UtcNow.AddMinutes(-sport.Daysoff.GetValueOrDefault());
-
             var existingReservation = await _unitOfWork.ReservationRepository
                 .GetAsTracking(r => r.StudentId == studentId && r.ReservationDate >= delayTime);
 
             if (existingReservation != null)
             {
-                return false; // Student has a reservation within the delay time
+                // Log the conflict reason for the student
+                Console.WriteLine($"Conflict: Student {studentId} has an existing reservation.");
+                return false; // Conflict exists for this student
             }
 
             var studentsExist = (await _unitOfWork.StudentRepository
-               .GetAllAsTracking(u => studentIdList.Contains(u.Id))) // Fetch a list of students
+                .GetAllAsTracking(u => studentIdList.Contains(u.Id)))
                 .Select(u => u.Id)
-                     .ToList();
+                .ToList();
 
             if (studentsExist.Count() != studentIdList.Count)
             {
-                return false; // Some students from the list don't exist in the database
+                Console.WriteLine(" Some students from the list don't exist in the database.");
+                return false; // Some students don't exist
             }
 
             var reservations = await _unitOfWork.ReservationRepository
-            .GetAllAsNoTracking(b => studentIdList.Contains(b.StudentId) && b.ReservationDate >= delayTime);
+                .GetAllAsNoTracking(b => studentIdList.Contains(b.StudentId) && b.ReservationDate >= delayTime);
 
-            var teamReservationExists = reservations.Any();
+            if (reservations.Any())
+            {
+                // Log the conflict reason for the team
+                Console.WriteLine("Conflict: Team members have existing reservations.");
+                return false; // Conflict for team members
+            }
 
-
-            return !teamReservationExists; // Return true if no team members have reservations within the delay time
+            // No conflicts found
+            return true;
         }
-
 
 
 
