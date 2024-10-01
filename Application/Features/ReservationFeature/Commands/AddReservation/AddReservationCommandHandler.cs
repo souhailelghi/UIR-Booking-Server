@@ -18,16 +18,15 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
 
         public async Task<string> Handle(AddReservationCommand request, CancellationToken cancellationToken)
         {
-            // Step 1: Retrieve reservations for the student and team members
-            var conflictingReservations = await _reservationService.GetConflictingReservationsAsync(request.StudentId, request.StudentIdList, request.ReservationDate, request.HourStart, request.HourEnd);
+            // Step 1: Check if the student can book the reservation based on Daysoff and time conflicts
+            var canBook = await _reservationService.CanBookReservationAsync(request.StudentId, request.SportId, request.ReservationDate, request.HourStart, request.HourEnd);
 
-            // Step 2: Check for any conflicts
-            if (conflictingReservations.Any())
+            if (!canBook)
             {
-                return "Conflict exists with another reservation.";
+                return "Cannot book this reservation due to time conflict or Daysoff restriction.";
             }
 
-            // Step 3: Create a new reservation if no conflicts
+            // Step 2: Create a new reservation if no conflicts
             var reservation = _mapper.Map<Reservation>(request);
             await _reservationService.AddReservationAsync(reservation);
 

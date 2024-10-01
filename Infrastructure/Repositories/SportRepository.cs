@@ -2,9 +2,11 @@
 using Domain.Entities;
 using Infrastructure.Db;
 using Infrastructure.GenericRepositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,5 +19,11 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+
+        public async Task<Sport> GetAsync(Expression<Func<Sport, bool>> filter)
+        {
+            return await dbSet.FirstOrDefaultAsync(filter);
+        }
+
     }
 }
