@@ -15,8 +15,7 @@ namespace Domain.Entities
         public TimeSpan HourStart { get; set; }
         public TimeSpan HourEnd { get; set; }
 
-        //[ForeignKey("Student")]
-        //public List<Guid> StudentIdList { get; set; }
+        
         public List<Guid> StudentIdList { get; set; }
         public DateTime DateCreation { get; set; }
         public DateTime DateModification { get; set; }              

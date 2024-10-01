@@ -2,11 +2,7 @@
 using Domain.Entities;
 using Infrastructure.Db;
 using Infrastructure.GenericRepositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -18,6 +14,18 @@ namespace Infrastructure.Repositories
         public ReservationRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;   
+        }
+
+       
+
+        public async Task RemoveAllAsync()
+        {
+            var reservations = await dbSet.ToListAsync(); // Use dbSet from GenericRepository
+            if (reservations.Count > 0)
+            {
+                dbSet.RemoveRange(reservations);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

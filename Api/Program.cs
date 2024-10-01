@@ -29,6 +29,11 @@ builder.Services.AddControllers().AddJsonOptions(options => {
     options.JsonSerializerOptions.Converters.Add(new TimeSpanConverterService());
 });
 
+
+// Add logging services (this is usually added by default in ASP.NET Core)
+builder.Logging.AddConsole(); // For console logging
+
+
 var app = builder.Build();
 app.UseCors("AllowSpecificOrigin");
 

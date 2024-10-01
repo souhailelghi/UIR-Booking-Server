@@ -27,6 +27,9 @@ namespace Infrastructure.Db
 
         public DbSet<TimeRange> TimeRanges { get; set; } 
 
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Configure User inheritance

@@ -10,5 +10,7 @@ namespace Application.IRepository
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
+
+        Task RemoveAllAsync();
     }
 }

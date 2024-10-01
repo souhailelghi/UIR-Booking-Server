@@ -1,12 +1,7 @@
 ﻿using Application.IRepository.IGenericRepositorys;
 using Infrastructure.Db;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infrastructure.GenericRepositories
 {
@@ -29,6 +24,9 @@ namespace Infrastructure.GenericRepositories
             }
             return await query.ToListAsync();
         }
+
+
+
         public async Task<T> GetAsNoTracking(Expression<Func<T, bool>> filter = null)
         {
             IQueryable<T> query = dbSet.AsNoTracking();
@@ -38,6 +36,8 @@ namespace Infrastructure.GenericRepositories
             }
             return await query.FirstOrDefaultAsync();
         }
+
+
         public async Task<List<T>> GetAllAsTracking(Expression<Func<T, bool>>? filter = null)
         {
             IQueryable<T> query = dbSet.AsTracking();

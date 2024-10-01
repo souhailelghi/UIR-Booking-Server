@@ -2,6 +2,7 @@
 using Application.IUnitOfWorks;
 using AutoMapper;
 using Domain.Entities;
+using Microsoft.Extensions.Logging;
 
 
 
@@ -11,64 +12,55 @@ namespace Application.Services
     public class ReservationService : IReservationService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
+        private readonly ILogger<ReservationService> _logger;
 
-        public ReservationService(IUnitOfWork unitOfWork, IMapper mapper)
+
+        public ReservationService(IUnitOfWork unitOfWork , ILogger<ReservationService> logger)
         {
             _unitOfWork = unitOfWork;
-            _mapper = mapper;
+            _logger = logger;
+           
+        
+           
         }
 
-        public async Task<Reservation> AddReservationAsync(Reservation reservation)
-        {
-            reservation.Id = Guid.NewGuid();
-            await _unitOfWork.ReservationRepository.CreateAsync(reservation);
-            await _unitOfWork.CommitAsync();
-            return reservation;
-        }
 
-        public async Task<bool> CanTeamOrUserReservationAsync(Guid studentId, List<Guid> studentIdList, Guid sportId)
+
+        public async Task<string> CanTeamOrUserReservationAsync(Guid studentId, List<Guid> studentIdList, Guid sportId)
         {
             var sport = await _unitOfWork.SportRepository.GetAsNoTracking(u => u.Id == sportId);
             if (sport == null)
             {
-                return false; // Sport not found
+                return "Sport not found"; // Sport not found
             }
 
-            var delayTime = DateTime.UtcNow.AddMinutes(-sport.Daysoff.GetValueOrDefault());
+            var delayTimeMin = sport.Daysoff.GetValueOrDefault();
+            var delayTime = DateTime.UtcNow.AddMinutes(-delayTimeMin);
+
+            // Logging for debugging purposes
+            _logger.LogInformation($"Checking existing reservation for student {studentId} after delay time {delayTime}");
+
             var existingReservation = await _unitOfWork.ReservationRepository
                 .GetAsTracking(r => r.StudentId == studentId && r.ReservationDate >= delayTime);
 
             if (existingReservation != null)
             {
-                // Log the conflict reason for the student
-                Console.WriteLine($"Conflict: Student {studentId} has an existing reservation.");
-                return false; // Conflict exists for this student
+                // Conflict exists for this student
+                return $"Conflict: Student {studentId} has an existing reservation.";
             }
 
-            var studentsExist = (await _unitOfWork.StudentRepository
-                .GetAllAsTracking(u => studentIdList.Contains(u.Id)))
-                .Select(u => u.Id)
-                .ToList();
-
-            if (studentsExist.Count() != studentIdList.Count)
-            {
-                Console.WriteLine(" Some students from the list don't exist in the database.");
-                return false; // Some students don't exist
-            }
-
+            // Additional check for team members
             var reservations = await _unitOfWork.ReservationRepository
                 .GetAllAsNoTracking(b => studentIdList.Contains(b.StudentId) && b.ReservationDate >= delayTime);
 
             if (reservations.Any())
             {
-                // Log the conflict reason for the team
-                Console.WriteLine("Conflict: Team members have existing reservations.");
-                return false; // Conflict for team members
+                // Conflict for team members
+                return "Conflict: Some team members have existing reservations.";
             }
 
             // No conflicts found
-            return true;
+            return null;
         }
 
 
@@ -80,16 +72,12 @@ namespace Application.Services
 
 
 
-
-
-
-
-
-        public async Task<bool> ReservationAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId)
+        public async Task<string> ReservationAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId)
         {
-            if (!await CanTeamOrUserReservationAsync(studentId, studentIdList, sportId))
+            string conflictMessage = await CanTeamOrUserReservationAsync(studentId, studentIdList, sportId);
+            if (conflictMessage != null)
             {
-                return false;
+                return conflictMessage;
             }
 
             var reservation = new Reservation
@@ -106,13 +94,34 @@ namespace Application.Services
             reservation.Id = Guid.NewGuid();
             await _unitOfWork.ReservationRepository.CreateAsync(reservation);
             await _unitOfWork.CommitAsync();
-            return true;
+            return null; // Reservation successful, no conflicts
         }
 
-        public async Task<Reservation> GetBookingByIdAsync(Guid id)
+
+
+
+
+
+
+
+
+    
+
+
+       
+
+
+        public async Task DeleteAllReservationsAsync()
         {
-            Reservation reservation = await _unitOfWork.ReservationRepository.GetAsNoTracking(u => u.Id == id);
-            return reservation;
+            var reservations = await _unitOfWork.ReservationRepository.GetAllAsTracking();
+            if (reservations == null || reservations.Count == 0)
+            {
+                throw new ArgumentException("No reservations found to delete.");
+            }
+
+            await _unitOfWork.ReservationRepository.RemoveAllAsync();
+            await _unitOfWork.CommitAsync();
         }
+
     }
 }

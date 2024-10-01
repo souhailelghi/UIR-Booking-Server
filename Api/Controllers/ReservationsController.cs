@@ -1,4 +1,5 @@
 ﻿using Application.Features.ReservationFeature.Commands.AddReservation;
+using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,21 +32,36 @@ namespace Api.Controllers
                     return BadRequest(new { error = "Invalid sport ID." });
                 }
 
-                bool isReservationSuccessful = await _mediator.Send(addReservationCommand);
-                Console.WriteLine($"Reservation Success: {isReservationSuccessful}");
+                // Attempt to create the reservation
+                string reservationResult = await _mediator.Send(addReservationCommand);
 
-                if (isReservationSuccessful)
+                if (reservationResult == "Reservation successful")
                 {
-                    return Ok(new { message = "Reservation successful!" });
+                    return Ok(new { message = reservationResult });
                 }
                 else
                 {
-                    return Conflict(new { error = "Reservation could not be created. It may conflict with existing reservations." });
+                    return Conflict(new { error = reservationResult }); // Conflict message from the service
                 }
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while adding the reservation. Details: {ex.Message}");
+            }
+        }
+
+        [HttpDelete("deleteAll")]
+        public async Task<IActionResult> DeleteAllReservations()
+        {
+            try
+            {
+                await _mediator.Send(new DeleteAllReservationsCommand());
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                // Log exception details here
+                return StatusCode(500, $"An error occurred while deleting Reservations. Details: {ex.Message}");
             }
         }
 
