@@ -16,38 +16,24 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
-
         [HttpPost("AddReservations")]
-        public async Task<ActionResult> AddReservations([FromBody] AddReservationCommand addReservationCommand)
+        public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
-            try
+            if (addReservationCommand == null)
             {
-                if (addReservationCommand.StudentIdList == null || addReservationCommand.StudentIdList.Count == 0)
-                {
-                    return BadRequest(new { error = "StudentIdList cannot be empty." });
-                }
-
-                if (addReservationCommand.SportId == Guid.Empty)
-                {
-                    return BadRequest(new { error = "Invalid sport ID." });
-                }
-
-                // Attempt to create the reservation
-                string reservationResult = await _mediator.Send(addReservationCommand);
-
-                if (reservationResult == "Reservation successful")
-                {
-                    return Ok(new { message = reservationResult });
-                }
-                else
-                {
-                    return Conflict(new { error = reservationResult }); // Conflict message from the service
-                }
+                return BadRequest("Reservation command cannot be null.");
             }
-            catch (Exception ex)
+
+            // Handle the command using MediatR
+            var result = await _mediator.Send(addReservationCommand);
+
+            // Check the result (You can customize this based on your needs)
+            if (string.IsNullOrEmpty(result))
             {
-                return StatusCode(500, $"An error occurred while adding the reservation. Details: {ex.Message}");
+                return BadRequest("Failed to add reservation.");
             }
+
+            return CreatedAtAction(nameof(AddReservations), new { id = result }, result);
         }
 
         [HttpDelete("deleteAll")]

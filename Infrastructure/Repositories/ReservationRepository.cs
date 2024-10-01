@@ -16,11 +16,10 @@ namespace Infrastructure.Repositories
             _context = context;   
         }
 
-        public async Task<List<Reservation>> GetReservationsForDateAsync(DateTime reservationDate, Guid studentId, List<Guid> teamMembersIds)
+        public async Task<List<Reservation>> GetReservationsForDateAsync( Guid studentId, List<Guid> teamMembersIds)
         {
             return await _context.Reservations
-                .Where(r => r.ReservationDate == reservationDate &&
-                            (r.StudentId == studentId || teamMembersIds.Contains(r.StudentId)))
+                .Where(r => (r.StudentId == studentId || teamMembersIds.Contains(r.StudentId)))
                 .ToListAsync();
         }
 

@@ -2,6 +2,10 @@
 using AutoMapper;
 using Domain.Entities;
 using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Application.Features.ReservationFeature.Commands.AddReservation
 {
@@ -18,18 +22,36 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
 
         public async Task<string> Handle(AddReservationCommand request, CancellationToken cancellationToken)
         {
-            // Step 1: Check if the student can book the reservation based on Daysoff and time conflicts
-            var canBook = await _reservationService.CanBookReservationAsync(request.StudentId, request.SportId, request.ReservationDate, request.HourStart, request.HourEnd);
-
-            if (!canBook)
+            // Create a new Reservation entity from the request
+            var reservation = new Reservation
             {
-                return "Cannot book this reservation due to time conflict or Daysoff restriction.";
+                Id = Guid.NewGuid(), // Generate a new ID for the reservation
+                StudentId = request.StudentId,
+                SportId = request.SportId,
+                ReservationDate = request.ReservationDate,
+                HourStart = request.HourStart,
+                HourEnd = request.HourEnd,
+                DateCreation = DateTime.UtcNow,
+                DateModification = DateTime.UtcNow,
+                StudentIdList = request.StudentIdList // Assuming you have a way to handle this in the Reservation entity
+            };
+
+            // Call the booking service to add the reservation
+            bool isBooked = await _reservationService.BookAsync(
+                request.StudentId,
+                request.ReservationDate,
+                request.HourStart,
+                request.HourEnd,
+                request.StudentIdList,
+                request.SportId);
+
+            if (!isBooked)
+            {
+                // Return an appropriate message if booking fails
+                return "Reservation could not be created. Please check if you meet the requirements.";
             }
 
-            // Step 2: Create a new reservation if no conflicts
-            var reservation = _mapper.Map<Reservation>(request);
-            await _reservationService.AddReservationAsync(reservation);
-
+            // Return success message
             return "Reservation successfully created.";
         }
     }

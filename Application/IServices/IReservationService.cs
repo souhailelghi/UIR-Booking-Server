@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using MediatR;
 
 namespace Application.IServices
 {
@@ -6,14 +7,11 @@ namespace Application.IServices
     {
 
 
-        Task<Reservation> AddReservationAsync(Reservation reservation);
+    
+       Task CanBookReservationAsync(Guid StudentId, Guid SportId, DateTime ReservationDate, TimeSpan   HourStart, TimeSpan HourEnd);
 
-        Task<List<Reservation>> GetConflictingReservationsAsync(Guid studentId, List<Guid> teamMembersIds, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd);
-
-        Task<bool> CanBookReservationAsync(Guid studentId, Guid sportId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd);
-
-        Task DeleteAllReservationsAsync();
-
+         Task DeleteAllReservationsAsync();
+        Task<bool> BookAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId);
 
     }
 }
