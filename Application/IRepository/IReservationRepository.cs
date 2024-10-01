@@ -10,7 +10,7 @@ namespace Application.IRepository
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-
+        Task<List<Reservation>> GetReservationsForDateAsync(DateTime reservationDate, Guid studentId, List<Guid> teamMembersIds);
         Task RemoveAllAsync();
     }
 }

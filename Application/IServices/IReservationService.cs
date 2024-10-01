@@ -4,12 +4,13 @@ namespace Application.IServices
 {
     public interface IReservationService
     {
-    
 
-        Task<string> CanTeamOrUserReservationAsync(Guid studentId, List<Guid> studentIdList, Guid sportId);
-        Task<string> ReservationAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId);
 
-        
+        Task<Reservation> AddReservationAsync(Reservation reservation);
+
+        Task<List<Reservation>> GetConflictingReservationsAsync(Guid studentId, List<Guid> teamMembersIds, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd);
+
+
 
         Task DeleteAllReservationsAsync();
 

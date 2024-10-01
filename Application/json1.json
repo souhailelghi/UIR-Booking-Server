@@ -1,0 +1,28 @@
+{
+  {
+    "studentId": "27e9ddb2-30d3-4413-aca4-1272bbe91a23",
+    "sportId": "4214c9ce-d13c-4622-99f2-22d515204615",
+    "reservationDate": "2024-10-01T09:38:34.346Z",
+    "hourStart": "02:00:00",
+    "hourEnd": "04:00:00",
+    "studentIdList": [
+      "10881c33-b9a0-44dc-a0e7-24dbae073eb3"
+    ],
+    "dateCreation": "2024-10-01T09:38:34.346Z",
+    "dateModification": "2024-10-01T09:38:34.346Z"
+  }
+  ,
+
+  {
+    "studentId": "da938d3a-5dc3-436c-ac63-a535151f8f66",
+    "sportId": "cbede6ef-35e7-44be-b0c4-2f5ffe2b6eaa",
+    "reservationDate": "2024-10-01T09:38:34.346Z",
+    "hourStart": "01:00:00",
+    "hourEnd": "05:00:00",
+    "studentIdList": [
+      "ae7aeeed-5a2a-41e6-9c3d-e2ade4c0a279"
+    ],
+    "dateCreation": "2024-10-01T09:38:34.346Z",
+    "dateModification": "2024-10-01T09:38:34.346Z"
+  }
+}

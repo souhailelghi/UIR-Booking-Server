@@ -1,6 +1,4 @@
-﻿using Domain.Entities;
-using MediatR;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using MediatR;
 
 namespace Application.Features.ReservationFeature.Commands.AddReservation
 {

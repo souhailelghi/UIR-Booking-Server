@@ -1,4 +1,5 @@
 ﻿using Application.IServices;
+using Application.IUnitOfWorks;
 using AutoMapper;
 
 namespace Application.Services
@@ -22,6 +23,8 @@ namespace Application.Services
             StudentService = studentService;
             ReservationService = reservationService;
         }
-        
+
+       
+
     }
 }
