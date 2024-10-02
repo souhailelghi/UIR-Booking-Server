@@ -1,5 +1,6 @@
 ﻿using Application.IRepository;
 using Application.IUnitOfWorks;
+using Domain.Entities;
 using Infrastructure.Db;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -24,13 +25,24 @@ namespace Infrastructure.UnitOfWorks
 
         public IReservationRepository ReservationRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository)
+        public IPlanningRepository PlanningRepository { get; }
+
+        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository , IPlanningRepository planningRepository)
         {
              _dbContext = dbContext;
             SportCategoryRepository = sportCategoryRepository;
             SportRepository = sportRepository;
             StudentRepository = studentRepository;
             ReservationRepository = reservationRepository;
+            PlanningRepository = planningRepository;
+        }
+
+
+        public DbSet<Planning> Plannings => _dbContext.Plannings;
+
+        public async Task<int> CompleteAsync()
+        {
+            return await _dbContext.SaveChangesAsync();
         }
 
         public void Commit()

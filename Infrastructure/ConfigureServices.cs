@@ -18,6 +18,7 @@ namespace Infrastructure
             services.AddScoped<ISportRepository, SportRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
+            services.AddScoped<IPlanningRepository, PlanningRepository>();
 
             string? con = configuration.GetConnectionString("DefaultSQLConnection");
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(con));

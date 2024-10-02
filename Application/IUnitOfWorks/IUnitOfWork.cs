@@ -1,4 +1,6 @@
 ﻿using Application.IRepository;
+using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Application.IUnitOfWorks
 {
@@ -10,9 +12,14 @@ namespace Application.IUnitOfWorks
 
         IReservationRepository ReservationRepository { get; }
 
+        IPlanningRepository PlanningRepository { get; }
+
         void Commit();
         Task CommitAsync();
         void Rollback();
         Task RollbackAsync();
+
+        DbSet<Planning> Plannings { get; }
+        Task<int> CompleteAsync();
     }
 }

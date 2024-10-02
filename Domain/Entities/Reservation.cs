@@ -27,7 +27,7 @@ namespace Domain.Entities
 
 
         public DateOnly OnlyDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
-
+            
         public List<Guid> StudentIdList { get; set; }
 
         public DateTime DateCreation { get; set; }

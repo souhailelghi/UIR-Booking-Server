@@ -19,6 +19,7 @@ namespace Application
             services.AddTransient<ISportService, SportService>();
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IReservationService, ReservationService>();
+            services.AddTransient<IPlanningService, PlanningService>();
 
 
          
