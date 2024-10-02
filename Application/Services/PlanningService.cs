@@ -1,6 +1,7 @@
 ﻿using Application.IServices;
 using Application.IUnitOfWorks;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Services
@@ -55,5 +56,17 @@ namespace Application.Services
         {
             return await _unitOfWork.PlanningRepository.GetAvailableTimeRangesBySportAsync(sportId);
         }
+
+        public async Task<List<TimeRange>> GetAvailableTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
+        {
+            var plannings = await _unitOfWork.PlanningRepository
+                .GetPlanningsBySportAndDayAsync(sportId, day);
+
+            // Extracting TimeRanges from the planning entries
+            var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
+
+            return availableTimeRanges;
+        }
+
     }
 }

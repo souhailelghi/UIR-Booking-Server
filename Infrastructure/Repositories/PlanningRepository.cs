@@ -1,5 +1,6 @@
 ﻿using Application.IRepository;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Db;
 using Infrastructure.GenericRepositories;
 using Microsoft.EntityFrameworkCore;
@@ -86,6 +87,12 @@ namespace Infrastructure.Repositories
         }
 
 
-
+        public async Task<List<Planning>> GetPlanningsBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
+        {
+            return await _context.Set<Planning>()
+                .Where(p => p.SportId == sportId && p.Day == day)
+                .Include(p => p.TimeRanges) // Include time ranges
+                .ToListAsync();
+        }
     }
 }

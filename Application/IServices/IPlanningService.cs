@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.IServices
@@ -10,6 +11,7 @@ namespace Application.IServices
         Task<List<TimeRange>> GetAvailableTimeRangesBySportAsync(Guid sportId);
 
         Task<Planning> AddPlanningAsync(Planning planning);
+        Task<List<TimeRange>> GetAvailableTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
 
     }
 }

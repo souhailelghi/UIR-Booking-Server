@@ -1,5 +1,6 @@
 ﻿using Application.IRepository.IGenericRepositorys;
 using Domain.Entities;
+using Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,5 +19,6 @@ namespace Application.IRepository
         Task<List<TimeRange>> GetAvailableTimeRangesBySportAsync(Guid sportId);
         Task AddAsync(Planning planning);
         Task<Planning> FindAsync(Expression<Func<Planning, bool>> predicate);
+        Task<List<Planning>> GetPlanningsBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
     }
 }
