@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240928105702_initOnModelCreating")]
-    partial class initOnModelCreating
+    [Migration("20241001160125_initDatONLY")]
+    partial class initDatONLY
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,9 +81,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Day")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Day")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("SportId")
                         .HasColumnType("uniqueidentifier");
@@ -105,6 +104,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateModification")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateONlY")
                         .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("HourEnd")
@@ -145,25 +147,23 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Conditions")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateCreation")
+                    b.Property<DateTime?>("DateCreation")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateModification")
+                    b.Property<DateTime?>("DateModification")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Daysoff")
+                    b.Property<int?>("Daysoff")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte[]>("Image")
+                    b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("varbinary(max)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -200,6 +200,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<DateOnly>("MYDATE")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()

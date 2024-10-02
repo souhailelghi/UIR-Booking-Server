@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240928121049_intidb")]
-    partial class intidb
+    [Migration("20241001151229_initDatetodays")]
+    partial class initDatetodays
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -81,9 +81,8 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Day")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Day")
+                        .HasColumnType("int");
 
                     b.Property<Guid>("SportId")
                         .HasColumnType("uniqueidentifier");
@@ -105,6 +104,9 @@ namespace Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<DateTime>("DateModification")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateONlY")
                         .HasColumnType("datetime2");
 
                     b.Property<TimeSpan>("HourEnd")

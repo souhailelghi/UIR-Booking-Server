@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -12,9 +13,10 @@ namespace Domain.Entities
     {
         [Key]
         public Guid Id { get; set; }
+
         [ForeignKey("Sport")]
         public Guid SportId { get; set; } 
-        public string Day { get; set; }
+        public DayOfWeekEnum Day { get; set; }
         public ICollection<TimeRange> TimeRanges { get; set; } = new List<TimeRange>();
         public DateTime DateCreation { get; set; }
         

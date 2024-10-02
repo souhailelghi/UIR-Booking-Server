@@ -62,7 +62,7 @@ namespace Application.Services
             return !teamReservationExists; // Return true if no team members have reservations within the delay time
         }
 
-        public async Task<bool> BookAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId)
+        public async Task<bool> BookAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId)
         {
             // Check if the student or team can book
             if (!await CanTeamOrUserBookAsync(studentId, studentIdList, sportId))
@@ -78,6 +78,7 @@ namespace Application.Services
                 ReservationDate = reservationDate,
                 HourStart = hourStart,
                 HourEnd = hourEnd,
+                OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 DateCreation = DateTime.UtcNow,
                 StudentIdList = studentIdList ?? new List<Guid>()
             };

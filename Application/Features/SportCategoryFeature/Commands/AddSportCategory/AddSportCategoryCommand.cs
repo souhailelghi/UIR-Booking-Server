@@ -11,5 +11,6 @@ namespace Application.Features.SportCategoryFeature.Commands.AddSportCategory
     public class AddSportCategoryCommand  : IRequest<SportCategory>
     {
         public string Name { get; set; }
+        public DateOnly MYDATE { get; set; }
     }
 }

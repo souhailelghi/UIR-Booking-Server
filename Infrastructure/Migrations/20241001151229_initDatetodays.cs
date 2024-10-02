@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initOnModelCreating : Migration
+    public partial class initDatetodays : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -68,13 +68,13 @@ namespace Infrastructure.Migrations
                     CategorieId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReferenceSport = table.Column<int>(type: "int", nullable: false),
                     NbPlayer = table.Column<int>(type: "int", nullable: false),
-                    Daysoff = table.Column<int>(type: "int", nullable: false),
-                    Conditions = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Daysoff = table.Column<int>(type: "int", nullable: true),
+                    Conditions = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Image = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    DateModification = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Image = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreation = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    DateModification = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -93,7 +93,7 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Day = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Day = table.Column<int>(type: "int", nullable: false),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -117,6 +117,7 @@ namespace Infrastructure.Migrations
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HourStart = table.Column<TimeSpan>(type: "time", nullable: false),
                     HourEnd = table.Column<TimeSpan>(type: "time", nullable: false),
+                    DateONlY = table.Column<DateTime>(type: "datetime2", nullable: false),
                     StudentIdList = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModification = table.Column<DateTime>(type: "datetime2", nullable: false)
