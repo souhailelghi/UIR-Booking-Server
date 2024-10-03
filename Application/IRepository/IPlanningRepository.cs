@@ -16,9 +16,11 @@ namespace Application.IRepository
 
         Task<List<TimeRange>> GetAvailableTimeRangesAsync();
 
-        Task<List<TimeRange>> GetAvailableTimeRangesBySportAsync(Guid sportId);
+        Task<List<TimeRange>> GetTimeRangesBySportAsync(Guid sportId);
         Task AddAsync(Planning planning);
         Task<Planning> FindAsync(Expression<Func<Planning, bool>> predicate);
         Task<List<Planning>> GetPlanningsBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
+        Task<List<TimeRange>> GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(Guid sportId, DayOfWeekEnum day);
+
     }
 }

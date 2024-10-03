@@ -15,5 +15,17 @@
   {
     "name": "zomba",
     "mydate": "2024-10-01"
+  },
+  {
+    "studentId": "9668356b-dc6e-4a0b-b9b0-3a3fb12aced7",
+    "sportId": "31334af6-0852-4fab-b826-29fa53d7b844",
+    "reservationDate": "2024-10-02T15:48:19.183Z",
+    "hourStart": "03:00:00",
+    "hourEnd": "04:00:00",
+    "studentIdList": [
+      "c43d4472-f4d9-4de1-93e1-c22dc0076869"
+    ],
+    "dateCreation": "2024-10-02T15:48:19.183Z",
+    "dateModification": "2024-10-02T15:48:19.183Z"
   }
 }

@@ -43,7 +43,7 @@ namespace Application.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id in mapping
 
 
-
+            CreateMap<TimeRange, TimeRangeDto>();
 
 
         }

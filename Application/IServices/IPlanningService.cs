@@ -8,10 +8,15 @@ namespace Application.IServices
     {
         Task<List<Planning>> GetAllPlanningAsync();
         Task<List<TimeRange>> GetAvailableTimeRangesAsync();
-        Task<List<TimeRange>> GetAvailableTimeRangesBySportAsync(Guid sportId);
+        Task<List<TimeRange>> GetTimeRangesBySportAsync(Guid sportId);
 
         Task<Planning> AddPlanningAsync(Planning planning);
-        Task<List<TimeRange>> GetAvailableTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
+        Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
+        Task<List<TimeRange>> GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(Guid sportId, DayOfWeekEnum day);
+
+
+
+
 
     }
 }

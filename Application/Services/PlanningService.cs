@@ -1,19 +1,66 @@
 ﻿using Application.IServices;
 using Application.IUnitOfWorks;
+using AutoMapper;
+using Domain.Dtos;
 using Domain.Entities;
 using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
+
 
 namespace Application.Services
 {
     public class PlanningService : IPlanningService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMapper _mapper;
+ 
 
-        public PlanningService(IUnitOfWork unitOfWork)
+        public PlanningService(IUnitOfWork unitOfWork , IMapper mapper)
         {
             _unitOfWork = unitOfWork;
+            _mapper = mapper;
+        
         }
+
+        public async Task<List<TimeRange>> GetTimeRangesBySportAsync(Guid sportId)
+        {
+            return await _unitOfWork.PlanningRepository.GetTimeRangesBySportAsync(sportId);
+        }
+
+
+        // Get available time ranges for a specific sport and day ----------------------------service
+        public async Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
+        {
+            var sport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
+            if (sport == null)
+            {
+                return new List<TimeRange>(); // Sport not found
+            }
+            var plannings = await _unitOfWork.PlanningRepository.GetPlanningsBySportAndDayAsync(sportId, day);
+
+            // Extracting TimeRanges from the planning entries .hnayan !!
+            var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
+
+
+       
+
+
+
+            return availableTimeRanges;
+        }
+
+
+      
+
+
+
+
+
+
+
+
+
+
 
         public async Task<Planning> AddPlanningAsync(Planning planning)
         {
@@ -52,21 +99,18 @@ namespace Application.Services
             return await _unitOfWork.PlanningRepository.GetAvailableTimeRangesAsync();
         }
 
-        public async Task<List<TimeRange>> GetAvailableTimeRangesBySportAsync(Guid sportId)
+
+
+
+
+        //----
+      
+
+        public async Task<List<TimeRange>> GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(Guid sportId, DayOfWeekEnum day)
         {
-            return await _unitOfWork.PlanningRepository.GetAvailableTimeRangesBySportAsync(sportId);
+            return await _unitOfWork.PlanningRepository.GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(sportId, day);
         }
 
-        public async Task<List<TimeRange>> GetAvailableTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
-        {
-            var plannings = await _unitOfWork.PlanningRepository
-                .GetPlanningsBySportAndDayAsync(sportId, day);
-
-            // Extracting TimeRanges from the planning entries
-            var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
-
-            return availableTimeRanges;
-        }
 
     }
 }
