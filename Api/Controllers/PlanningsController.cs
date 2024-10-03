@@ -3,6 +3,7 @@ using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
+using Application.Features.PlanningFeature.Queries.GetTimeRangesBySportAndDayNotExistOnTableReservationQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Domain.Dtos;
 using Domain.Entities;
@@ -85,7 +86,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("available-time-ranges-by-sport-and-day/{sportId}/{day}")]
+        [HttpGet("time-ranges-by-sport-and-day-not-reserved/{sportId}/{day}")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
         {
             try
@@ -103,6 +104,21 @@ namespace Api.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+
+
+        [HttpGet("time-ranges-not-reserved/{sportId}/{day}")]
+        public async Task<IActionResult> GetTimeRangesBySportAndDayNotExistOnTableReservation(Guid sportId, DayOfWeekEnum day)
+        {
+            var availableTimeRanges = await _mediator.Send(new GetTimeRangesBySportAndDayNotExistOnTableReservationQuery(sportId, day));
+
+            if (!availableTimeRanges.Any())
+            {
+                return NotFound("No available time ranges found that are not reserved for the specified sport and day.");
+            }
+
+            return Ok(availableTimeRanges);
         }
 
     }

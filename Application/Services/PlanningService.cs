@@ -31,26 +31,36 @@ namespace Application.Services
         // Get available time ranges for a specific sport and day ----------------------------service
         public async Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
         {
+            // Fetch the sport to ensure it exists
             var sport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
             if (sport == null)
             {
                 return new List<TimeRange>(); // Sport not found
             }
+
+            // Fetch planning entries for the specific sport and day
             var plannings = await _unitOfWork.PlanningRepository.GetPlanningsBySportAndDayAsync(sportId, day);
 
-            // Extracting TimeRanges from the planning entries .hnayan !!
+            // Extract available time ranges from the planning entries
             var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
 
+            // Fetch reserved time ranges for the sport
+            var reservedReservations = await _unitOfWork.ReservationRepository.GetReservationsBySportIdAsync(sportId);
+            var reservedTimeRanges = reservedReservations.Select(r => new { r.HourStart, r.HourEnd }).ToList();
 
-       
+            // Filter out the time ranges that exist in Reservations
+            var filteredTimeRanges = availableTimeRanges
+                .Where(tr => !reservedTimeRanges
+                    .Any(res => res.HourStart == tr.HourStart && res.HourEnd == tr.HourEnd))
+                .ToList();
 
-
-
-            return availableTimeRanges;
+            return filteredTimeRanges;
         }
 
 
-      
+
+
+
 
 
 

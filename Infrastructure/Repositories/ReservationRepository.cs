@@ -1,8 +1,10 @@
 ﻿using Application.IRepository;
 using Domain.Entities;
+using Domain.Enums;
 using Infrastructure.Db;
 using Infrastructure.GenericRepositories;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
@@ -14,6 +16,15 @@ namespace Infrastructure.Repositories
         public ReservationRepository(ApplicationDbContext context) : base(context)
         {
             _context = context;   
+        }
+
+
+
+        public async Task<List<Reservation>> GetReservationsBySportIdAsync(Guid sportId)
+        {
+            return await _context.Reservations
+                .Where(r => r.SportId == sportId)
+                .ToListAsync();
         }
 
         public async Task<List<Reservation>> GetReservationsForDateAsync( Guid studentId, List<Guid> teamMembersIds)
@@ -35,6 +46,34 @@ namespace Infrastructure.Repositories
                 dbSet.RemoveRange(reservations);
                 await _context.SaveChangesAsync();
             }
+        }
+
+
+        public async Task<List<TimeRange>> GetReservedTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
+        {
+            // Query to get reservations for the specified sport
+            var reservations = await _context.Reservations
+                .Where(r => r.SportId == sportId)
+                .ToListAsync();
+
+            // Perform day comparison in-memory
+            var reservedTimeRanges = reservations
+                .Where(r => r.OnlyDate.DayOfWeek == (DayOfWeek)day)
+                .Select(r => new TimeRange
+                {
+                    HourStart = r.HourStart,
+                    HourEnd = r.HourEnd
+                })
+                .ToList();
+
+            return reservedTimeRanges;
+        }
+
+
+
+        public async Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter)
+        {
+            return await dbSet.FirstOrDefaultAsync(filter);
         }
     }
 }

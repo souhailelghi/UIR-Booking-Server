@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initDatetodays : Migration
+    public partial class initGETday : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -16,6 +16,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    MYDATE = table.Column<DateOnly>(type: "date", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -117,7 +118,7 @@ namespace Infrastructure.Migrations
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     HourStart = table.Column<TimeSpan>(type: "time", nullable: false),
                     HourEnd = table.Column<TimeSpan>(type: "time", nullable: false),
-                    DateONlY = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    OnlyDate = table.Column<DateOnly>(type: "date", nullable: false),
                     StudentIdList = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModification = table.Column<DateTime>(type: "datetime2", nullable: false)

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241001151229_initDatetodays")]
-    partial class initDatetodays
+    [Migration("20241003114233_initGETday")]
+    partial class initGETday
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -106,14 +106,14 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateModification")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateONlY")
-                        .HasColumnType("datetime2");
-
                     b.Property<TimeSpan>("HourEnd")
                         .HasColumnType("time");
 
                     b.Property<TimeSpan>("HourStart")
                         .HasColumnType("time");
+
+                    b.Property<DateOnly>("OnlyDate")
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
@@ -200,6 +200,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<byte[]>("Image")
                         .HasColumnType("varbinary(max)");
+
+                    b.Property<DateOnly>("MYDATE")
+                        .HasColumnType("date");
 
                     b.Property<string>("Name")
                         .IsRequired()
