@@ -3,13 +3,10 @@ using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
-using Application.Features.PlanningFeature.Queries.GetTimeRangesBySportAndDayNotExistOnTableReservationQuerie;
-using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Domain.Dtos;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -40,7 +37,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("available-time-ranges")]
+        [HttpGet("get-all-time-ranges")]
         public async Task<IActionResult> GetAvailableTimeRanges()
         {
             try
@@ -54,7 +51,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("available-time-ranges-by-sport/{sportId}")]
+        [HttpGet("get-time-ranges-by-sport-not-reserved/{sportId}")]
         public async Task<IActionResult> GetAvailableTimeRangesBySport(Guid sportId)
         {
             try
@@ -86,7 +83,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("time-ranges-by-sport-and-day-not-reserved/{sportId}/{day}")]
+        [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
         {
             try
@@ -95,7 +92,7 @@ namespace Api.Controllers
 
                 if (availableTimeRanges == null || !availableTimeRanges.Any())
                 {
-                    return NotFound("No available time ranges found for the specified sport and day.");
+                    return NotFound("No time ranges found for the specified sport and day.");
                 }
 
                 return Ok(availableTimeRanges);
@@ -108,18 +105,7 @@ namespace Api.Controllers
 
 
 
-        [HttpGet("time-ranges-not-reserved/{sportId}/{day}")]
-        public async Task<IActionResult> GetTimeRangesBySportAndDayNotExistOnTableReservation(Guid sportId, DayOfWeekEnum day)
-        {
-            var availableTimeRanges = await _mediator.Send(new GetTimeRangesBySportAndDayNotExistOnTableReservationQuery(sportId, day));
-
-            if (!availableTimeRanges.Any())
-            {
-                return NotFound("No available time ranges found that are not reserved for the specified sport and day.");
-            }
-
-            return Ok(availableTimeRanges);
-        }
+       
 
     }
 }
