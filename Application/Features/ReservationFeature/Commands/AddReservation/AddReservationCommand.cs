@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Domain.Enums;
+using MediatR;
 
 namespace Application.Features.ReservationFeature.Commands.AddReservation
 {
@@ -7,6 +8,8 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
         public Guid StudentId { get; set; }
         public Guid SportId { get; set; }
         public DateTime ReservationDate { get; set; }
+
+        public DayOfWeekEnum DayBooking { get; set; }
         public TimeSpan HourStart { get; set; }
         public TimeSpan HourEnd { get; set; }
      

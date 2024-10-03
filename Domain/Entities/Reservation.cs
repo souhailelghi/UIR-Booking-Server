@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -18,10 +19,10 @@ namespace Domain.Entities
 
         public DateTime ReservationDate { get; set; }
 
+        public DayOfWeekEnum DayBooking { get; set; }
         public TimeSpan HourStart { get; set; }
 
         public TimeSpan HourEnd { get; set; }
-
 
 
 

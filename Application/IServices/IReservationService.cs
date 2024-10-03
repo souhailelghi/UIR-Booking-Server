@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Enums;
 using MediatR;
 
 namespace Application.IServices
@@ -11,7 +12,7 @@ namespace Application.IServices
        Task CanBookReservationAsync(Guid StudentId, Guid SportId, DateTime ReservationDate, TimeSpan   HourStart, TimeSpan HourEnd);
 
          Task DeleteAllReservationsAsync();
-        Task<bool> BookAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId);
+        Task<bool> BookAsync(Guid studentId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId);
 
     }
 }

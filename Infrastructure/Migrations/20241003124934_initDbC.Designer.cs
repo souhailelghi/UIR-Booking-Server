@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241003114233_initGETday")]
-    partial class initGETday
+    [Migration("20241003124934_initDbC")]
+    partial class initDbC
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -105,6 +105,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("DateModification")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("DayBooking")
+                        .HasColumnType("int");
 
                     b.Property<TimeSpan>("HourEnd")
                         .HasColumnType("time");

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initGETday : Migration
+    public partial class initDbC : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,6 +116,7 @@ namespace Infrastructure.Migrations
                     StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DayBooking = table.Column<int>(type: "int", nullable: false),
                     HourStart = table.Column<TimeSpan>(type: "time", nullable: false),
                     HourEnd = table.Column<TimeSpan>(type: "time", nullable: false),
                     OnlyDate = table.Column<DateOnly>(type: "date", nullable: false),

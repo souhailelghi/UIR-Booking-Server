@@ -103,6 +103,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateModification")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("DayBooking")
+                        .HasColumnType("int");
+
                     b.Property<TimeSpan>("HourEnd")
                         .HasColumnType("time");
 

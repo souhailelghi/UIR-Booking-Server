@@ -44,11 +44,16 @@ namespace Application.Services
             // Extract available time ranges from the planning entries
             var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
 
-            // Fetch reserved time ranges for the sport
+            // Fetch reserved reservations for the sport on the specified day
             var reservedReservations = await _unitOfWork.ReservationRepository.GetReservationsBySportIdAsync(sportId);
-            var reservedTimeRanges = reservedReservations.Select(r => new { r.HourStart, r.HourEnd }).ToList();
 
-            // Filter out the time ranges that exist in Reservations
+            // Filter reserved time ranges for the specified day
+            var reservedTimeRanges = reservedReservations
+                .Where(r => r.DayBooking == day) // Only keep reservations that match the specified day
+                .Select(r => new { r.HourStart, r.HourEnd })
+                .ToList();
+
+            // Filter out the time ranges that exist in Reservations for the specified day
             var filteredTimeRanges = availableTimeRanges
                 .Where(tr => !reservedTimeRanges
                     .Any(res => res.HourStart == tr.HourStart && res.HourEnd == tr.HourEnd))
@@ -56,6 +61,7 @@ namespace Application.Services
 
             return filteredTimeRanges;
         }
+
 
 
 

@@ -29,6 +29,7 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
                 StudentId = request.StudentId,
                 SportId = request.SportId,
                 ReservationDate = request.ReservationDate,
+                DayBooking = request.DayBooking,
                 HourStart = request.HourStart,
                 HourEnd = request.HourEnd,
                 DateCreation = DateTime.UtcNow,
@@ -40,6 +41,7 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             bool isBooked = await _reservationService.BookAsync(
                 request.StudentId,
                 request.ReservationDate,
+                request.DayBooking,
                 request.HourStart,
                 request.HourEnd,
                 request.StudentIdList,

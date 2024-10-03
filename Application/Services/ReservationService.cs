@@ -1,6 +1,7 @@
 ﻿using Application.IServices;
 using Application.IUnitOfWorks;
 using Domain.Entities;
+using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -62,7 +63,7 @@ namespace Application.Services
             return !teamReservationExists; // Return true if no team members have reservations within the delay time
         }
 
-        public async Task<bool> BookAsync(Guid studentId, DateTime reservationDate, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId)
+        public async Task<bool> BookAsync(Guid studentId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId)
         {
             // Check if the student or team can book
             if (!await CanTeamOrUserBookAsync(studentId, studentIdList, sportId))
@@ -76,6 +77,7 @@ namespace Application.Services
                 StudentId = studentId,
                 SportId = sportId,
                 ReservationDate = reservationDate,
+                DayBooking=dayBooking,
                 HourStart = hourStart,
                 HourEnd = hourEnd,
                 OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
