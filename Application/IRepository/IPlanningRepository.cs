@@ -12,7 +12,7 @@ namespace Application.IRepository
 {
     public interface IPlanningRepository: IGenericRepository<Planning>
     {
-        Task<List<Planning>> GetPlanningsWithTimeRangesAsync();
+       
 
         Task<List<TimeRange>> GetAvailableTimeRangesAsync();
 

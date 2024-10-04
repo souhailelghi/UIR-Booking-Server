@@ -91,11 +91,7 @@ namespace Application.Services
             return true;
         }
 
-        public Task CanBookReservationAsync(Guid StudentId, Guid SportId, DateTime ReservationDate, TimeSpan HourStart, TimeSpan HourEnd)
-        {
-            throw new NotImplementedException();
-        }
-
+     
 
 
         public async Task DeleteAllReservationsAsync()

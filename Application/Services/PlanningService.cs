@@ -28,7 +28,7 @@ namespace Application.Services
         }
 
 
-        // Get available time ranges for a specific sport and day ----------------------------service
+        // Get available time ranges for a specific sport and day
         public async Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
         {
             // Fetch the sport to ensure it exists
@@ -119,13 +119,7 @@ namespace Application.Services
 
 
 
-        //----
-      
-
-        public async Task<List<TimeRange>> GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(Guid sportId, DayOfWeekEnum day)
-        {
-            return await _unitOfWork.PlanningRepository.GetTimeRangesBySportAndDayNotExistOnTableReservationAsync(sportId, day);
-        }
+       
 
 
     }

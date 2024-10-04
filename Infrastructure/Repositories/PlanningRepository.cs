@@ -66,10 +66,7 @@ namespace Infrastructure.Repositories
             return await _context.Plannings.FirstOrDefaultAsync(predicate);
         }
 
-        public async Task<List<Planning>> GetPlanningsWithTimeRangesAsync()
-        {
-            return await _context.Plannings.Include(p => p.TimeRanges).ToListAsync();
-        }
+      
 
         public async Task<List<TimeRange>> GetAvailableTimeRangesAsync()
         {

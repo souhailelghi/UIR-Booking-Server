@@ -49,25 +49,7 @@ namespace Infrastructure.Repositories
         }
 
 
-        public async Task<List<TimeRange>> GetReservedTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
-        {
-            // Query to get reservations for the specified sport
-            var reservations = await _context.Reservations
-                .Where(r => r.SportId == sportId)
-                .ToListAsync();
-
-            // Perform day comparison in-memory
-            var reservedTimeRanges = reservations
-                .Where(r => r.OnlyDate.DayOfWeek == (DayOfWeek)day)
-                .Select(r => new TimeRange
-                {
-                    HourStart = r.HourStart,
-                    HourEnd = r.HourEnd
-                })
-                .ToList();
-
-            return reservedTimeRanges;
-        }
+      
 
 
 
