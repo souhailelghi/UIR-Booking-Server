@@ -100,7 +100,7 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("DateCreation")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("DateModification")
+                    b.Property<DateTime?>("DateModification")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("DayBooking")
@@ -314,9 +314,15 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.Reservation", b =>
                 {
-                    b.HasOne("Domain.Entities.Sport", null)
-                        .WithMany()
+                    b.HasOne("Domain.Entities.Sport", "Sport")
+                        .WithMany("Reservations")
                         .HasForeignKey("SportId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Common.User", "Student")
+                        .WithMany()
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -325,6 +331,10 @@ namespace Infrastructure.Migrations
                         .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Sport");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sport", b =>
@@ -347,6 +357,11 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Planning", b =>
                 {
                     b.Navigation("TimeRanges");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Sport", b =>
+                {
+                    b.Navigation("Reservations");
                 });
 #pragma warning restore 612, 618
         }

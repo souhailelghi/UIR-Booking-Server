@@ -18,10 +18,14 @@ namespace Infrastructure.Repositories
             _context = context;   
         }
 
-
+        public async Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter)
+        {
+            return await dbSet.FirstOrDefaultAsync(filter);
+        }
 
         public async Task<List<Reservation>> GetReservationsBySportIdAsync(Guid sportId)
         {
+           
             return await _context.Reservations
                 .Where(r => r.SportId == sportId)
                 .ToListAsync();
@@ -49,13 +53,27 @@ namespace Infrastructure.Repositories
         }
 
 
-      
-
-
-
-        public async Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter)
+        // new command : 
+        // Fetch reservations by ReferenceSport for a single student
+        public async Task<List<Reservation>> GetReservationsByReferenceSportAsync(Guid studentId, int referenceSport)
         {
-            return await dbSet.FirstOrDefaultAsync(filter);
+            return await _context.Reservations
+                .Include(r => r.Sport) // Ensure Sport is loaded
+                .Where(r => r.Sport.ReferenceSport == referenceSport && r.StudentId == studentId)
+                .ToListAsync();
         }
+
+        public async Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport)
+        {
+            return await _context.Reservations
+                .Include(r => r.Sport) // Ensure Sport is loaded
+                .Where(r => teamMemberIds.Contains(r.StudentId) && r.Sport.ReferenceSport == referenceSport)
+                .ToListAsync();
+        }
+
+
+
+
+
     }
 }

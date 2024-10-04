@@ -26,5 +26,7 @@ namespace Domain.Entities
       
         public DateTime? DateCreation { get; set; }
         public DateTime? DateModification { get; set; }
+        // Navigation Property
+        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

@@ -10,28 +10,19 @@ namespace Infrastructure.Db
 
         public DbSet<User> Users { get; set; }
         public DbSet<SportCategory> SportCategory { get; set; }
-
         public DbSet<Administrator> Administrators { get; set; }
-
         public DbSet<BlackList> BlackLists { get; set; }
-
-        public DbSet<Planning> Plannings { get; set; } 
-
+        public DbSet<Planning> Plannings { get; set; }
         public DbSet<Reservation> Reservations { get; set; }
-
         public DbSet<Sport> Sports { get; set; }
-
         public DbSet<Student> Students { get; set; }
-
         public DbSet<SystemeInfo> SystemeInfos { get; set; }
-
-        public DbSet<TimeRange> TimeRanges { get; set; } 
-
-
-
+        public DbSet<TimeRange> TimeRanges { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder); // Call base method
+
             // Configure User inheritance
             modelBuilder.Entity<User>()
                 .HasDiscriminator<string>("UserType")
@@ -57,8 +48,8 @@ namespace Infrastructure.Db
 
             // Relationship between Reservation and Sport (many-to-one)
             modelBuilder.Entity<Reservation>()
-                .HasOne<Sport>()
-                .WithMany()
+                .HasOne(r => r.Sport)
+                .WithMany(s => s.Reservations)
                 .HasForeignKey(r => r.SportId)
                 .OnDelete(DeleteBehavior.Cascade);
 

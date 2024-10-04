@@ -1,5 +1,23 @@
 {
   {
+    "studentId": "d8771f63-64c0-40cf-be1b-1ec9bf6301db",
+    "sportId": "f1ccc25b-5c14-4455-8889-3885aa2cd37b",
+    "reservationDate": "2024-10-04T10:37:04.209Z",
+    "dayBooking": 1,
+    "hourStart": "02:00:00",
+    "hourEnd": "03:00:00",
+    "studentIdList": [
+      "e0a28777-5167-454c-997a-8633e5dccd36"
+    ],
+    "dateCreation": "2024-10-04T10:37:04.209Z",
+    "dateModification": "2024-10-04T10:37:04.209Z"
+  },
+
+
+  ,
+
+  ,
+  {
     "studentId": "6557e35c-85d5-43d3-9729-c89e9ff1e574",
     "sportId": "9fb4c648-d1df-4442-bec7-e54a7cf4c94e",
     "reservationDate": "2024-10-01T15:27:12.731Z",
