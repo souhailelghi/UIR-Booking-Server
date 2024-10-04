@@ -37,7 +37,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("get-all-time-ranges")]
+        [HttpGet("get-AllTimeRanges")]
         public async Task<IActionResult> GetAvailableTimeRanges()
         {
             try
