@@ -2,6 +2,7 @@
 using Application.Features.StudentFeature.Commands.AddStudent;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -20,6 +21,7 @@ namespace Api.Controllers
 
 
         [HttpPost("add")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddStudent([FromBody] AddStudentCommand addStudentCommand)
         {
             try

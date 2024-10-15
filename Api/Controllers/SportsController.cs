@@ -10,6 +10,7 @@ using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +28,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportsList()
         {
             try
@@ -41,6 +43,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddSport([FromBody] AddSportCommand addSportCommand)
         {
             try

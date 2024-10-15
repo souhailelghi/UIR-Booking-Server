@@ -7,6 +7,7 @@ using Domain.Dtos;
 using Domain.Entities;
 using Domain.Enums;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -21,6 +22,27 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
+        [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
+        [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
+        {
+            try
+            {
+                var availableTimeRanges = await _mediator.Send(new GetAvailableTimeRangesBySportAndDayQuery(sportId, day));
+
+                if (availableTimeRanges == null || !availableTimeRanges.Any())
+                {
+                    return NotFound("No time ranges found for the specified sport and day.");
+                }
+
+                return Ok(availableTimeRanges);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
         [HttpGet("list")]
         public async Task<IActionResult> GetPlanningsList()
@@ -83,26 +105,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
-        public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
-        {
-            try
-            {
-                var availableTimeRanges = await _mediator.Send(new GetAvailableTimeRangesBySportAndDayQuery(sportId, day));
-
-                if (availableTimeRanges == null || !availableTimeRanges.Any())
-                {
-                    return NotFound("No time ranges found for the specified sport and day.");
-                }
-
-                return Ok(availableTimeRanges);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
+       
 
 
        

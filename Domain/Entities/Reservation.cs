@@ -14,10 +14,10 @@ namespace Domain.Entities
 
         [ForeignKey("Student")]
         public Guid StudentId { get; set; }
-        public User Student { get; set; } // Assuming you have a User entity
+        public User Student { get; set; } 
 
         [ForeignKey("Sport")]
-        public Guid SportId { get; set; }  // Remove any reference to SportId1
+        public Guid SportId { get; set; } 
         public Sport Sport { get; set; }
 
         public DateTime ReservationDate { get; set; }

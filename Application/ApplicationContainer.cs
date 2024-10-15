@@ -27,6 +27,7 @@ namespace Application
             services.AddMediatR(Assembly.GetExecutingAssembly());
             //configuration of auto mapper
             services.AddAutoMapper(typeof(AutoMapperProfile));
+
             return services;
         }
     }

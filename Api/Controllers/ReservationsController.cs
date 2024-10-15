@@ -1,6 +1,7 @@
 ﻿using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -17,6 +18,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("AddReservations")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)

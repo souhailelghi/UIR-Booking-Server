@@ -5,6 +5,7 @@ using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueri
 using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
 using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Reflection.Metadata;
@@ -23,6 +24,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportCategorysList()
         {
             try
@@ -37,6 +39,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSportCategory([FromBody] AddSportCategoryCommand addSportCategoryCommand)
         {
             try
