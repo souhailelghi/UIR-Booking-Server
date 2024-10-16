@@ -22,11 +22,39 @@ namespace Application.Services
         }
 
 
+        
+
         public async Task<Student> AddStudentAsync(Student student)
         {
+            // Check if a student with the same UserId already exists
+            var existingStudent = await _unitOfWork.StudentRepository
+                 .FindAsync(p => p.UserId == student.UserId);
+
+            if (existingStudent != null)
+            {
+                throw new InvalidOperationException("A student with the same UserId already exists.");
+            }
+
+            // Assign a new Guid to the student Id
             student.Id = Guid.NewGuid();
+
+            // Create the new student
             await _unitOfWork.StudentRepository.CreateAsync(student);
             await _unitOfWork.CommitAsync();
+
+            return student;
+        }
+
+        public async Task<Student> GetStudentByUserIdAsync(Guid userId)
+        {
+            // Assuming you have a method to fetch a student by UserId in your repository
+            var student = await _unitOfWork.StudentRepository.GetByUserIdAsync(userId);
+
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"Student with UserId {userId} not found.");
+            }
+
             return student;
         }
     }

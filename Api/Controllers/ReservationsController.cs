@@ -18,7 +18,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("AddReservations")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)

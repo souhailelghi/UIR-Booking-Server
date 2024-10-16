@@ -1,10 +1,19 @@
 ﻿using Domain.Common;
+using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
 {
-    public class Student : User
+    public class Student 
     {
-        public string StudentName { get; set; }
+        [Key]
+        public Guid Id { get; set; }
+  
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        
+        [Required]
+        public Guid UserId { get; set; }
+        public string CodeUIR { get; set; }
     }
 }
                  

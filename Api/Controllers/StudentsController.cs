@@ -1,5 +1,6 @@
 ﻿using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.StudentFeature.Commands.AddStudent;
+using Application.Features.StudentFeature.Queries.GetStudntByUserIdQuerie;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -40,5 +41,27 @@ namespace Api.Controllers
                 return StatusCode(500, $"An error occurred while adding the Student . Details: {ex.Message}");
             }
         }
+
+        [HttpGet("{userId}")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetStudentByUserId(Guid userId)
+        {
+            try
+            {
+                var student = await _mediator.Send(new GetStudntByUserIdQuery(userId));
+                return Ok(student);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the student. Details: {ex.Message}");
+            }
+        }
+
+
+
     }
 }

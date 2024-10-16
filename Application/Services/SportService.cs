@@ -45,33 +45,7 @@ namespace Application.Services
         }
 
 
-        //public async Task<Sport> AddSportAsync(Sport sport)
-        //{
-        //    byte[] imageData = null;
-
-        //    // Convert the uploaded image to a byte array if present
-        //    if (sport.Image != null)
-        //    {
-        //        using (var ms = new MemoryStream())
-        //        {
-        //            await sport.Image.CopyToAsync(ms);
-        //            imageData = ms.ToArray();
-        //        }
-        //    }
-
-        //    // Map Sport to Sport entity
-        //    var sportEntity = _mapper.Map<Sport>(sport);
-        //    sportEntity.Id = Guid.NewGuid(); // Generate a new unique ID
-        //    sportEntity.Image = imageData;   
-        //    sportEntity.DateCreation = DateTime.UtcNow;
-
-        //    // Save the new sport entity using UnitOfWork
-        //    await _unitOfWork.SportRepository.CreateAsync(sportEntity);
-        //    await _unitOfWork.CommitAsync();
-
-        //    // Return the DTO back after saving
-        //    return _mapper.Map<Sport>(sportEntity);
-        //}
+       
 
         public async Task DeleteSportAsync(Guid id)
         {

@@ -10,5 +10,7 @@ namespace Application.IServices
     public interface IStudentService 
     {
         Task<Student> AddStudentAsync(Student student);
+
+        Task<Student> GetStudentByUserIdAsync(Guid userId);
     }
 }
