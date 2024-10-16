@@ -18,7 +18,6 @@ namespace Application.Features.SportFeature.Commands.AddSport
         }
 
 
-
         public async Task<Sport> Handle(AddSportCommand request, CancellationToken cancellationToken)
         {
             if (request == null)
@@ -26,9 +25,11 @@ namespace Application.Features.SportFeature.Commands.AddSport
                 throw new ArgumentNullException(nameof(request), "Sport cannot be null.");
             }
 
+            // Map the AddSportCommand to the Sport entity
+            Sport sportMapped = _mapper.Map<Sport>(request);
 
-            Sport SportMapped = _mapper.Map<Sport>(request);
-            Sport addedSport = await _unitOfService.SportService.AddSportAsync(SportMapped);
+            // Add the sport using the service and return the result
+            Sport addedSport = await _unitOfService.SportService.AddSportAsync(sportMapped);
             return addedSport;
         }
     }
