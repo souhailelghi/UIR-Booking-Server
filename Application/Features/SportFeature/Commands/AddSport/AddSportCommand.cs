@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Features.SportFeature.Commands.AddSport
 {
@@ -12,9 +13,7 @@ namespace Application.Features.SportFeature.Commands.AddSport
         public string Conditions { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Image { get; set; }
-   
-        public DateTime DateCreation { get; set; }
-        public DateTime DateModification { get; set; }
+        public IFormFile ImageUpload { get; set; } // Upload image
+
     }
 }
