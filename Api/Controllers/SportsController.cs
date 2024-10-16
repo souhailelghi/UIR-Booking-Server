@@ -1,17 +1,12 @@
-﻿using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
-using Application.Features.SportCategoryFeature.Commands.DeleteSportCategory;
-using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
-using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueries;
-using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
-using Application.Features.SportFeature.Commands.AddSport;
+﻿using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.SportFeature.Commands.DeleteSport;
 using Application.Features.SportFeature.Commands.UpdateSport;
+using Application.Features.SportFeature.Queries.GetAllSportByCategorieIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers
@@ -27,30 +22,24 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("list")]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> GetSportsList()
-        {
-            try
-            {
-                List<Sport> SportsList = await _mediator.Send(new GetAllSportQuerie());
-                return Ok(SportsList);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
-
         [HttpPost("add")]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> AddSport([FromBody] AddSportCommand addSportCommand)
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> AddSport([FromForm] AddSportCommand addSportCommand)
         {
             try
             {
                 if (addSportCommand == null)
                 {
                     return BadRequest("Sport cannot be null.");
+                } 
+                // Log to check if the image is being received
+                if (addSportCommand.ImageUpload != null)
+                {
+                    Console.WriteLine($"Received Image: {addSportCommand.ImageUpload.FileName}");
+                }
+                else
+                {
+                    Console.WriteLine("No image uploaded.");
                 }
 
                 Sport addedSport = await _mediator.Send(addSportCommand);
@@ -63,6 +52,21 @@ namespace Api.Controllers
             }
         }
 
+
+        [HttpGet("list")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetSportsList()
+        {
+            try
+            {
+                List<Sport> SportsList = await _mediator.Send(new GetAllSportQuerie());
+                return Ok(SportsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
 
 
@@ -111,5 +115,22 @@ namespace Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+
+
+        [HttpGet("category/{categorieId}")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetSportsByCategory(Guid categorieId)
+        {
+            try
+            {
+                List<Sport> sportsList = await _mediator.Send(new GetAllSportByCategorieIdQuery(categorieId));
+                return Ok(sportsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching the sports. Details: {ex.Message}");
+            }
+        }
+
     }
 }

@@ -24,7 +24,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportCategorysList()
         {
             try
@@ -39,7 +39,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<IActionResult> AddSportCategory([FromBody] AddSportCategoryCommand addSportCategoryCommand)
         {
             try

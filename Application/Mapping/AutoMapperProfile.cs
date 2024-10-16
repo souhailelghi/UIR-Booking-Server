@@ -8,6 +8,7 @@ using Application.Features.StudentFeature.Commands.AddStudent;
 using AutoMapper;
 using Domain.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Mapping
 {
@@ -24,8 +25,9 @@ namespace Application.Mapping
 
 
             //sport
-            CreateMap<AddSportCommand, Sport>().ReverseMap();
             CreateMap<UpdateSportCommand, Sport>();
+            CreateMap<AddSportCommand, Sport>()
+     .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertImageToByteArray(src.ImageUpload)));
 
             //Student
             CreateMap<AddStudentCommand, Student>().ReverseMap();
@@ -47,6 +49,22 @@ namespace Application.Mapping
 
 
         }
-        
+
+
+        // Helper method to convert IFormFile to byte[]
+        private static byte[] ConvertImageToByteArray(IFormFile image)
+        {
+            if (image == null)
+            {
+                return null;
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                image.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
+
     }
-}
+    }

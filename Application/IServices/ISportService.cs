@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Dtos;
+using Domain.Entities;
 
 namespace Application.IServices
 {
@@ -9,5 +10,6 @@ namespace Application.IServices
         Task<Sport> AddSportAsync(Sport sport);
         Task UpdateSportAsync(Sport sport);
         Task DeleteSportAsync(Guid id);
+        Task<List<Sport>> GetAllSportByCategorieIdAsync(Guid categorieId);
     }
 }
