@@ -23,7 +23,7 @@ namespace Api.Controllers
             _mediator = mediator;
         }
         [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
         {
             try

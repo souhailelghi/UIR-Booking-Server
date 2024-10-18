@@ -13,7 +13,7 @@ builder.Services.AddControllers();
 // Swagger configuration
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UIR Booking API", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "UIR 1 Booking API", Version = "v1" });
 
     // Define the JWT SecurityScheme for Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

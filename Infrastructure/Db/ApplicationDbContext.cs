@@ -26,19 +26,18 @@ namespace Infrastructure.Db
             // Configure User inheritance
             modelBuilder.Entity<User>()
                 .HasDiscriminator<string>("UserType")
-                .HasValue<Administrator>("Administrator");
-                
+                .HasValue<Administrator>("Administrator")
+                .HasValue<Student>("Student");
 
             // Configure Administrator-specific properties
             modelBuilder.Entity<Administrator>()
                 .Property(a => a.AdminName)
                 .IsRequired();
 
-            //// Configure Student-specific properties
-            //modelBuilder.Entity<Student>()
-            //    .Property(s => s.StudentName)
-            //    .IsRequired();
-
+            // Configure Student-specific properties
+            modelBuilder.Entity<Student>()
+                .Property(s => s.UserId)
+                .IsRequired();
 
             // Relationship between BlackList and Reservation (many-to-one)
             modelBuilder.Entity<BlackList>()
