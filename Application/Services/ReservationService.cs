@@ -19,7 +19,7 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<bool> CanTeamOrUserBookAsync(Guid studentId, List<Guid> studentIdList, Guid sportId)
+        public async Task<bool> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {
             // Fetch the sport entity
             var sport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
@@ -27,6 +27,14 @@ namespace Application.Services
             {
                 return false; // Sport not found or ReferenceSport is null
             }
+
+            // Get the student's CodeUIR
+            var student = await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
+            if (student == null)
+            {
+                return false;
+            }
+            var CodeUIRStudent = student.CodeUIR;
 
             // Get ReferenceSport from the sport entity
             var referenceCodeSport = sport.ReferenceSport.Value; // Convert nullable int? to int
@@ -37,7 +45,7 @@ namespace Application.Services
 
             // Check if the student has a recent reservation based on ReferenceSport
             var existingReservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByReferenceSportAsync(studentId, referenceCodeSport);
+                .GetReservationsByReferenceSportAsync(student.Id, referenceCodeSport);
 
             var existingReservation = existingReservations
                 .Where(r => r.DateCreation >= delayTime)
@@ -50,16 +58,16 @@ namespace Application.Services
 
             // Check if all team members exist
             var studentsExist = await _unitOfWork.StudentRepository
-                .GetStudentsByIdsAsync(studentIdList);
+                .GetStudentsByCodeUIRsAsync(codeUIRList);
 
-            if (studentsExist.Count() != studentIdList.Count)
+            if (studentsExist.Count() != codeUIRList.Count)
             {
                 return false; // Some students from the list don't exist in the database
             }
 
             // Check if any team member has a recent reservation based on ReferenceSport
             var teamReservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByReferenceSportForTeamAsync(studentIdList, referenceCodeSport);
+                .GetReservationsByReferenceSportForTeamAsync(studentsExist.Select(s => s.Id).ToList(), referenceCodeSport);
 
             var teamReservationExists = teamReservations
                 .Where(r => r.DateCreation >= delayTime)
@@ -69,19 +77,25 @@ namespace Application.Services
         }
 
 
-        public async Task<bool> BookAsync(Guid studentId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd, List<Guid> studentIdList, Guid sportId)
+        public async Task<bool> BookAsync(string codeUIR, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd, List<string> codeUIRList, Guid sportId)
         {
             // Check if the student or team can book
-            if (!await CanTeamOrUserBookAsync(studentId, studentIdList, sportId))
+            if (!await CanTeamOrUserBookAsync(codeUIR, codeUIRList, sportId))
             {
                 return false;
+            }
+            // Fetch the student's entity using CodeUIR
+            var student = await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
+            if (student == null)
+            {
+                return false; // Student not found
             }
 
             // Create the reservation
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(),
-                StudentId = studentId,
+                StudentId = student.Id,
                 SportId = sportId,
                 ReservationDate = reservationDate,
                 DayBooking = dayBooking,
@@ -89,7 +103,7 @@ namespace Application.Services
                 HourEnd = hourEnd,
                 OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
                 DateCreation = DateTime.UtcNow,
-                StudentIdList = studentIdList ?? new List<Guid>()
+                CodeUIRList = codeUIRList ?? new List<string>()
             };
 
             await _unitOfWork.ReservationRepository.CreateAsync(reservation);

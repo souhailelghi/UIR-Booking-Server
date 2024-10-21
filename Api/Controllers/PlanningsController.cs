@@ -1,6 +1,7 @@
 ﻿using Application.Features.PlanningFeature.Commands.AddPlanning;
 using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
+using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesByReferenceSportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
 using Domain.Dtos;
@@ -22,6 +23,29 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
+
+        [HttpGet("get-timeRanges-by-referenceSport-and-day/{referenceSport}/{day}")]
+        // [Authorize(Roles = "Admin,User")] // Add authorization if needed
+        public async Task<IActionResult> GetAvailableTimeRangesByReferenceSportAndDay(int referenceSport, DayOfWeekEnum day)
+        {
+            try
+            {
+                var availableTimeRanges = await _mediator.Send(new GetAvailableTimeRangesByReferenceSportAndDayQuery(referenceSport, day));
+
+                if (availableTimeRanges == null || !availableTimeRanges.Any())
+                {
+                    return NotFound("No time ranges found for the specified reference sport and day.");
+                }
+
+                return Ok(availableTimeRanges);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
         [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
         //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)

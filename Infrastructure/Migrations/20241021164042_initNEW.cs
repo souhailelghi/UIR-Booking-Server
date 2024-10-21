@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initDbCon : Migration
+    public partial class initNEW : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -121,7 +121,8 @@ namespace Infrastructure.Migrations
                     HourStart = table.Column<TimeSpan>(type: "time", nullable: false),
                     HourEnd = table.Column<TimeSpan>(type: "time", nullable: false),
                     OnlyDate = table.Column<DateOnly>(type: "date", nullable: false),
-                    StudentIdList = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StudentIdList = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CodeUIRList = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DateModification = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
