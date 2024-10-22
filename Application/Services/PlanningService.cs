@@ -206,12 +206,42 @@ namespace Application.Services
             return await _unitOfWork.PlanningRepository.GetAvailableTimeRangesAsync();
         }
 
+        public async Task UpdatePlanningAsync(Planning planning)
+        {
+            if (planning == null)
+            {
+                throw new ArgumentNullException(nameof(Planning));
+            }
+
+            Planning existingplanning = await _unitOfWork.PlanningRepository.GetAsNoTracking(
+                d => d.Id == planning.Id);
+            if (existingplanning == null)
+            {
+                throw new ArgumentException("planning not found.");
+            }
+
+            existingplanning.Day = planning.Day;
+            existingplanning.TimeRanges = planning.TimeRanges;
 
 
+            try
+            {
+                await _unitOfWork.PlanningRepository.UpdateAsync(existingplanning);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
 
+                throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
 
-       
+        public async Task<Planning> GetPlanningByIdAsync(Guid id)
+        {
 
+            Planning planning = await _unitOfWork.PlanningRepository.GetAsNoTracking(u => u.Id == id);
 
+            return planning;
+        }
     }
 }

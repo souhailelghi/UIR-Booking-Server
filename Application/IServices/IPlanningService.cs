@@ -13,10 +13,7 @@ namespace Application.IServices
         Task<Planning> AddPlanningAsync(Planning planning);
         Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
 
-
-
-
-
-
+        Task UpdatePlanningAsync(Planning planning);
+        Task<Planning> GetPlanningByIdAsync(Guid id);
     }
 }

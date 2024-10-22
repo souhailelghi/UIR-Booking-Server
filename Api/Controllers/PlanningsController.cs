@@ -1,8 +1,10 @@
 ﻿using Application.Features.PlanningFeature.Commands.AddPlanning;
+using Application.Features.PlanningFeature.Commands.UpdatePlanning;
 using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
+using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Domain.Dtos;
 using Domain.Entities;
 using Domain.Enums;
@@ -104,11 +106,25 @@ namespace Api.Controllers
                 return StatusCode(500, ex.Message);
             }
         }
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdatePlanning([FromBody] UpdatePlanningCommand command)
+        {
+            try
+            {
+                await _mediator.Send(command);
+                return Ok("Planning updated successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the planning. Details: {ex.Message}");
+            }
+        }
 
-       
 
 
-       
+
+
+
 
     }
 }

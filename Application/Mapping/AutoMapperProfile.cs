@@ -1,4 +1,5 @@
 ﻿using Application.Features.PlanningFeature.Commands.AddPlanning;
+using Application.Features.PlanningFeature.Commands.UpdatePlanning;
 using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
@@ -41,12 +42,13 @@ namespace Application.Mapping
                 .ForMember(dest => dest.Id, opt => opt.Ignore()) // Ignore Id in mapping
                 .ForMember(dest => dest.TimeRanges, opt => opt.MapFrom(src => src.TimeRanges));
 
-            CreateMap<TimeRangeDto, TimeRange>()
+            CreateMap<Features.PlanningFeature.Commands.UpdatePlanning.TimeRangeDto, TimeRange>()
                 .ForMember(dest => dest.Id, opt => opt.Ignore()); // Ignore Id in mapping
 
 
-            CreateMap<TimeRange, TimeRangeDto>();
 
+            //CreateMap<TimeRange, TimeRange>().ReverseMap();  // Map between TimeRangeDto and TimeRange
+            CreateMap<UpdatePlanningCommand, Planning>().ForMember(p => p.TimeRanges, opt => opt.Ignore());
 
         }
 
