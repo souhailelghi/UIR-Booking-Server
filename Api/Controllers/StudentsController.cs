@@ -22,7 +22,7 @@ namespace Api.Controllers
 
 
         [HttpPost("add")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddStudent([FromBody] AddStudentCommand addStudentCommand)
         {
             try
@@ -43,7 +43,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("{userId}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetStudentByUserId(Guid userId)
         {
             try
