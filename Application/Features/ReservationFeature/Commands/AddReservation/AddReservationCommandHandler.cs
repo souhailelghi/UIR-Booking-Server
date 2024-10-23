@@ -26,7 +26,6 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(), // Generate a new ID for the reservation
-                StudentId = request.StudentId,
                 SportId = request.SportId,
                 ReservationDate = request.ReservationDate,
                 DayBooking = request.DayBooking,
@@ -34,17 +33,17 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
                 HourEnd = request.HourEnd,
                 DateCreation = DateTime.UtcNow,
                 DateModification = DateTime.UtcNow,
-                StudentIdList = request.StudentIdList // Assuming you have a way to handle this in the Reservation entity
+                CodeUIRList = request.CodeUIRList ?? new List<string>()// Assuming you have a way to handle this in the Reservation entity
             };
 
             // Call the booking service to add the reservation
             bool isBooked = await _reservationService.BookAsync(
-                request.StudentId,
+                request.CodeUIR,
                 request.ReservationDate,
                 request.DayBooking,
                 request.HourStart,
                 request.HourEnd,
-                request.StudentIdList,
+                request.CodeUIRList,
                 request.SportId);
 
             if (!isBooked)

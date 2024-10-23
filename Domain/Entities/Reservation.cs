@@ -28,7 +28,10 @@ namespace Domain.Entities
 
         public DateOnly OnlyDate { get; set; } = DateOnly.FromDateTime(DateTime.UtcNow);
 
-        public List<Guid> StudentIdList { get; set; }
+        public List<Guid>? StudentIdList { get; set; }
+
+        // CodeUIRList property to store the list of CodeUIR strings
+        public List<string> CodeUIRList { get; set; } // New property for CodeUIR
 
         public DateTime DateCreation { get; set; }
         public DateTime? DateModification { get; set; }

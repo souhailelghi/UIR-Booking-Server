@@ -12,7 +12,7 @@ namespace Application.IServices
 
 
          Task DeleteAllReservationsAsync();
-        Task<bool> BookAsync(Guid studentId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd,  List<Guid> studentIdList, Guid sportId);
+        Task<bool> BookAsync(string codeUIR, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart, TimeSpan hourEnd, List<string> codeUIRList, Guid sportId);
 
     }
 }

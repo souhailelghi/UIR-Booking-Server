@@ -23,9 +23,9 @@ namespace Application.Features.PlanningFeature.Commands.UpdatePlanning
 
         }
     }
-    public class TimeRangeDto  // Simple DTO for TimeRange
-    {
-        public TimeSpan Start { get; set; }
-        public TimeSpan End { get; set; }
-    }
+    //public class TimeRangeDto  // Simple DTO for TimeRange
+    //{
+    //    public TimeSpan Start { get; set; }
+    //    public TimeSpan End { get; set; }
+    //}
 }

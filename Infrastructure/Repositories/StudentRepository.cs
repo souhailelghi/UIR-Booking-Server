@@ -20,6 +20,12 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+        public async Task<Student> GetAsync(Expression<Func<Student, bool>> filter)
+        {
+            return await dbSet.FirstOrDefaultAsync(filter);
+        }
+
+
         // Implementing the GetStudentsByIdsAsync method
         public async Task<List<Student>> GetStudentsByIdsAsync(List<Guid> studentIds)
         {
@@ -36,6 +42,13 @@ namespace Infrastructure.Repositories
         public async Task<Student> FindAsync(Expression<Func<Student, bool>> predicate)
         {
             return await _context.Students.FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<List<Student>> GetStudentsByCodeUIRsAsync(List<string> codeUIRList)
+        {
+            return await _context.Students
+               .Where(student => codeUIRList.Contains(student.CodeUIR)) // Assuming Id is the primary key in Student
+               .ToListAsync();
         }
     }
 }
