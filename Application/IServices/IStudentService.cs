@@ -12,5 +12,7 @@ namespace Application.IServices
         Task<Student> AddStudentAsync(Student student);
 
         Task<Student> GetStudentByUserIdAsync(Guid userId);
+
+        Task<bool> CheckCodeUirExistsAsync(string codeUir);
     }
 }

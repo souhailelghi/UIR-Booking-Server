@@ -14,10 +14,7 @@ namespace Application.IServices
         Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day);
         Task<List<TimeRange>> GetTimeRangesByReferenceSportAndDayAsync(int referenceSport, DayOfWeekEnum day);
 
-
-
-
-
-
+        Task UpdatePlanningAsync(Planning planning);
+        Task<Planning> GetPlanningByIdAsync(Guid id);
     }
 }

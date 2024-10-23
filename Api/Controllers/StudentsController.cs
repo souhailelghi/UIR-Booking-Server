@@ -1,5 +1,6 @@
 ﻿using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.StudentFeature.Commands.AddStudent;
+using Application.Features.StudentFeature.Queries.GetCheckCodeUirQuerie;
 using Application.Features.StudentFeature.Queries.GetStudntByUserIdQuerie;
 using Domain.Entities;
 using MediatR;
@@ -18,6 +19,20 @@ namespace Api.Controllers
         public StudentsController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+        [HttpGet("checkCodeUIR/{codeUir}")]
+        public async Task<IActionResult> CheckCodeUIR(string codeUir)
+        {
+            try
+            {
+                var exists = await _mediator.Send(new GetCheckCodeUirQuery(codeUir));
+                return Ok(exists);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred. Details: {ex.Message}");
+            }
         }
 
 

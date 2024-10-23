@@ -19,10 +19,22 @@ namespace Application.Services
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+
+        }
+
+        public async Task<bool> CheckCodeUirExistsAsync(string codeUir)
+        {
+            // Check if any student exists with the given CodeUIR
+            var student = await _unitOfWork.StudentRepository
+                .FindAsync(p => p.CodeUIR == codeUir);
+
+            // Return true if a matching student is found, otherwise false
+            return student != null;
         }
 
 
-        
+
+
 
         public async Task<Student> AddStudentAsync(Student student)
         {
