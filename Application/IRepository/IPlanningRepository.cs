@@ -12,7 +12,7 @@ namespace Application.IRepository
 {
     public interface IPlanningRepository: IGenericRepository<Planning>
     {
-       
+        Task<List<Planning>> GetAllAsync(Expression<Func<Planning, bool>> predicate = null);
 
         Task<List<TimeRange>> GetAvailableTimeRangesAsync();
 

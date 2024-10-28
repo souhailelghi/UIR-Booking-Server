@@ -23,6 +23,19 @@ namespace Application.Services
         }
 
 
+
+      
+        public async Task<List<Planning>> GetAllPlanningsBySportId(Guid sportId)
+        {
+            // Fetch all plannings for the specified SportId, now including TimeRanges
+            var plannings = await _unitOfWork.PlanningRepository.GetAllAsync(p => p.SportId == sportId);
+
+            return plannings ?? new List<Planning>();
+        }
+
+
+
+
         public async Task<List<TimeRange>> GetTimeRangesByReferenceSportAndDayAsync(int referenceSport, DayOfWeekEnum day)
         {
             // Fetch the sport by referenceSport to ensure it exists

@@ -18,6 +18,16 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
+      
+        public async Task<List<Planning>> GetAllAsync(Expression<Func<Planning, bool>> predicate = null)
+        {
+            var query = _context.Plannings.Include(p => p.TimeRanges);
+
+            return predicate == null
+                ? await query.ToListAsync()
+                : await query.Where(predicate).ToListAsync();
+        }
+
         public async Task<List<TimeRange>> GetTimeRangesBySportAsync(Guid sportId)
         {
             // Get all TimeRanges from Planning filtered by SportId
@@ -43,6 +53,7 @@ namespace Infrastructure.Repositories
         }
 
 
+    
         // Get plannings ------------
         public async Task<List<Planning>> GetPlanningsBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
         {
@@ -108,6 +119,11 @@ namespace Infrastructure.Repositories
                 .ToList();
 
             return unreservedTimeRanges;
+        }
+
+        public async Task<IEnumerable<Planning>> GetAllAsync()
+        {
+            return await _context.Plannings.ToListAsync();
         }
 
 

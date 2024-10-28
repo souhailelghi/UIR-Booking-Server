@@ -1,6 +1,8 @@
 ﻿using Application.Features.PlanningFeature.Commands.AddPlanning;
 using Application.Features.PlanningFeature.Commands.UpdatePlanning;
 using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
+using Application.Features.PlanningFeature.Queries.GetAllPlanningsBySportIdQuerie;
+//using Application.Features.PlanningFeature.Queries.GetAllPlanningsGroupedBySportQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesByReferenceSportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
@@ -25,6 +27,22 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
+
+        [HttpGet("get-by-sport/{sportId}")]
+        public async Task<IActionResult> GetAllPlanningsBySportId(Guid sportId)
+        {
+            try
+            {
+                var plannings = await _mediator.Send(new GetAllPlanningsBySportIdQuery(sportId));
+                return Ok(plannings);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
 
         [HttpGet("get-timeRanges-by-referenceSport-and-day/{referenceSport}/{day}")]
         // [Authorize(Roles = "Admin,User")] // Add authorization if needed
