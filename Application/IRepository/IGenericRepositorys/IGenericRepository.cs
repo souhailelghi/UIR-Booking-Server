@@ -4,6 +4,8 @@ namespace Application.IRepository.IGenericRepositorys
 {
     public interface IGenericRepository<T> where T : class
     {
+
+        IQueryable<T> GetAsNoTrackings(Expression<Func<T, bool>> filter);
         Task<List<T>> GetAllAsNoTracking(Expression<Func<T, bool>>? filter = null);
         Task<T> GetAsNoTracking(Expression<Func<T, bool>> filter);
         Task<List<T>> GetAllAsTracking(Expression<Func<T, bool>>? filter = null);

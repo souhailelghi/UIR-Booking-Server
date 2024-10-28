@@ -7,6 +7,7 @@ using Application.Features.PlanningFeature.Queries.GetAvailablePlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesByReferenceSportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportAndDayQuerie;
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
+using Application.Features.PlanningFeature.Queries.GetPlanningByIdQuerie;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Domain.Dtos;
 using Domain.Entities;
@@ -163,6 +164,19 @@ namespace Api.Controllers
         }
 
 
+        [HttpGet("get-by-id/{planningId}")]
+        public async Task<IActionResult> GetPlanningById(Guid planningId)
+        {
+            try
+            {
+                var planning = await _mediator.Send(new GetPlanningByIdQuery(planningId));
+                return planning != null ? Ok(planning) : NotFound("Planning not found.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
 
 

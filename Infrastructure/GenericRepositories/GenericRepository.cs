@@ -88,5 +88,15 @@ namespace Infrastructure.GenericRepositories
         {
             dbSet.Remove(entity);
         }
+
+        public IQueryable<T> GetAsNoTrackings(Expression<Func<T, bool>> filter)
+        {
+            IQueryable<T> query = dbSet.AsNoTracking();
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
+            return query; // Return IQueryable instead of Task
+        }
     }
 }

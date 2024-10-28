@@ -7,6 +7,7 @@ using Domain.Enums;
 using Microsoft.EntityFrameworkCore;
 
 
+
 namespace Application.Services
 {
     public class PlanningService : IPlanningService
@@ -200,12 +201,38 @@ namespace Application.Services
             }
         }
 
+        //public async Task<Planning> GetPlanningByIdAsync(Guid id)
+        //{
+
+        //    Planning planning = await _unitOfWork.PlanningRepository.GetAsNoTracking(u => u.Id == id);
+
+        //    return planning;
+        //}
+
         public async Task<Planning> GetPlanningByIdAsync(Guid id)
         {
+            // Fetch the planning entry by ID, including related TimeRanges
+            var query = _unitOfWork.PlanningRepository
+                .GetAsNoTrackings(p => p.Id == id); // Keep it IQueryable
 
-            Planning planning = await _unitOfWork.PlanningRepository.GetAsNoTracking(u => u.Id == id);
+            // Now include the related TimeRanges
+            var planning = await query
+                .Include(p => p.TimeRanges) // Include TimeRanges
+                .FirstOrDefaultAsync(); // Now await the task
+
+            if (planning == null)
+            {
+                throw new KeyNotFoundException("Planning not found.");
+            }
 
             return planning;
         }
+
+
+
+
+
+
+
     }
 }
