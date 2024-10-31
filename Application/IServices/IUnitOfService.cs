@@ -9,6 +9,7 @@
 
         IReservationService ReservationService { get; }
         IPlanningService PlanningService { get; }
+        ITimeRangeService TimeRangeService { get; }
 
 
 

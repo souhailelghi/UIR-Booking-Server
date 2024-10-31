@@ -20,6 +20,8 @@ namespace Application
             services.AddTransient<IStudentService, StudentService>();
             services.AddTransient<IReservationService, ReservationService>();
             services.AddTransient<IPlanningService, PlanningService>();
+            services.AddTransient<ITimeRangeService, TimeRangeService>();
+
 
 
          

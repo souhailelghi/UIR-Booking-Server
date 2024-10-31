@@ -16,8 +16,9 @@ namespace Application.Services
         public IReservationService ReservationService {  get; set; }
 
         public IPlanningService PlanningService { get; }
+        public ITimeRangeService TimeRangeService { get;  }
 
-        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IReservationService reservationService , IPlanningService planningService)
+        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IReservationService reservationService , IPlanningService planningService, ITimeRangeService timeRangeService)
         {
             Mapper = mapper;
             SportCategoryService = sportCategoryService;
@@ -25,6 +26,7 @@ namespace Application.Services
             StudentService = studentService;
             ReservationService = reservationService;
             PlanningService = planningService;
+            TimeRangeService = timeRangeService;
         }
 
        

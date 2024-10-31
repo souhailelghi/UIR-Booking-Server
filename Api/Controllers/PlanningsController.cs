@@ -1,4 +1,5 @@
 ﻿using Application.Features.PlanningFeature.Commands.AddPlanning;
+using Application.Features.PlanningFeature.Commands.DeletePlanning;
 using Application.Features.PlanningFeature.Commands.UpdatePlanning;
 using Application.Features.PlanningFeature.Queries.GetAllPlanningQuerie;
 using Application.Features.PlanningFeature.Queries.GetAllPlanningsBySportIdQuerie;
@@ -9,6 +10,7 @@ using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySport
 using Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesBySportQuerie;
 using Application.Features.PlanningFeature.Queries.GetPlanningByIdQuerie;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
+using Application.Features.SportFeature.Commands.DeleteSport;
 using Domain.Dtos;
 using Domain.Entities;
 using Domain.Enums;
@@ -179,7 +181,19 @@ namespace Api.Controllers
         }
 
 
-
+        [HttpDelete("delete/{id}")]
+        public async Task<IActionResult> DeletePlanning(Guid id)
+        {
+            try
+            {
+                await _mediator.Send(new DeletePlanningCommand(id));
+                return Ok("Planning deleted successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while deleting the Planning. Details: {ex.Message}");
+            }
+        }
 
 
     }

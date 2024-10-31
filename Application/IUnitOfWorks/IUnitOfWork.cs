@@ -13,6 +13,8 @@ namespace Application.IUnitOfWorks
         IReservationRepository ReservationRepository { get; }
 
         IPlanningRepository PlanningRepository { get; }
+        ITimeRangeRepository TimeRangeRepository { get; }
+
 
         void Commit();
         Task CommitAsync();

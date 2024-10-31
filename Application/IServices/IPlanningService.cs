@@ -17,5 +17,7 @@ namespace Application.IServices
         Task UpdatePlanningAsync(Planning planning);
         Task<Planning> GetPlanningByIdAsync(Guid id);
         Task<List<Planning>> GetAllPlanningsBySportId(Guid sportId);
+
+        Task DeletePlanningAsync(Guid id);
     }
 }

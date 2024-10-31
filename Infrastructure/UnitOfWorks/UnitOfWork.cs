@@ -26,8 +26,9 @@ namespace Infrastructure.UnitOfWorks
         public IReservationRepository ReservationRepository { get; }
 
         public IPlanningRepository PlanningRepository { get; }
+        public ITimeRangeRepository TimeRangeRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository , IPlanningRepository planningRepository)
+        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository , IPlanningRepository planningRepository , ITimeRangeRepository timeRangeRepository)
         {
              _dbContext = dbContext;
             SportCategoryRepository = sportCategoryRepository;
@@ -35,6 +36,7 @@ namespace Infrastructure.UnitOfWorks
             StudentRepository = studentRepository;
             ReservationRepository = reservationRepository;
             PlanningRepository = planningRepository;
+            TimeRangeRepository = timeRangeRepository;
         }
 
 

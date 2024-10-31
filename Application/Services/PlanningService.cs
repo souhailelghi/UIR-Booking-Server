@@ -23,9 +23,29 @@ namespace Application.Services
         
         }
 
+        public async Task DeletePlanningAsync(Guid id)
+        {
+            Planning planning = await _unitOfWork.PlanningRepository.GetAsNoTracking(u => u.Id == id);
+            if (planning == null)
+            {
+                throw new ArgumentException("Planning not found.");
+            }
+
+            try
+            {
+
+                await _unitOfWork.PlanningRepository.RemoveAsync(planning);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
 
 
-      
+
+
         public async Task<List<Planning>> GetAllPlanningsBySportId(Guid sportId)
         {
             // Fetch all plannings for the specified SportId, now including TimeRanges
