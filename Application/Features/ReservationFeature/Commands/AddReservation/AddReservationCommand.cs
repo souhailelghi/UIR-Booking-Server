@@ -5,7 +5,7 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
 {
     public class AddReservationCommand : IRequest<string>
     {
-        //public Guid StudentId { get; set; }
+       
         public string CodeUIR { get; set; }
         public Guid SportId { get; set; }
         public DateTime ReservationDate { get; set; }

@@ -22,8 +22,10 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
+      
+
+
         [HttpPost("AddReservations")]
-        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)
@@ -31,13 +33,13 @@ namespace Api.Controllers
                 return BadRequest("Reservation command cannot be null.");
             }
 
-            // Handle the command using MediatR
+            // Send the command to the handler
             var result = await _mediator.Send(addReservationCommand);
 
-            // Check the result (You can customize this based on your needs)
-            if (string.IsNullOrEmpty(result))
+            // Return specific error message if booking fails
+            if (result != "Reservation successfully created.")
             {
-                return BadRequest("Failed to add reservation.");
+                return BadRequest(result);
             }
 
             return CreatedAtAction(nameof(AddReservations), new { id = result }, result);
