@@ -15,6 +15,9 @@ namespace Application.Services
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
+
+        
+
         public StudentService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -69,5 +72,13 @@ namespace Application.Services
 
             return student;
         }
+
+        public async Task<Student> GetStudentByIdAsync(Guid id)
+        {
+            Student student = await _unitOfWork.StudentRepository.GetAsNoTracking(u => u.Id == id);
+
+            return student;
+        }
+    
     }
 }

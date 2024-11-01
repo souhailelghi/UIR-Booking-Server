@@ -1,6 +1,8 @@
 ﻿using Application.Features.SportFeature.Commands.AddSport;
+using Application.Features.SportFeature.Queries.GetSportById;
 using Application.Features.StudentFeature.Commands.AddStudent;
 using Application.Features.StudentFeature.Queries.GetCheckCodeUirQuerie;
+using Application.Features.StudentFeature.Queries.GetStudentByIdQuerie;
 using Application.Features.StudentFeature.Queries.GetStudntByUserIdQuerie;
 using Domain.Entities;
 using MediatR;
@@ -76,6 +78,20 @@ namespace Api.Controllers
             }
         }
 
+
+        [HttpGet("student/{id}")]
+        public async Task<IActionResult> GetStudentById(Guid id)
+        {
+            try
+            {
+                Student OneStudent = await _mediator.Send(new GetStudentByIdQuery(id));
+                return Ok(OneStudent);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
 
 
     }

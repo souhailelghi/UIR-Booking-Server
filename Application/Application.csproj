@@ -13,7 +13,6 @@
     <Folder Include="Features\StudentFeature\Commands\DeleteStudent\" />
     <Folder Include="Features\StudentFeature\Commands\UpdateStudent\" />
     <Folder Include="Features\StudentFeature\Queries\GetAllStudentQueries\" />
-    <Folder Include="Features\StudentFeature\Queries\GetStudentByIdQuerie\" />
   </ItemGroup>
 
   <ItemGroup>
