@@ -8,7 +8,9 @@ namespace Application.IServices
     {
 
 
-    
+
+        Task<List<Reservation>> GetReservationsListAsync();
+        Task<Reservation> GetReservationByIdAsync(Guid id);
 
 
          Task DeleteAllReservationsAsync();

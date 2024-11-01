@@ -1,5 +1,10 @@
 ﻿using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
+using Application.Features.ReservationFeature.Queries.GetAllReservationQuerie;
+using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
+using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
+using Application.Features.SportFeature.Queries.GetSportById;
+using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +57,38 @@ namespace Api.Controllers
                 return StatusCode(500, $"An error occurred while deleting Reservations. Details: {ex.Message}");
             }
         }
+
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetReservationById(Guid id)
+        {
+            try
+            {
+                Reservation reservationById = await _mediator.Send(new GetReservationByIdQuery(id));
+                return Ok(reservationById);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+        [HttpGet("list")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetReservationsList()
+        {
+            try
+            {
+                List<Reservation> ReservationList = await _mediator.Send(new GetAllReservationQuery());
+                return Ok(ReservationList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
 
     }

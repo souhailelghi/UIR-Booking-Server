@@ -123,5 +123,20 @@ namespace Application.Services
             await _unitOfWork.ReservationRepository.RemoveAllAsync();
             await _unitOfWork.CommitAsync();
         }
+
+        public async Task<Reservation> GetReservationByIdAsync(Guid id)
+        {
+            Reservation reservation = await _unitOfWork.ReservationRepository.GetAsNoTracking(u => u.Id == id);
+
+            return reservation;
+        }
+
+        public async Task<List<Reservation>> GetReservationsListAsync()
+        {
+            List<Reservation> reservationsList = await _unitOfWork.ReservationRepository.GetAllAsNoTracking();
+            return reservationsList;
+        }
+
+
     }
 }

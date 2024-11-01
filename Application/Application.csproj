@@ -10,7 +10,6 @@
     <Folder Include="Broker\" />
     <Folder Include="Features\ReservationFeature\Commands\DeleteReservation\" />
     <Folder Include="Features\ReservationFeature\Commands\UpdateReservation\" />
-    <Folder Include="Features\ReservationFeature\Queries\" />
     <Folder Include="Features\StudentFeature\Commands\DeleteStudent\" />
     <Folder Include="Features\StudentFeature\Commands\UpdateStudent\" />
     <Folder Include="Features\StudentFeature\Queries\GetAllStudentQueries\" />
