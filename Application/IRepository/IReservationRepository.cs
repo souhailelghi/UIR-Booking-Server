@@ -21,6 +21,7 @@ namespace Application.IRepository
 
         Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport);
         Task<List<Reservation>> GetReservationsByReferenceSportAsync(Guid studentId, int referenceSport);
+        Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId);
 
 
 

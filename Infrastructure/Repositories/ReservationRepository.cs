@@ -17,6 +17,13 @@ namespace Infrastructure.Repositories
         {
             _context = context;   
         }
+        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId)
+        {
+            return await _context.Reservations
+                .Where(r => r.StudentId == studentId)
+                .ToListAsync();
+        }
+
 
         public async Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter)
         {

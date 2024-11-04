@@ -2,6 +2,7 @@
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
 using Application.Features.ReservationFeature.Queries.GetAllReservationQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
+using Application.Features.ReservationFeature.Queries.GetReservationsByStudentIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
 using Domain.Entities;
@@ -22,7 +23,20 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
-      
+        [HttpGet("byStudent/{studentId}")]
+        public async Task<IActionResult> GetReservationsByStudentId(Guid studentId)
+        {
+            try
+            {
+                List<Reservation> reservations = await _mediator.Send(new GetReservationsByStudentIdQuery(studentId));
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
 
 
         [HttpPost("AddReservations")]

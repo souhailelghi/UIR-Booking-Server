@@ -19,7 +19,13 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        
+        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsByStudentIdAsync(studentId);
+            return reservations;
+        }
+
+
 
         public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {

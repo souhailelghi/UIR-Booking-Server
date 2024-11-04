@@ -24,5 +24,7 @@ namespace Application.IServices
             TimeSpan hourEnd,
             List<string> codeUIRList,
             Guid sportId);
+
+        Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId);
     }
 }
