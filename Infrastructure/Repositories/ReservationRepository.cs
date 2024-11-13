@@ -70,14 +70,30 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        //public async Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport)
+        //{
+        //    var res = await _context.Reservations
+        //        .Include(r => r.Sport) // Ensure Sport is loaded
+        //        .Where(r => teamMemberIds.Contains(r.StudentId) && r.Sport.ReferenceSport == referenceSport)
+        //        .ToListAsync();
+        //    Console.WriteLine($"resssssssssssssssssssssssssssss : respository {res}");
+        //    return res;
+        //}
         public async Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport)
         {
-            return await _context.Reservations
-                .Include(r => r.Sport) // Ensure Sport is loaded
+            Console.WriteLine($"Team member IDddddddddddddddddddddddddddds: {string.Join(", ", teamMemberIds)}");
+            Console.WriteLine($"Reference sssssssssssssssssssssssssssssssport: {referenceSport}");
+
+            var reservations = await _context.Reservations
+                .Include(r => r.Sport)
                 .Where(r => teamMemberIds.Contains(r.StudentId) && r.Sport.ReferenceSport == referenceSport)
                 .ToListAsync();
-        }
 
+            Console.WriteLine($"Rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrreservations found after filtering: {reservations.Count}");
+
+            return reservations;
+        }
+        
 
 
 

@@ -70,23 +70,34 @@ namespace Application.Services
                 .GetStudentsByCodeUIRsAsync(codeUIRList);
             // Find any missing students
             var missingStudents = codeUIRList.Except(studentsExist.Select(s => s.CodeUIR)).ToList();
+            Console.WriteLine($"Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeam members found: {string.Join(", ", studentsExist.Select(s => s.CodeUIR))}");
 
             if (missingStudents.Any())
             {
                 return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}"; // Specific feedback for missing students
             }
 
-            
 
+            Console.WriteLine($"Delay time calculated as: {delayTime}");
             // Check if any team member has a recent reservation based on ReferenceSport
             var teamReservations = await _unitOfWork.ReservationRepository
                 .GetReservationsByReferenceSportForTeamAsync(studentsExist.Select(s => s.Id).ToList(), referenceCodeSport);
+
+            Console.WriteLine($"Total team reservations found: {teamReservations.Count}");
+            Console.WriteLine("ttttttttttttttttttttttttttt");
+
+            foreach (var reservation in teamReservations)
+            {
+                Console.WriteLine($"Reservationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn DateCreation: {reservation.DateCreation}, Delay Time: {delayTime}");
+            }
 
             // Get the CodeUIR of team members with reservations within the delay time
             var teamMembersWithReservations = teamReservations
                 .Where(r => r.DateCreation >= delayTime)
                 .Select(r => studentsExist.First(s => s.Id == r.StudentId).CodeUIR)
                 .ToList();
+
+            Console.WriteLine($"Teammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm members with reservations within the delay time: {string.Join(", ", teamMembersWithReservations)}");
 
             if (teamMembersWithReservations.Any())
             {

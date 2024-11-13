@@ -59,8 +59,8 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet("{userId}")]
-        [Authorize(Roles = "Admin,User")]
+        [HttpGet("GetStudentByUserId/{userId}")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetStudentByUserId(Guid userId)
         {
             try
