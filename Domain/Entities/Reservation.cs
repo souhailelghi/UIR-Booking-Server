@@ -20,6 +20,10 @@ namespace Domain.Entities
         public Guid SportId { get; set; } 
         public Sport Sport { get; set; }
 
+
+        public Guid SportCategoryId { get; set; }
+
+
         public DateTime ReservationDate { get; set; }
 
         public DayOfWeekEnum DayBooking { get; set; }

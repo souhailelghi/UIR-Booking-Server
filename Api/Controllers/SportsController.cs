@@ -23,7 +23,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddSport([FromForm] AddSportCommand addSportCommand)
         {
             try
@@ -72,6 +72,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteSport(Guid id)
         {
             try
@@ -87,6 +88,7 @@ namespace Api.Controllers
 
 
         [HttpPut("update")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> UpdateSport([FromBody] UpdateSportCommand command)
         {
             try
@@ -103,6 +105,7 @@ namespace Api.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportById(Guid id)
         {
             try
@@ -118,7 +121,7 @@ namespace Api.Controllers
 
 
         [HttpGet("category/{categorieId}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportsByCategory(Guid categorieId)
         {
             try

@@ -32,6 +32,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("get-by-sport/{sportId}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAllPlanningsBySportId(Guid sportId)
         {
             try
@@ -48,7 +49,7 @@ namespace Api.Controllers
 
 
         [HttpGet("get-timeRanges-by-referenceSport-and-day/{referenceSport}/{day}")]
-        // [Authorize(Roles = "Admin,User")] // Add authorization if needed
+        [Authorize(Roles = "Admin,User")] // Add authorization if needed
         public async Task<IActionResult> GetAvailableTimeRangesByReferenceSportAndDay(int referenceSport, DayOfWeekEnum day)
         {
             try
@@ -70,7 +71,7 @@ namespace Api.Controllers
 
 
         [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}/{day}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId, DayOfWeekEnum day)
         {
             try
@@ -92,6 +93,7 @@ namespace Api.Controllers
 
 
         [HttpGet("list")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetPlanningsList()
         {
             try
@@ -107,6 +109,7 @@ namespace Api.Controllers
 
 
         [HttpGet("get-AllTimeRanges")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAvailableTimeRanges()
         {
             try
@@ -121,6 +124,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("get-time-ranges-by-sport-not-reserved/{sportId}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetAvailableTimeRangesBySport(Guid sportId)
         {
             try
@@ -135,6 +139,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add-planning")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddPlanning([FromBody] PlanningDto planningDto)
         {
             try
@@ -152,6 +157,7 @@ namespace Api.Controllers
             }
         }
         [HttpPut("update")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> UpdatePlanning([FromBody] UpdatePlanningCommand command)
         {
             try
@@ -167,6 +173,7 @@ namespace Api.Controllers
 
 
         [HttpGet("get-by-id/{planningId}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetPlanningById(Guid planningId)
         {
             try
@@ -182,6 +189,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeletePlanning(Guid id)
         {
             try

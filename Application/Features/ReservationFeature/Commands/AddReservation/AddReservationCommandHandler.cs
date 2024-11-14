@@ -33,12 +33,14 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             // Attempt to create the reservation
             string bookingMessage = await _reservationService.BookAsync(
                 request.CodeUIR,
+                request.SportCategoryId,
                 request.ReservationDate,
                 request.DayBooking,
                 request.HourStart,
                 request.HourEnd,
                 request.CodeUIRList,
                 request.SportId
+                
             );
 
             return bookingMessage; // Return the booking message

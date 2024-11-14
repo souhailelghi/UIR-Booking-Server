@@ -8,6 +8,7 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
        
         public string CodeUIR { get; set; }
         public Guid SportId { get; set; }
+        public Guid SportCategoryId { get; set; }
         public DateTime ReservationDate { get; set; }
 
         public DayOfWeekEnum DayBooking { get; set; }

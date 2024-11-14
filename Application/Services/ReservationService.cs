@@ -14,9 +14,22 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
+
         public ReservationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
+        }
+
+
+        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId)
+        {
+            return await _unitOfWork.ReservationRepository.GetReservationsByCategoryAndStudentIdAsync(sportCategoryId, studentId);
+        }
+
+        public async Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBysportCategoryIdAsync(sportCategoryId);
+            return reservations;
         }
 
         public async Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId)
@@ -109,8 +122,7 @@ namespace Application.Services
 
       
 
-        public async Task<string> BookAsync(
-           string codeUIR, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
+        public async Task<string> BookAsync( string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
            TimeSpan hourEnd, List<string> codeUIRList, Guid sportId)
         {
             // Check if the student or team can book
@@ -133,6 +145,7 @@ namespace Application.Services
                 Id = Guid.NewGuid(),
                 StudentId = student.Id,
                 SportId = sportId,
+                SportCategoryId = sportCategoryId,
                 ReservationDate = reservationDate,
                 DayBooking = dayBooking,
                 HourStart = hourStart,
@@ -173,6 +186,6 @@ namespace Application.Services
             return reservationsList;
         }
 
-
+      
     }
 }

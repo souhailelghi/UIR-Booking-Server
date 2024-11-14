@@ -114,6 +114,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid>("SportCategoryId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid>("SportId")
                         .HasColumnType("uniqueidentifier");
 

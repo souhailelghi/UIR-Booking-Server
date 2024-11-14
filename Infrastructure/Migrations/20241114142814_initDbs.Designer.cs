@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241023125020_initCommit")]
-    partial class initCommit
+    [Migration("20241114142814_initDbs")]
+    partial class initDbs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,6 +116,9 @@ namespace Infrastructure.Migrations
 
                     b.Property<DateTime>("ReservationDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<Guid>("SportCategoryId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("SportId")
                         .HasColumnType("uniqueidentifier");

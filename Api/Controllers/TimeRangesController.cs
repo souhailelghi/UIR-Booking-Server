@@ -1,6 +1,7 @@
 ﻿using Application.Features.SportFeature.Commands.DeleteSport;
 using Application.Features.TimeRangesFeature.Commands.DeleteTimeRange;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,6 +20,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteTimeRange(Guid id)
         {
             try

@@ -1,7 +1,10 @@
-﻿using Application.Features.ReservationFeature.Commands.AddReservation;
+﻿
+using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
 using Application.Features.ReservationFeature.Queries.GetAllReservationQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
+using Application.Features.ReservationFeature.Queries.GetReservationsByCategorieIdQuerie;
+using Application.Features.ReservationFeature.Queries.GetReservationsByCategoryIdAndStudentIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByStudentIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
@@ -23,7 +26,42 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet("ByCategoryAndStudentId/{sportCategoryId}/{studentId}")]
+        public async Task<IActionResult> GetReservationsByCategoryAndStudentId(Guid sportCategoryId, Guid studentId)
+        {
+            try
+            {
+                var reservations = await _mediator.Send(new GetReservationsByCategoryIdAndStudentIdQuery(sportCategoryId, studentId));
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
+        [HttpGet("BySportCategoryId/{sportCategoryId}")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetReservationsBySportCategoryId(Guid sportCategoryId)
+        {
+            try
+            {
+                List<Reservation> reservations = await _mediator.Send(new GetReservationsByCategorieIdQuery(sportCategoryId));
+                return Ok(reservations);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
+
+
         [HttpGet("byStudent/{studentId}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetReservationsByStudentId(Guid studentId)
         {
             try
@@ -40,6 +78,7 @@ namespace Api.Controllers
 
 
         [HttpPost("AddReservations")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)
@@ -60,6 +99,7 @@ namespace Api.Controllers
         }
 
         [HttpDelete("deleteAll")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteAllReservations()
         {
             try
@@ -77,6 +117,7 @@ namespace Api.Controllers
 
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetReservationById(Guid id)
         {
             try
@@ -91,7 +132,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetReservationsList()
         {
             try
@@ -106,6 +147,7 @@ namespace Api.Controllers
         }
 
 
+       
 
     }
 }

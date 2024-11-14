@@ -18,6 +18,7 @@ namespace Application.IServices
         // Updated BookAsync method that returns a tuple
         Task<string> BookAsync(
             string codeUIR,
+            Guid sportCategoryId,
             DateTime reservationDate,
             DayOfWeekEnum dayBooking,
             TimeSpan hourStart,
@@ -26,5 +27,8 @@ namespace Application.IServices
             Guid sportId);
 
         Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId);
+        Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId);
+        Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId);
     }
 }
+

@@ -17,6 +17,14 @@ namespace Infrastructure.Repositories
         {
             _context = context;   
         }
+
+        public async Task<List<Reservation>> GetReservationsBysportCategoryIdAsync(Guid sportCategoryId)
+        {
+            return await _context.Reservations
+               .Where(r => r.SportCategoryId == sportCategoryId)
+               .ToListAsync();
+        }
+
         public async Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId)
         {
             return await _context.Reservations
@@ -70,15 +78,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        //public async Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport)
-        //{
-        //    var res = await _context.Reservations
-        //        .Include(r => r.Sport) // Ensure Sport is loaded
-        //        .Where(r => teamMemberIds.Contains(r.StudentId) && r.Sport.ReferenceSport == referenceSport)
-        //        .ToListAsync();
-        //    Console.WriteLine($"resssssssssssssssssssssssssssss : respository {res}");
-        //    return res;
-        //}
+       
         public async Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport)
         {
             Console.WriteLine($"Team member IDddddddddddddddddddddddddddds: {string.Join(", ", teamMemberIds)}");
@@ -93,10 +93,12 @@ namespace Infrastructure.Repositories
 
             return reservations;
         }
-        
 
-
-
-
+        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId)
+        {
+            return await _context.Reservations
+                .Where(r => r.SportCategoryId == sportCategoryId && r.StudentId == studentId)
+                .ToListAsync();
+        }
     }
 }
