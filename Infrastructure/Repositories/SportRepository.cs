@@ -24,6 +24,11 @@ namespace Infrastructure.Repositories
         {
             return await dbSet.FirstOrDefaultAsync(filter);
         }
+        // Implement GetByIdAsync
+        public async Task<Sport> GetByIdAsync(Guid id)
+        {
+            return await dbSet.FirstOrDefaultAsync(s => s.Id == id);
+        }
 
     }
 }

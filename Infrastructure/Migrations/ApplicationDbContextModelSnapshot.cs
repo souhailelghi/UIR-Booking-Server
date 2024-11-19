@@ -89,6 +89,11 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("CodeUIR")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<string>("CodeUIRList")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -120,17 +125,12 @@ namespace Infrastructure.Migrations
                     b.Property<Guid>("SportId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("StudentId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("StudentIdList")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SportId");
-
-                    b.HasIndex("StudentId");
 
                     b.ToTable("Reservations");
                 });
@@ -286,7 +286,8 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("CodeUIR")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("FirstName")
                         .IsRequired()
@@ -297,7 +298,12 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("UserId")
+                        .HasMaxLength(50)
                         .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("CodeUIR")
+                        .IsUnique()
+                        .HasFilter("[CodeUIR] IS NOT NULL");
 
                     b.HasDiscriminator().HasValue("Student");
                 });
@@ -328,21 +334,7 @@ namespace Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Common.User", "Student")
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.Student", null)
-                        .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Sport");
-
-                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("Domain.Entities.Sport", b =>

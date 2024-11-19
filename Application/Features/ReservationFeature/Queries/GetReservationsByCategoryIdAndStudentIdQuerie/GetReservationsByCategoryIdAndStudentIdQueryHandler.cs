@@ -20,7 +20,7 @@ namespace Application.Features.ReservationFeature.Queries.GetReservationsByCateg
 
         public async Task<List<Reservation>> Handle(GetReservationsByCategoryIdAndStudentIdQuery request, CancellationToken cancellationToken)
         {
-            return await _unitOfService.ReservationService.GetReservationsByCategoryAndStudentIdAsync(request.SportCategoryId, request.StudentId);
+            return await _unitOfService.ReservationService.GetReservationsByCategoryAndStudentIdAsync(request.SportCategoryId, request.CodeUIR);
         }
     }
 }

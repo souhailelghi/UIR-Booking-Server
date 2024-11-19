@@ -26,9 +26,9 @@ namespace Application.IServices
             List<string> codeUIRList,
             Guid sportId);
 
-        Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId);
+        Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR);
         Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId);
-        Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId);
+        Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR);
     }
 }
 

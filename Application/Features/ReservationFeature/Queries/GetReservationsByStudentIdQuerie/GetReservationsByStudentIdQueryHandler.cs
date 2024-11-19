@@ -1,11 +1,6 @@
 ﻿using Application.IServices;
 using Domain.Entities;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Features.ReservationFeature.Queries.GetReservationsByStudentIdQuerie
 {
@@ -20,7 +15,7 @@ namespace Application.Features.ReservationFeature.Queries.GetReservationsByStude
 
         public async Task<List<Reservation>> Handle(GetReservationsByStudentIdQuery request, CancellationToken cancellationToken)
         {
-            var reservations = await _unitOfService.ReservationService.GetReservationsByStudentIdAsync(request.StudentId);
+            var reservations = await _unitOfService.ReservationService.GetReservationsByStudentIdAsync(request.CodeUIR);
             return reservations;
         }
     }

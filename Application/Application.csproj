@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Features\ReservationFeature\Queries\GetReservationsByStudentIdQuerie\GetReservationsByStudentIdQuery.cs~RF9321a83.TMP" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="Broker\" />
     <Folder Include="Features\ReservationFeature\Commands\DeleteReservation\" />
     <Folder Include="Features\ReservationFeature\Commands\UpdateReservation\" />

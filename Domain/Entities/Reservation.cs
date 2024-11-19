@@ -12,9 +12,11 @@ namespace Domain.Entities
         [Key]
         public Guid Id { get; set; }
 
-        [ForeignKey("Student")]
-        public Guid StudentId { get; set; }
-        public User Student { get; set; } 
+      
+        [Required]
+        [MaxLength(50)] // Adjust length as needed
+        public string CodeUIR { get; set; } // Replacing StudentId with CodeUIR
+     
 
         [ForeignKey("Sport")]
         public Guid SportId { get; set; } 

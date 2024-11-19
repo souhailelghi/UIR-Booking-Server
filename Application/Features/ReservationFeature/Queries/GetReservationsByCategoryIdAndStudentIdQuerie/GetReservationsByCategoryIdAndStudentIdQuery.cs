@@ -11,12 +11,12 @@ namespace Application.Features.ReservationFeature.Queries.GetReservationsByCateg
     public class GetReservationsByCategoryIdAndStudentIdQuery : IRequest<List<Reservation>>
     {
         public Guid SportCategoryId { get; }
-        public Guid StudentId { get; }
+        public string CodeUIR { get; }
 
-        public GetReservationsByCategoryIdAndStudentIdQuery(Guid sportCategoryId, Guid studentId)
+        public GetReservationsByCategoryIdAndStudentIdQuery(Guid sportCategoryId, string studentId)
         {
             SportCategoryId = sportCategoryId;
-            StudentId = studentId;
+            CodeUIR = CodeUIR;
         }
     }
 }

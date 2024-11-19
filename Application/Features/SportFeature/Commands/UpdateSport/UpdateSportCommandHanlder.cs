@@ -21,12 +21,37 @@ namespace Application.Features.SportFeature.Commands.UpdateSport
            _unitOfService = unitOfService;
            _mapper = mapper;
         }
-       
+
         public async Task<string> Handle(UpdateSportCommand request, CancellationToken cancellationToken)
         {
             try
             {
-                Sport sport = _mapper.Map<Sport>(request);
+                // Map the command to the Sport entity
+                Sport sport = await _unitOfService.SportService.GetSportByIdAsync(request.Id);
+                if (sport == null)
+                {
+                    return "Sport not found.";
+                }
+
+                // Update the properties of the sport entity
+                sport.Name = request.Name;
+                sport.ReferenceSport = request.ReferenceSport;
+                sport.NbPlayer = request.NbPlayer;
+                sport.Daysoff = request.Daysoff;
+                sport.Conditions = request.Conditions;
+                sport.Description = request.Description;
+
+                // Handle image upload if provided
+                if (request.ImageUpload != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await request.ImageUpload.CopyToAsync(ms);
+                        sport.Image = ms.ToArray();  // Store the byte array image
+                    }
+                }
+
+                // Update the sport in the database
                 await _unitOfService.SportService.UpdateSportAsync(sport);
                 return "Sport updated successfully";
             }
