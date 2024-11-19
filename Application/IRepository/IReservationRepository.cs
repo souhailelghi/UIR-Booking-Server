@@ -31,7 +31,7 @@ namespace Application.IRepository
 
         //new
         Task<IEnumerable<Reservation>> GetReservationsByReferenceSportWithCodeUIRAsync(int referenceSport, DateTime delayTime);
-
+        Task<IEnumerable<Reservation>> GetReservationsForSportAsync(Guid sportId, DateTime delayTime);
 
 
 

@@ -51,6 +51,12 @@ namespace Application.Services
                 return "You are in a reservation within the delay time.";
             }
 
+            // Validate that no `CodeUIR` in the provided list has been recently used in another list
+            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            {
+                return "One or more CodeUIRs in the list are part of another reservation within the delay time.";
+            }
+
             return "No conflicting reservations found";
         }
 
@@ -102,9 +108,22 @@ namespace Application.Services
 
 
 
+        private async Task<bool> HasConflictingCodeUIRListAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return false;
+
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsForSportAsync(sportId, delayTime);
+
+            // Check if any CodeUIR in the list exists in another reservation's CodeUIRList
+            return reservations.Any(r =>
+                r.CodeUIRList != null &&
+                r.CodeUIRList.Intersect(codeUIRList).Any());
+        }
 
 
-
+        //helper methods 
 
 
         public async Task<string> BookAsync(string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,

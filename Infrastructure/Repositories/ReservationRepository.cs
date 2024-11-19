@@ -118,6 +118,13 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
+        //new 
+        public async Task<IEnumerable<Reservation>> GetReservationsForSportAsync(Guid sportId, DateTime delayTime)
+        {
+            return await _context.Reservations
+                .Where(r => r.SportId == sportId && r.DateCreation >= delayTime)
+                .ToListAsync();
+        }
 
 
 
