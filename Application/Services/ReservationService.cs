@@ -27,6 +27,11 @@ namespace Application.Services
         //add reservation : 
         public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {
+            if (codeUIRList != null && codeUIRList.Contains(codeUIR))
+            {
+                return "The student's CodeUIR cannot be part of the CodeUIR list.";
+            }
+
             var sport = await FetchSportAsync(sportId);
             if (sport == null) return "Sport not found or ReferenceSport is null";
 
