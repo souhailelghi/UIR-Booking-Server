@@ -45,7 +45,37 @@ namespace Application.Services
         }
 
 
-       
+        public async Task UpdateSportAsync(Sport sport)
+        {
+            if (sport == null)
+            {
+                throw new ArgumentNullException(nameof(sport));
+            }
+
+            // Use GetAsync with a filter expression to find the sport by Id
+            Sport existingSport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sport.Id);
+            if (existingSport == null)
+            {
+                throw new ArgumentException("Sport not found.");
+            }
+
+            existingSport.Name = sport.Name;
+            existingSport.ReferenceSport = sport.ReferenceSport;
+            existingSport.NbPlayer = sport.NbPlayer;
+            existingSport.Daysoff = sport.Daysoff;
+            existingSport.Conditions = sport.Conditions;
+            existingSport.Description = sport.Description;
+
+            // Update image if provided
+            if (sport.Image != null)
+            {
+                existingSport.Image = sport.Image;
+            }
+
+            // Save the updated sport entity
+            await _unitOfWork.SportRepository.UpdateAsync(existingSport);
+            await _unitOfWork.CommitAsync();
+        }
 
         public async Task DeleteSportAsync(Guid id)
         {
@@ -80,34 +110,8 @@ namespace Application.Services
             return sportsList;
         }
 
-        public async Task UpdateSportAsync(Sport sport)
-        {
-            if (sport == null)
-            {
-                throw new ArgumentNullException(nameof(sport));
-            }
+    
 
-            Sport existingsport = await _unitOfWork.SportRepository.GetAsNoTracking(
-                d => d.Id == sport.Id);
-            if (existingsport == null)
-            {
-                throw new ArgumentException("sport not found.");
-            }
-
-            existingsport.Name = sport.Name;
-
-
-            try
-            {
-                await _unitOfWork.SportRepository.UpdateAsync(existingsport);
-                await _unitOfWork.CommitAsync();
-            }
-            catch (Exception ex)
-            {
-
-                throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
-            }
-        }
 
         public async Task<List<Sport>> GetAllSportByCategorieIdAsync(Guid categorieId)
         {

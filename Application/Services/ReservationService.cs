@@ -21,108 +21,112 @@ namespace Application.Services
         }
 
 
-        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId)
-        {
-            return await _unitOfWork.ReservationRepository.GetReservationsByCategoryAndStudentIdAsync(sportCategoryId, studentId);
-        }
-
-        public async Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId)
-        {
-            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBysportCategoryIdAsync(sportCategoryId);
-            return reservations;
-        }
-
-        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId)
-        {
-            var reservations = await _unitOfWork.ReservationRepository.GetReservationsByStudentIdAsync(studentId);
-            return reservations;
-        }
 
 
 
+        //add reservation : 
         public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {
-            // Fetch the sport entity
-            var sport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
-            if (sport == null || !sport.ReferenceSport.HasValue)
+            if (codeUIRList != null && codeUIRList.Contains(codeUIR))
             {
-                return "Sport not found or ReferenceSport is null"; // Sport not found or ReferenceSport is null
+                return "The student's CodeUIR cannot be part of the CodeUIR list.";
             }
 
-            // Get the student's CodeUIR
-            var student = await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
-            if (student == null)
-            {
-                return "Student's CodeUIR not found";
-            }
+            var sport = await FetchSportAsync(sportId);
+            if (sport == null) return "Sport not found or ReferenceSport is null";
 
-            var CodeUIRStudent = student.CodeUIR;
+            var student = await FetchStudentAsync(codeUIR);
+            if (student == null) return "Student's CodeUIR not found";
 
-            // Get ReferenceSport from the sport entity
-            var referenceCodeSport = sport.ReferenceSport.Value; // Convert nullable int? to int
-
-            // Delay time based on the number of days off (if any)
-            var delayTimeMinutes = sport.Daysoff ?? 0; // Assuming Daysoff is the delay time in minutes
-            var delayTime = DateTime.UtcNow.AddMinutes(-delayTimeMinutes);
-
-            // Check if the student has a recent reservation based on ReferenceSport
-            var existingReservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByReferenceSportAsync(student.Id, referenceCodeSport);
-
-            var existingReservation = existingReservations
-                .Where(r => r.DateCreation >= delayTime)
-                .FirstOrDefault();
-
-            if (existingReservation != null)
-            {
-                return "Student has a reservation within the delay time"; // Student has a reservation within the delay time
-            }
-
-            // Check if all team members exist
-            var studentsExist = await _unitOfWork.StudentRepository
-                .GetStudentsByCodeUIRsAsync(codeUIRList);
-            // Find any missing students
-            var missingStudents = codeUIRList.Except(studentsExist.Select(s => s.CodeUIR)).ToList();
-            Console.WriteLine($"Teeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeam members found: {string.Join(", ", studentsExist.Select(s => s.CodeUIR))}");
+            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
 
             if (missingStudents.Any())
             {
-                return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}"; // Specific feedback for missing students
+                return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}";
             }
 
-
-            Console.WriteLine($"Delay time calculated as: {delayTime}");
-            // Check if any team member has a recent reservation based on ReferenceSport
-            var teamReservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByReferenceSportForTeamAsync(studentsExist.Select(s => s.Id).ToList(), referenceCodeSport);
-
-            Console.WriteLine($"Total team reservations found: {teamReservations.Count}");
-            Console.WriteLine("ttttttttttttttttttttttttttt");
-
-            foreach (var reservation in teamReservations)
+            var delayTime = CalculateDelayTime(sport);
+            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
             {
-                Console.WriteLine($"Reservationnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn DateCreation: {reservation.DateCreation}, Delay Time: {delayTime}");
+                return "You are in a reservation within the delay time.";
             }
 
-            // Get the CodeUIR of team members with reservations within the delay time
-            var teamMembersWithReservations = teamReservations
-                .Where(r => r.DateCreation >= delayTime)
-                .Select(r => studentsExist.First(s => s.Id == r.StudentId).CodeUIR)
-                .ToList();
-
-            Console.WriteLine($"Teammmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm members with reservations within the delay time: {string.Join(", ", teamMembersWithReservations)}");
-
-            if (teamMembersWithReservations.Any())
+            // Validate that no `CodeUIR` in the provided list has been recently used in another list
+            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
             {
-                return $"Team members with reservations within the delay time: {string.Join(", ", teamMembersWithReservations)}";
+                return "One or more CodeUIRs in the list are part of another reservation within the delay time.";
             }
 
             return "No conflicting reservations found";
         }
 
-      
 
-        public async Task<string> BookAsync( string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
+
+        //Helper Methods
+        private async Task<Sport> FetchSportAsync(Guid sportId)
+        {
+            return await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
+        }
+        private async Task<Student> FetchStudentAsync(string codeUIR)
+        {
+            return await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
+        }
+
+        private DateTime CalculateDelayTime(Sport sport)
+        {
+            var delayTimeMinutes = sport.Daysoff ?? 0;
+            return DateTime.UtcNow.AddMinutes(-delayTimeMinutes);
+        }
+
+        private async Task<bool> HasRecentReservationAsync(string codeUIR, int referenceSport, DateTime delayTime)
+        {
+            // Check if the student has recent reservations based on DateCreation
+            var existingReservations = await _unitOfWork.ReservationRepository
+                .GetReservationsByReferenceSportAsync(codeUIR, referenceSport);
+
+            bool hasRecentReservation = existingReservations.Any(r => r.DateCreation >= delayTime);
+
+            if (hasRecentReservation)
+            {
+                return true;
+            }
+
+            // Check if the CodeUIR exists in any CodeUIRList in recent reservations
+            var reservationsWithCodeUIR = await _unitOfWork.ReservationRepository
+                .GetReservationsByReferenceSportWithCodeUIRAsync(referenceSport, delayTime);
+
+            return reservationsWithCodeUIR.Any(r => r.CodeUIRList != null && r.CodeUIRList.Contains(codeUIR));
+        }
+
+
+        private async Task<List<string>> AreStudentsMissingAsync(List<string> codeUIRList)
+        {
+            var studentsExist = await _unitOfWork.StudentRepository.GetStudentsByCodeUIRsAsync(codeUIRList);
+            var missingStudents = codeUIRList.Except(studentsExist.Select(s => s.CodeUIR)).ToList();
+            return missingStudents;
+        }
+
+
+
+        private async Task<bool> HasConflictingCodeUIRListAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return false;
+
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsForSportAsync(sportId, delayTime);
+
+            // Check if any CodeUIR in the list exists in another reservation's CodeUIRList
+            return reservations.Any(r =>
+                r.CodeUIRList != null &&
+                r.CodeUIRList.Intersect(codeUIRList).Any());
+        }
+
+
+        //helper methods 
+
+
+        public async Task<string> BookAsync(string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
            TimeSpan hourEnd, List<string> codeUIRList, Guid sportId)
         {
             // Check if the student or team can book
@@ -143,7 +147,7 @@ namespace Application.Services
             var reservation = new Reservation
             {
                 Id = Guid.NewGuid(),
-                StudentId = student.Id,
+                CodeUIR = student.CodeUIR,
                 SportId = sportId,
                 SportCategoryId = sportCategoryId,
                 ReservationDate = reservationDate,
@@ -160,6 +164,28 @@ namespace Application.Services
 
             return "Reservation successfully created.";
         }
+
+
+        //get reservation : -----------------------------
+        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR)
+        {
+            return await _unitOfWork.ReservationRepository.GetReservationsByCategoryAndStudentIdAsync(sportCategoryId, codeUIR);
+        }
+
+        public async Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBysportCategoryIdAsync(sportCategoryId);
+            return reservations;
+        }
+
+        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsByStudentIdAsync(codeUIR);
+            return reservations;
+        }
+
+
+
 
         public async Task DeleteAllReservationsAsync()
         {
@@ -186,6 +212,6 @@ namespace Application.Services
             return reservationsList;
         }
 
-      
+
     }
 }

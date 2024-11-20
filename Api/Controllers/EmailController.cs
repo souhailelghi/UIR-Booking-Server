@@ -1,4 +1,5 @@
-﻿using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
+﻿using Application.Features.EmailFeature.Queries;
+using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -16,19 +17,19 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
-        [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> GetSportCategoryById(Guid id)
-        {
-            try
-            {
-                Email OneEmail = await _mediator.Send(new GetEmailByIdQueries(id));
-                return Ok(OneEmail);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
-        }
+        //[HttpGet("{id}")]
+        //[Authorize(Roles = "Admin,User")]
+        //public async Task<IActionResult> GetSportCategoryById(Guid id)
+        //{
+        //    try
+        //    {
+        //        Email OneEmail = await _mediator.Send(new GetAllEmailQuerie(id));
+        //        return Ok(OneEmail);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ex.Message);
+        //    }
+        //}
     }
 }

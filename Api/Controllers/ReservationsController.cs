@@ -26,12 +26,37 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
-        [HttpGet("ByCategoryAndStudentId/{sportCategoryId}/{studentId}")]
-        public async Task<IActionResult> GetReservationsByCategoryAndStudentId(Guid sportCategoryId, Guid studentId)
+
+        [HttpPost("AddReservations")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
+        {
+            if (addReservationCommand == null)
+            {
+                return BadRequest("Reservation command cannot be null.");
+            }
+
+            // Send the command to the handler
+            var result = await _mediator.Send(addReservationCommand);
+
+            // Return specific error message if booking fails
+            if (result != "Reservation successfully created.")
+            {
+                return BadRequest(result);
+            }
+
+            return CreatedAtAction(nameof(AddReservations), new { id = result }, result);
+        }
+
+
+
+        [HttpGet("ByCategoryAndStudentId/{sportCategoryId}/{codeUIR}")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetReservationsByCategoryAndStudentId(Guid sportCategoryId, string codeUIR)
         {
             try
             {
-                var reservations = await _mediator.Send(new GetReservationsByCategoryIdAndStudentIdQuery(sportCategoryId, studentId));
+                var reservations = await _mediator.Send(new GetReservationsByCategoryIdAndStudentIdQuery(sportCategoryId, codeUIR));
                 return Ok(reservations);
             }
             catch (Exception ex)
@@ -60,13 +85,13 @@ namespace Api.Controllers
 
 
 
-        [HttpGet("byStudent/{studentId}")]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> GetReservationsByStudentId(Guid studentId)
+        [HttpGet("byStudent/{codeUIR}")]
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetReservationsByStudentId(string codeUIR)
         {
             try
             {
-                List<Reservation> reservations = await _mediator.Send(new GetReservationsByStudentIdQuery(studentId));
+                List<Reservation> reservations = await _mediator.Send(new GetReservationsByStudentIdQuery(codeUIR));
                 return Ok(reservations);
             }
             catch (Exception ex)
@@ -77,29 +102,10 @@ namespace Api.Controllers
 
 
 
-        [HttpPost("AddReservations")]
-        //[Authorize(Roles = "Admin,User")]
-        public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
-        {
-            if (addReservationCommand == null)
-            {
-                return BadRequest("Reservation command cannot be null.");
-            }
 
-            // Send the command to the handler
-            var result = await _mediator.Send(addReservationCommand);
-
-            // Return specific error message if booking fails
-            if (result != "Reservation successfully created.")
-            {
-                return BadRequest(result);
-            }
-
-            return CreatedAtAction(nameof(AddReservations), new { id = result }, result);
-        }
 
         [HttpDelete("deleteAll")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteAllReservations()
         {
             try
@@ -117,7 +123,7 @@ namespace Api.Controllers
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetReservationById(Guid id)
         {
             try
@@ -132,7 +138,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetReservationsList()
         {
             try
@@ -147,7 +153,7 @@ namespace Api.Controllers
         }
 
 
-       
+
 
     }
 }

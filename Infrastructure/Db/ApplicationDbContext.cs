@@ -38,6 +38,10 @@ namespace Infrastructure.Db
             modelBuilder.Entity<Student>()
                 .Property(s => s.UserId)
                 .IsRequired();
+            // CodeUIR unique for the Student entity
+            modelBuilder.Entity<Student>()
+                .HasIndex(s => s.CodeUIR)
+                .IsUnique();
 
             // Relationship between BlackList and Reservation (many-to-one)
             modelBuilder.Entity<BlackList>()
@@ -53,12 +57,7 @@ namespace Infrastructure.Db
                 .HasForeignKey(r => r.SportId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Relationship between Reservation and Student (many-to-one)
-            modelBuilder.Entity<Reservation>()
-                .HasOne<Student>()
-                .WithMany()
-                .HasForeignKey(r => r.StudentId)
-                .OnDelete(DeleteBehavior.Cascade);
+ 
 
             // Relationship between Planning and Sport (many-to-one)
             modelBuilder.Entity<Planning>()

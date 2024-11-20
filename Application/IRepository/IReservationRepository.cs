@@ -12,20 +12,26 @@ namespace Application.IRepository
 {
     public interface IReservationRepository : IGenericRepository<Reservation>
     {
-        Task<List<Reservation>> GetReservationsForDateAsync( Guid studentId, List<Guid> teamMembersIds);
+        Task<List<Reservation>> GetReservationsForDateAsync(string codeUIR, List<string> teamMembersIds);
         Task RemoveAllAsync();
-     
+
         Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter);
 
         Task<List<Reservation>> GetReservationsBySportIdAsync(Guid sportId);
 
-        Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<Guid> teamMemberIds, int referenceSport);
-        Task<List<Reservation>> GetReservationsByReferenceSportAsync(Guid studentId, int referenceSport);
-        Task<List<Reservation>> GetReservationsByStudentIdAsync(Guid studentId);
+        //Task<List<Reservation>> GetReservationsByReferenceSportForTeamAsync(List<string> teamMemberIds, int referenceSport);
+        Task<List<Reservation>> GetReservationsByReferenceSportAsync(string codeUIR, int referenceSport);
+        Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR);
         Task<List<Reservation>> GetReservationsBysportCategoryIdAsync(Guid sportCategoryId);
 
-        Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, Guid studentId);
+        Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR);
+        Task<List<Reservation>> GetReservationsDateAsync(string codeUIR, List<string> teamMembersIds);
 
+        Task<List<Reservation>> GetReservationsByCodeUIRsAsync(List<string> codeUIRs);
+
+        //new
+        Task<IEnumerable<Reservation>> GetReservationsByReferenceSportWithCodeUIRAsync(int referenceSport, DateTime delayTime);
+        Task<IEnumerable<Reservation>> GetReservationsForSportAsync(Guid sportId, DateTime delayTime);
 
 
 

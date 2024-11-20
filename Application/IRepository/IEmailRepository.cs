@@ -1,14 +1,10 @@
-﻿using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using Application.IRepository.IGenericRepositorys;
+using Domain.Entities;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.IRepository
 {
-    internal interface IEmailRepository: IGenericRepositorys<Email>
+    public interface IEmailRepository : IGenericRepository<Email>
     {
         Task<Email> GetAsync(Expression<Func<Email, bool>> filter);
     }

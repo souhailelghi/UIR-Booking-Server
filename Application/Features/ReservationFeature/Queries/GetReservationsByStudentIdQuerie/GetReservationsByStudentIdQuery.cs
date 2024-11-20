@@ -10,10 +10,10 @@ namespace Application.Features.ReservationFeature.Queries.GetReservationsByStude
 {
     public class GetReservationsByStudentIdQuery : IRequest<List<Reservation>>
     {
-        public Guid StudentId { get; set; }
-        public GetReservationsByStudentIdQuery(Guid studentId)
+        public string CodeUIR { get; set; }
+        public GetReservationsByStudentIdQuery(string codeUIR)
         {
-            StudentId = studentId;
+            CodeUIR = codeUIR;
         }
     }
 }

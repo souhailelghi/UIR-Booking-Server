@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Features.EmailFeature.Commands.AddEmail
 {
-    internal class AddEmailCommand: IRequest<Email>
+    public class AddEmailCommand: IRequest<Email>
     {
         public String Name { get; set; }
         public string email { get; set; }

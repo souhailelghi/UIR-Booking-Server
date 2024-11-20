@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initials : Migration
+    public partial class inits : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -54,8 +54,8 @@ namespace Infrastructure.Migrations
                     AdminName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CodeUIR = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", maxLength: 50, nullable: true),
+                    CodeUIR = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -114,7 +114,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    StudentId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CodeUIR = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     SportId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     SportCategoryId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -134,12 +134,6 @@ namespace Infrastructure.Migrations
                         name: "FK_Reservations_Sports_SportId",
                         column: x => x.SportId,
                         principalTable: "Sports",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Reservations_Users_StudentId",
-                        column: x => x.StudentId,
-                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -199,11 +193,6 @@ namespace Infrastructure.Migrations
                 column: "SportId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_StudentId",
-                table: "Reservations",
-                column: "StudentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Sports_CategorieId",
                 table: "Sports",
                 column: "CategorieId");
@@ -212,6 +201,13 @@ namespace Infrastructure.Migrations
                 name: "IX_TimeRanges_PlanningId",
                 table: "TimeRanges",
                 column: "PlanningId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_CodeUIR",
+                table: "Users",
+                column: "CodeUIR",
+                unique: true,
+                filter: "[CodeUIR] IS NOT NULL");
         }
 
         /// <inheritdoc />
@@ -227,13 +223,13 @@ namespace Infrastructure.Migrations
                 name: "TimeRanges");
 
             migrationBuilder.DropTable(
+                name: "Users");
+
+            migrationBuilder.DropTable(
                 name: "Reservations");
 
             migrationBuilder.DropTable(
                 name: "Plannings");
-
-            migrationBuilder.DropTable(
-                name: "Users");
 
             migrationBuilder.DropTable(
                 name: "Sports");

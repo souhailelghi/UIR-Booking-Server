@@ -23,7 +23,7 @@ namespace Api.Controllers
         }
 
         [HttpPost("add")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> AddSport([FromForm] AddSportCommand addSportCommand)
         {
             try
@@ -52,9 +52,30 @@ namespace Api.Controllers
             }
         }
 
+        [HttpPut("update")]
+        //// [Authorize(Roles = "Admin,User")]
+        
+        public async Task<IActionResult> UpdateSport([FromForm] UpdateSportCommand command)
+        {
+            try
+            {
+                if (command == null)
+                {
+                    return BadRequest("Command cannot be null.");
+                }
+
+                await _mediator.Send(command);
+                return Ok("Sport Updated Successfully");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while updating the Sport. Details: {ex.Message}");
+            }
+        }
+
 
         [HttpGet("list")]
-        [Authorize(Roles = "Admin,User")]
+       // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportsList()
         {
             try
@@ -72,7 +93,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
-        [Authorize(Roles = "Admin,User")]
+       // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> DeleteSport(Guid id)
         {
             try
@@ -87,25 +108,11 @@ namespace Api.Controllers
         }
 
 
-        [HttpPut("update")]
-        [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> UpdateSport([FromBody] UpdateSportCommand command)
-        {
-            try
-            {
-                await _mediator.Send(command);
-                return Ok("Sport Updated Successfully");
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"An error occurred while updating the Sport. Details: {ex.Message}");
-            }
-        }
-
+     
 
 
         [HttpGet("{id}")]
-        [Authorize(Roles = "Admin,User")]
+       // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportById(Guid id)
         {
             try
@@ -121,7 +128,7 @@ namespace Api.Controllers
 
 
         [HttpGet("category/{categorieId}")]
-        [Authorize(Roles = "Admin,User")]
+        //[Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportsByCategory(Guid categorieId)
         {
             try
