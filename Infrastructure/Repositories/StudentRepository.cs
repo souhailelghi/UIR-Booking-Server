@@ -51,5 +51,11 @@ namespace Infrastructure.Repositories
                .Where(student => codeUIRList.Contains(student.CodeUIR)) // Assuming Id is the primary key in Student
                .ToListAsync();
         }
+
+
+        public async Task<Student> GetByCodeUIRAsync(string codeUIR)
+        {
+            return await _context.Students.FirstOrDefaultAsync(s => s.CodeUIR == codeUIR);
+        }
     }
 }

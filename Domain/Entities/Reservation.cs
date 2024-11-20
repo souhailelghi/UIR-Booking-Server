@@ -37,6 +37,7 @@ namespace Domain.Entities
         public List<Guid>? StudentIdList { get; set; }
 
         // CodeUIRList property to store the list of CodeUIR strings
+        [Required]
         public List<string> CodeUIRList { get; set; } // New property for CodeUIR
 
         public DateTime DateCreation { get; set; }
