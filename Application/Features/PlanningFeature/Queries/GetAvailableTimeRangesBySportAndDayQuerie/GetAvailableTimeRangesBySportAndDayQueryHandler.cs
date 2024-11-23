@@ -20,7 +20,7 @@ namespace Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesByS
 
         public async Task<List<TimeRange>> Handle(GetAvailableTimeRangesBySportAndDayQuery request, CancellationToken cancellationToken)
         {
-            return await _planningService.GetTimeRangesBySportAndDayAsync(request.SportId, request.Day);
+            return await _planningService.GetTimeRangesBySportAndDayAsync(request.SportId);
         }
     }
 }
