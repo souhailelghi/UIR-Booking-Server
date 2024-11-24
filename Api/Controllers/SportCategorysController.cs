@@ -4,6 +4,7 @@ using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueries;
 using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
 using Application.Features.SportFeature.Commands.AddSport;
+using Application.Features.SportFeature.Commands.UpdateSport;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -108,22 +109,38 @@ namespace Api.Controllers
 
 
         [HttpPut("update")]
-       // [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
+        // [Authorize(Roles = "Admin,User")]
+        //public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
+        //{
+        //    try
+        //    {
+        //        await _mediator.Send(command);
+        //        return Ok("SportCategory Updated Successfully");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred while updating the SportCategory. Details: {ex.Message}");
+        //    }
+        //}
+
+
+        public async Task<IActionResult> UpdateSportCategory([FromForm] UpdateSportCategoryCommand command)
         {
             try
             {
+                if (command == null)
+                {
+                    return BadRequest("Command cannot be null.");
+                }
+
                 await _mediator.Send(command);
-                return Ok("SportCategory Updated Successfully");
+                return Ok("Sport Category Updated Successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while updating the SportCategory. Details: {ex.Message}");
+                return StatusCode(500, $"An error occurred while updating the Sport Category. Details: {ex.Message}");
             }
         }
-
-
-
         [HttpGet("{id}")]
        // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportCategoryById(Guid id)

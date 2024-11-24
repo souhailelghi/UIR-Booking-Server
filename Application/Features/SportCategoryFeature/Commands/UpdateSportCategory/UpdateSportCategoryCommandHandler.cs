@@ -26,11 +26,35 @@ namespace Application.Features.SportCategoryFeature.Commands.UpdateSportCategory
         
         public async Task<string> Handle(UpdateSportCategoryCommand request, CancellationToken cancellationToken)
         {
+         
+
+
             try
             {
-                SportCategory sportCategory = _mapper.Map<SportCategory>(request);
-                await _unitOfService.SportCategoryService.UpdateSportCategoryAsync(sportCategory);
-                return "SportCategory updated successfully";
+                // Map the command to the Sport entity
+                SportCategory sport = await _unitOfService.SportCategoryService.GetSportCategoryByIdAsync(request.Id);
+                if (sport == null)
+                {
+                    return "Sport not found.";
+                }
+
+                // Update the properties of the sport entity
+                sport.Name = request.Name;
+              
+
+                // Handle image upload if provided
+                if (request.ImageUpload != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        await request.ImageUpload.CopyToAsync(ms);
+                        sport.Image = ms.ToArray();  // Store the byte array image
+                    }
+                }
+
+                // Update the sport in the database
+                await _unitOfService.SportCategoryService.UpdateSportCategoryAsync(sport);
+                return "Sport updated successfully";
             }
             catch (Exception ex)
             {

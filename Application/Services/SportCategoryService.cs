@@ -90,26 +90,38 @@ namespace Application.Services
             return sportCategorysList;
         }
 
-        public async Task UpdateSportCategoryAsync(SportCategory sportCategory)
+        public async Task UpdateSportCategoryAsync(SportCategory sport)
         {
-            if (sportCategory == null)
+
+          
+
+
+            if (sport == null)
             {
-                throw new ArgumentNullException(nameof(sportCategory));
+                throw new ArgumentNullException(nameof(sport));
             }
 
-            SportCategory existingsportCategory = await _unitOfWork.SportCategoryRepository.GetAsNoTracking(
-                d => d.Id == sportCategory.Id);
-            if (existingsportCategory == null)
+            // Use GetAsync with a filter expression to find the sport by Id
+             SportCategory existingSport = await _unitOfWork.SportCategoryRepository.GetAsNoTracking( d => d.Id == sport.Id);
+            if (existingSport == null)
             {
-                throw new ArgumentException("sportCategory not found.");
+                throw new ArgumentException("Sport not found.");
             }
 
-            existingsportCategory.Name = sportCategory.Name;
-           
+            existingSport.Name = sport.Name;
+          
+
+            // Update image if provided
+            if (sport.Image != null)
+            {
+                existingSport.Image = sport.Image;
+            }
+
+         
 
             try
             {
-                await _unitOfWork.SportCategoryRepository.UpdateAsync(existingsportCategory);
+                await _unitOfWork.SportCategoryRepository.UpdateAsync(existingSport);
                 await _unitOfWork.CommitAsync();
             }
             catch (Exception ex)
