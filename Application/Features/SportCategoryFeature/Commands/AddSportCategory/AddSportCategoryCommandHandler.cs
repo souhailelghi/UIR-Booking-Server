@@ -22,13 +22,26 @@ namespace Application.Features.SportCategoryFeature.Commands.AddSportCategory
 
         public async Task<SportCategory> Handle(AddSportCategoryCommand request, CancellationToken cancellationToken)
         {
+            //if (request == null)
+            //{
+            //    throw new ArgumentNullException(nameof(request), "SportCategory cannot be null.");
+            //}
+
+
+            //SportCategory SportCategoryMapped = _mapper.Map<SportCategory>(request);
+            //SportCategory addedSportCategory = await _unitOfService.SportCategoryService.AddSportCategoryAsync(SportCategoryMapped);
+            //return addedSportCategory;
+
+
             if (request == null)
             {
-                throw new ArgumentNullException(nameof(request), "SportCategory cannot be null.");
+                throw new ArgumentNullException(nameof(request), "Sport cannot be null.");
             }
 
-           
+            // Map the AddSportCommand to the Sport entity
             SportCategory SportCategoryMapped = _mapper.Map<SportCategory>(request);
+
+            // Add the sport using the service and return the result
             SportCategory addedSportCategory = await _unitOfService.SportCategoryService.AddSportCategoryAsync(SportCategoryMapped);
             return addedSportCategory;
         }

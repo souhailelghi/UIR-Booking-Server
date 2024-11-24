@@ -25,11 +25,30 @@ namespace Application.Services
 
         public async Task<SportCategory> AddSportCategoryAsync(SportCategory sportCategory)
         {
-            
-            sportCategory.Id = Guid.NewGuid();
-            await _unitOfWork.SportCategoryRepository.CreateAsync(sportCategory);
+            byte[] imageData = null;
+
+            // Convert the uploaded image (IFormFile) to a byte array if present
+            if (sportCategory.ImageUpload != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    await sportCategory.ImageUpload.CopyToAsync(ms);
+                    imageData = ms.ToArray();  // Convert to byte[]
+                }
+            }
+
+
+            // Map the sport command to the sport entity
+            var sportEntity = _mapper.Map<SportCategory>(sportCategory);
+            sportEntity.Id = Guid.NewGuid(); // Generate a new unique ID
+            sportEntity.Image = imageData; // Store the byte array image
+            sportEntity.DateCreation = DateTime.UtcNow;
+
+            // Save the new sport entity using UnitOfWork
+            await _unitOfWork.SportCategoryRepository.CreateAsync(sportEntity);
             await _unitOfWork.CommitAsync();
-            return sportCategory;
+
+            return sportEntity;
         }
 
         public async Task DeleteSportCategoryAsync(Guid id)
