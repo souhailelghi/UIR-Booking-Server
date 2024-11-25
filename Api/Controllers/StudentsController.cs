@@ -2,6 +2,7 @@
 using Application.Features.SportFeature.Queries.GetSportById;
 using Application.Features.StudentFeature.Commands.AddStudent;
 using Application.Features.StudentFeature.Queries.GetCheckCodeUirQuerie;
+using Application.Features.StudentFeature.Queries.GetStudentByCodeUIRQuerie;
 using Application.Features.StudentFeature.Queries.GetStudentByIdQuerie;
 using Application.Features.StudentFeature.Queries.GetStudntByUserIdQuerie;
 using Domain.Entities;
@@ -96,5 +97,23 @@ namespace Api.Controllers
         }
 
 
+        [HttpGet("GetStudentByCodeUIR/{codeUIR}")]
+        // [Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> GetStudentByCodeUIR(string codeUIR)
+        {
+            try
+            {
+                var student = await _mediator.Send(new GetStudentByCodeUIRQuery(codeUIR));
+                return Ok(student);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while retrieving the student. Details: {ex.Message}");
+            }
+        }
     }
 }

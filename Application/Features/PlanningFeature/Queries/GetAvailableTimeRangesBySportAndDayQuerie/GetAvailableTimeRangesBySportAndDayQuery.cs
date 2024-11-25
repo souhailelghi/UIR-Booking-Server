@@ -7,12 +7,12 @@ namespace Application.Features.PlanningFeature.Queries.GetAvailableTimeRangesByS
     public class GetAvailableTimeRangesBySportAndDayQuery : IRequest<List<TimeRange>>
     {
         public Guid SportId { get; }
-        public DayOfWeekEnum Day { get; }
+ 
 
-        public GetAvailableTimeRangesBySportAndDayQuery(Guid sportId, DayOfWeekEnum day)
+        public GetAvailableTimeRangesBySportAndDayQuery(Guid sportId)
         {
             SportId = sportId;
-            Day = day;
+         
         }
     }
 }

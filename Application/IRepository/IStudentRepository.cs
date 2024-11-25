@@ -11,5 +11,6 @@ namespace Application.IRepository
         Task<Student> GetByUserIdAsync(Guid userId);
         Task<Student> FindAsync(Expression<Func<Student, bool>> predicate);
         Task<Student> GetAsync(Expression<Func<Student, bool>> filter);
+        Task<Student> GetByCodeUIRAsync(string codeUIR);
     }
 }

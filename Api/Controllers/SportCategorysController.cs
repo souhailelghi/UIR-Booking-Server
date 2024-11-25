@@ -3,6 +3,8 @@ using Application.Features.SportCategoryFeature.Commands.DeleteSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueries;
 using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
+using Application.Features.SportFeature.Commands.AddSport;
+using Application.Features.SportFeature.Commands.UpdateSport;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -38,27 +40,56 @@ namespace Api.Controllers
             }
         }
 
+        //[HttpPost("add")]
+        //[Authorize(Roles = "Admin")]
+        //public async Task<IActionResult> AddSportCategory([FromBody] AddSportCategoryCommand addSportCategoryCommand)
+        //{
+        //    try
+        //    {
+        //        if (addSportCategoryCommand == null)
+        //        {
+        //            return BadRequest("SportCategory cannot be null.");
+        //        }
+
+        //        SportCategory addedSportCategory = await _mediator.Send(addSportCategoryCommand);
+        //        return Ok(addedSportCategory);
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //        return StatusCode(500, $"An error occurred while adding the SportCategory. Details: {ex.Message}");
+        //    }
+        //}
+
         [HttpPost("add")]
-       //[Authorize(Roles = "Admin")]
-        public async Task<IActionResult> AddSportCategory([FromBody] AddSportCategoryCommand addSportCategoryCommand)
+        //[Authorize(Roles = "Admin,User")]
+        public async Task<IActionResult> AddSportCategory([FromForm] AddSportCategoryCommand addSportCategoryCommand)
         {
             try
             {
                 if (addSportCategoryCommand == null)
                 {
-                    return BadRequest("SportCategory cannot be null.");
+                    return BadRequest("Sport cannot be null.");
+                }
+                // Log to check if the image is being received
+                if (addSportCategoryCommand.ImageUpload != null)
+                {
+                    Console.WriteLine($"Received Image: {addSportCategoryCommand.ImageUpload.FileName}");
+                }
+                else
+                {
+                    Console.WriteLine("No image uploaded.");
                 }
 
-                SportCategory addedSportCategory = await _mediator.Send(addSportCategoryCommand);
-                return Ok(addedSportCategory);
+                SportCategory addedSport = await _mediator.Send(addSportCategoryCommand);
+                return Ok(addedSport);
             }
             catch (Exception ex)
             {
-              
-                return StatusCode(500, $"An error occurred while adding the SportCategory. Details: {ex.Message}");
+
+                return StatusCode(500, $"An error occurred while adding the Sport. Details: {ex.Message}");
             }
         }
-
 
 
         [HttpDelete("delete/{id}")]
@@ -78,22 +109,38 @@ namespace Api.Controllers
 
 
         [HttpPut("update")]
-       // [Authorize(Roles = "Admin,User")]
-        public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
+        // [Authorize(Roles = "Admin,User")]
+        //public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
+        //{
+        //    try
+        //    {
+        //        await _mediator.Send(command);
+        //        return Ok("SportCategory Updated Successfully");
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"An error occurred while updating the SportCategory. Details: {ex.Message}");
+        //    }
+        //}
+
+
+        public async Task<IActionResult> UpdateSportCategory([FromForm] UpdateSportCategoryCommand command)
         {
             try
             {
+                if (command == null)
+                {
+                    return BadRequest("Command cannot be null.");
+                }
+
                 await _mediator.Send(command);
-                return Ok("SportCategory Updated Successfully");
+                return Ok("Sport Category Updated Successfully");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"An error occurred while updating the SportCategory. Details: {ex.Message}");
+                return StatusCode(500, $"An error occurred while updating the Sport Category. Details: {ex.Message}");
             }
         }
-
-
-
         [HttpGet("{id}")]
        // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetSportCategoryById(Guid id)

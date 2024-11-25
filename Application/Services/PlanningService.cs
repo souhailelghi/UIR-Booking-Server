@@ -101,9 +101,9 @@ namespace Application.Services
             }
         }
 
+     
 
-
-        public async Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId, DayOfWeekEnum day)
+        public async Task<List<TimeRange>> GetTimeRangesBySportAndDayAsync(Guid sportId)
         {
             // Fetch the sport to ensure it exists
             var sport = await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
@@ -112,42 +112,56 @@ namespace Application.Services
                 return new List<TimeRange>(); // Sport not found
             }
 
-            // Fetch planning entries for the specific sport and day
-            var plannings = await _unitOfWork.PlanningRepository.GetPlanningsBySportAndDayAsync(sportId, day);
+            // Determine today's day of the week
+            var today = DateTime.UtcNow; // Use current UTC time without adjustment
+            var todayDayOfWeek = GetDayOfWeekEnum(today.DayOfWeek);
+
+            // Log the day for debugging
+            var tt = todayDayOfWeek.ToString();
+
+            // Fetch planning entries for the specific sport and today's day
+            var plannings = await _unitOfWork.PlanningRepository.GetPlanningsBySportAndDayAsync(sportId, todayDayOfWeek);
 
             // Extract available time ranges from the planning entries
             var availableTimeRanges = plannings.SelectMany(p => p.TimeRanges).ToList();
 
-            // Fetch reserved reservations for the sport
-            var reservedReservations = await _unitOfWork.ReservationRepository.GetReservationsBySportIdAsync(sportId);
+            // Fetch reservations for today associated with the sport
+            var todayDateOnly = DateOnly.FromDateTime(today);
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBySportIdAsync(sportId);
 
-            // Check if today's date matches the 'OnlyDate' field in Reservation
-            var today = DateOnly.FromDateTime(DateTime.UtcNow);
-            var matchingReservation = reservedReservations.FirstOrDefault(r => r.OnlyDate == today && r.DayBooking == day);
+            // Filter reservations for today
+            var todayReservations = reservations
+                .Where(r => r.OnlyDate == todayDateOnly)
+                .Select(r => new { r.HourStart, r.HourEnd })
+                .ToList();
 
-            if (matchingReservation != null)
-            {
-                // If today's date matches 'OnlyDate', filter based on the reserved time ranges for today
-                var reservedTimeRanges = reservedReservations
-                    .Where(r => r.OnlyDate == today && r.DayBooking == day)
-                    .Select(r => new { r.HourStart, r.HourEnd })
-                    .ToList();
+            // Filter out the reserved time ranges from available time ranges
+            var filteredTimeRanges = availableTimeRanges
+                .Where(tr => !todayReservations
+                    .Any(res => res.HourStart < tr.HourEnd && res.HourEnd > tr.HourStart)) // Overlap check
+                .ToList();
 
-                // Filter out the reserved time ranges from available time ranges
-                var filteredTimeRanges = availableTimeRanges
-                    .Where(tr => !reservedTimeRanges
-                        .Any(res => res.HourStart == tr.HourStart && res.HourEnd == tr.HourEnd))
-                    .ToList();
-
-                return filteredTimeRanges;
-            }
-            else
-            {
-                // If the day doesn't match 'OnlyDate', return all available time ranges for that sport and day
-                return availableTimeRanges;
-            }
+            return filteredTimeRanges;
         }
 
+        // Helper method to map System.DayOfWeek to DayOfWeekEnum
+        private DayOfWeekEnum GetDayOfWeekEnum(DayOfWeek systemDayOfWeek)
+        {
+            return systemDayOfWeek switch
+            {
+                DayOfWeek.Sunday => DayOfWeekEnum.Sunday,
+                DayOfWeek.Monday => DayOfWeekEnum.Monday,
+                DayOfWeek.Tuesday => DayOfWeekEnum.Tuesday,
+                DayOfWeek.Wednesday => DayOfWeekEnum.Wednesday,
+                DayOfWeek.Thursday => DayOfWeekEnum.Thursday,
+                DayOfWeek.Friday => DayOfWeekEnum.Friday,
+                DayOfWeek.Saturday => DayOfWeekEnum.Saturday,
+                _ => throw new ArgumentOutOfRangeException(nameof(systemDayOfWeek), "Invalid day of the week"),
+            };
+        }
+
+
+    
         public async Task<List<TimeRange>> GetTimeRangesBySportAsync(Guid sportId)
         {
             return await _unitOfWork.PlanningRepository.GetTimeRangesBySportAsync(sportId);

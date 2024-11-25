@@ -91,7 +91,12 @@ namespace Application.Mapping
         {
 
             //sport Category 
-            CreateMap<AddSportCategoryCommand, SportCategory>().ReverseMap();
+            CreateMap<AddSportCategoryCommand, SportCategory>()
+                .ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertImageToByteArray(src.ImageUpload)));
+
+
+
+
             CreateMap<UpdateSportCategoryCommand, SportCategory>();
 
 

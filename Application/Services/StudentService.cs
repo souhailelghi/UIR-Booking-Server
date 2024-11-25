@@ -79,6 +79,21 @@ namespace Application.Services
 
             return student;
         }
-    
+
+
+
+        public async Task<Student> GetStudentByCodeUIRAsync(string codeUIR)
+        {
+            // Assuming you have a method to fetch a student by CodeUIR in your repository
+            var student = await _unitOfWork.StudentRepository.GetByCodeUIRAsync(codeUIR);
+
+            if (student == null)
+            {
+                throw new KeyNotFoundException($"Student with code UIR {codeUIR} not found.");
+            }
+
+            return student;
+        }
+
     }
 }

@@ -17,34 +17,6 @@ namespace Application.Services
             _mapper = mapper;
         }
 
-        public async Task<Sport> AddSportAsync(Sport sport)
-        {
-            byte[] imageData = null;
-
-            // Convert the uploaded image (IFormFile) to a byte array if present
-            if (sport.ImageUpload != null)
-            {
-                using (var ms = new MemoryStream())
-                {
-                    await sport.ImageUpload.CopyToAsync(ms);
-                    imageData = ms.ToArray();  // Convert to byte[]
-                }
-            }
-
-            // Map the sport command to the sport entity
-            var sportEntity = _mapper.Map<Sport>(sport);
-            sportEntity.Id = Guid.NewGuid(); // Generate a new unique ID
-            sportEntity.Image = imageData; // Store the byte array image
-            sportEntity.DateCreation = DateTime.UtcNow;
-
-            // Save the new sport entity using UnitOfWork
-            await _unitOfWork.SportRepository.CreateAsync(sportEntity);
-            await _unitOfWork.CommitAsync();
-
-            return sportEntity;
-        }
-
-
         public async Task UpdateSportAsync(Sport sport)
         {
             if (sport == null)
@@ -77,6 +49,36 @@ namespace Application.Services
             await _unitOfWork.CommitAsync();
         }
 
+
+        public async Task<Sport> AddSportAsync(Sport sport)
+        {
+            byte[] imageData = null;
+
+            // Convert the uploaded image (IFormFile) to a byte array if present
+            if (sport.ImageUpload != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    await sport.ImageUpload.CopyToAsync(ms);
+                    imageData = ms.ToArray();  // Convert to byte[]
+                }
+            }
+
+            // Map the sport command to the sport entity
+            var sportEntity = _mapper.Map<Sport>(sport);
+            sportEntity.Id = Guid.NewGuid(); // Generate a new unique ID
+            sportEntity.Image = imageData; // Store the byte array image
+            sportEntity.DateCreation = DateTime.UtcNow;
+
+            // Save the new sport entity using UnitOfWork
+            await _unitOfWork.SportRepository.CreateAsync(sportEntity);
+            await _unitOfWork.CommitAsync();
+
+            return sportEntity;
+        }
+
+
+      
         public async Task DeleteSportAsync(Guid id)
         {
             Sport sport = await _unitOfWork.SportRepository.GetAsNoTracking(u => u.Id == id);
