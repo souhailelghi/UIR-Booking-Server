@@ -14,6 +14,7 @@ namespace Application.IServices
 
         // Method to check if the user or team can book
         Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId);
+        Task<bool> CheckUserHaveAccessReservationAsync(string codeUIR, List<string> codeUIRList, Guid sportId);
 
         // Updated BookAsync method that returns a tuple
         Task<string> BookAsync(
@@ -29,6 +30,7 @@ namespace Application.IServices
         Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR);
         Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId);
         Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR);
+        //Task<string> CheckUserHaveAccessReservationAsync(string codeUIR,  Guid sportId);
     }
 }
 

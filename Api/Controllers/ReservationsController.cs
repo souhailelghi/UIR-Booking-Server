@@ -1,6 +1,7 @@
 ﻿
 using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
+using Application.Features.ReservationFeature.Queries.CheckReservationAccessRequestQuerie;
 using Application.Features.ReservationFeature.Queries.GetAllReservationQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByCategorieIdQuerie;
@@ -24,6 +25,19 @@ namespace Api.Controllers
         public ReservationsController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+        // Endpoint to check if a user or team can make a reservation
+        [HttpPost("check-access")]
+        public async Task<IActionResult> CheckReservationAccess([FromBody] CheckReservationAccessRequest request)
+        {
+            var result = await _mediator.Send(request);
+
+            if (result==false)
+            {
+                return Ok(false); // If there are any errors, return BadRequest
+            }
+
+            return Ok(true); // If access is allowed, return success
         }
 
 

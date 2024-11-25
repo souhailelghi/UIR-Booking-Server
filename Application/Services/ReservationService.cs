@@ -20,6 +20,43 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
+        //public async Task<string> CheckUserHaveAccessReservationAsync(string codeUIR, Guid sportId)
+        //{
+        //    List<string> codeUIRList = null;
+
+        //    if (codeUIRList != null && codeUIRList.Contains(codeUIR))
+        //    {
+        //        return "The student's CodeUIR cannot be part of the CodeUIR list.";
+        //    }
+
+        //    var sport = await FetchSportAsync(sportId);
+        //    if (sport == null) return "Sport not found or ReferenceSport is null";
+
+        //    var student = await FetchStudentAsync(codeUIR);
+        //    if (student == null) return "Student's CodeUIR not found";
+
+        //    var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+
+        //    if (missingStudents.Any())
+        //    {
+        //        return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}";
+        //    }
+
+        //    var delayTime = CalculateDelayTime(sport);
+        //    if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+        //    {
+        //        return "You are in a reservation within the delay time.";
+        //    }
+
+        //    // Validate that no `CodeUIR` in the provided list has been recently used in another list
+        //    if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+        //    {
+        //        return "One or more CodeUIRs in the list are part of another reservation within the delay time.";
+        //    }
+
+        //    return "No conflicting reservations found";
+        //}
+
 
 
 
@@ -58,6 +95,41 @@ namespace Application.Services
             }
 
             return "No conflicting reservations found";
+        }
+
+        public async Task<bool> CheckUserHaveAccessReservationAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+        {
+            //if (codeUIRList != null && codeUIRList.Contains(codeUIR))
+            //{
+            //    return "The student's CodeUIR cannot be part of the CodeUIR list.";
+            //}
+
+            var sport = await FetchSportAsync(sportId);
+            if (sport == null) return false;
+
+            var student = await FetchStudentAsync(codeUIR);
+            if (student == null) return false;
+
+            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+
+            if (missingStudents.Any())
+            {
+                return false;
+            }
+
+            var delayTime = CalculateDelayTime(sport);
+            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+            {
+                return false;
+            }
+
+            // Validate that no `CodeUIR` in the provided list has been recently used in another list
+            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            {
+                return false;
+            }
+
+            return true;
         }
 
 
