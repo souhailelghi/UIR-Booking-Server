@@ -20,53 +20,12 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        //public async Task<string> CheckUserHaveAccessReservationAsync(string codeUIR, Guid sportId)
-        //{
-        //    List<string> codeUIRList = null;
-
-        //    if (codeUIRList != null && codeUIRList.Contains(codeUIR))
-        //    {
-        //        return "The student's CodeUIR cannot be part of the CodeUIR list.";
-        //    }
-
-        //    var sport = await FetchSportAsync(sportId);
-        //    if (sport == null) return "Sport not found or ReferenceSport is null";
-
-        //    var student = await FetchStudentAsync(codeUIR);
-        //    if (student == null) return "Student's CodeUIR not found";
-
-        //    var missingStudents = await AreStudentsMissingAsync(codeUIRList);
-
-        //    if (missingStudents.Any())
-        //    {
-        //        return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}";
-        //    }
-
-        //    var delayTime = CalculateDelayTime(sport);
-        //    if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
-        //    {
-        //        return "You are in a reservation within the delay time.";
-        //    }
-
-        //    // Validate that no `CodeUIR` in the provided list has been recently used in another list
-        //    if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
-        //    {
-        //        return "One or more CodeUIRs in the list are part of another reservation within the delay time.";
-        //    }
-
-        //    return "No conflicting reservations found";
-        //}
-
-
-
-
-
-        //add reservation : 
+     
         public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {
             if (codeUIRList != null && codeUIRList.Contains(codeUIR))
             {
-                return "The student's CodeUIR cannot be part of the CodeUIR list.";
+                return "Le CodeUIR de l'étudiant ne peut pas être inclus dans la liste des CodeUIR.";
             }
 
             var sport = await FetchSportAsync(sportId);
@@ -79,19 +38,19 @@ namespace Application.Services
 
             if (missingStudents.Any())
             {
-                return $"Some students don't exist in the database: {string.Join(", ", missingStudents)}";
+                return $"Certains élèves ne sont pas enregistrés dans la base de données. Les codes est incorrect.: {string.Join(", ", missingStudents)}";
             }
 
             var delayTime = CalculateDelayTime(sport);
             if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
             {
-                return "You are in a reservation within the delay time.";
+                return "Vous avez déjà une réservation en cours pour la période concernée.";
             }
 
             // Validate that no `CodeUIR` in the provided list has been recently used in another list
             if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
             {
-                return "One or more CodeUIRs in the list are part of another reservation within the delay time.";
+                return "Certains CodeUIR de la liste sont déjà associés à une autre réservation durant la période concernée";
             }
 
             return "No conflicting reservations found";

@@ -20,7 +20,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> DeleteTimeRange(Guid id)
         {
             try

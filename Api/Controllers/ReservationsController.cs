@@ -42,7 +42,7 @@ namespace Api.Controllers
 
 
         [HttpPost("AddReservations")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)
@@ -65,7 +65,7 @@ namespace Api.Controllers
 
 
         [HttpGet("ByCategoryAndStudentId/{sportCategoryId}/{codeUIR}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetReservationsByCategoryAndStudentId(Guid sportCategoryId, string codeUIR)
         {
             try
@@ -82,7 +82,7 @@ namespace Api.Controllers
 
 
         [HttpGet("BySportCategoryId/{sportCategoryId}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetReservationsBySportCategoryId(Guid sportCategoryId)
         {
             try
@@ -100,7 +100,7 @@ namespace Api.Controllers
 
 
         [HttpGet("byStudent/{codeUIR}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetReservationsByStudentId(string codeUIR)
         {
             try
@@ -119,7 +119,7 @@ namespace Api.Controllers
        
 
         [HttpDelete("deleteAll")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> DeleteAllReservations()
         {
             try
@@ -137,7 +137,7 @@ namespace Api.Controllers
 
 
         [HttpGet("{id}")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetReservationById(Guid id)
         {
             try
@@ -152,7 +152,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetReservationsList()
         {
             try

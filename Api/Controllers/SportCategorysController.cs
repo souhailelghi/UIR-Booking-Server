@@ -26,7 +26,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("list")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetSportCategorysList()
         {
             try
@@ -62,7 +62,7 @@ namespace Api.Controllers
         //}
 
         [HttpPost("add")]
-        //[Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> AddSportCategory([FromForm] AddSportCategoryCommand addSportCategoryCommand)
         {
             try
@@ -93,7 +93,7 @@ namespace Api.Controllers
 
 
         [HttpDelete("delete/{id}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> DeleteSportCategory(Guid id)
         {
             try
@@ -109,7 +109,7 @@ namespace Api.Controllers
 
 
         [HttpPut("update")]
-        // [Authorize(Roles = "Admin,User")]
+         [Authorize(Roles = "SuperAdmin")]
         //public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
         //{
         //    try
@@ -141,8 +141,11 @@ namespace Api.Controllers
                 return StatusCode(500, $"An error occurred while updating the Sport Category. Details: {ex.Message}");
             }
         }
+        
+        
+        
         [HttpGet("{id}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetSportCategoryById(Guid id)
         {
             try

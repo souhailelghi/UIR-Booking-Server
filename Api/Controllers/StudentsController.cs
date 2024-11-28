@@ -25,7 +25,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("checkCodeUIR/{codeUir}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> CheckCodeUIR(string codeUir)
         {
             try
@@ -41,7 +41,7 @@ namespace Api.Controllers
 
 
         [HttpPost("add")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> AddStudent([FromBody] AddStudentCommand addStudentCommand)
         {
             try
@@ -62,7 +62,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("GetStudentByUserId/{userId}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetStudentByUserId(Guid userId)
         {
             try
@@ -82,7 +82,7 @@ namespace Api.Controllers
 
 
         [HttpGet("student/{id}")]
-       // [Authorize(Roles = "Admin,User")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetStudentById(Guid id)
         {
             try
@@ -98,7 +98,7 @@ namespace Api.Controllers
 
 
         [HttpGet("GetStudentByCodeUIR/{codeUIR}")]
-        // [Authorize(Roles = "Admin,User")]
+         [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetStudentByCodeUIR(string codeUIR)
         {
             try
