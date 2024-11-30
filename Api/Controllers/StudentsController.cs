@@ -41,7 +41,7 @@ namespace Api.Controllers
 
 
         [HttpPost("add")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> AddStudent([FromBody] AddStudentCommand addStudentCommand)
         {
             try

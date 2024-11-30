@@ -75,7 +75,7 @@ namespace Api.Controllers
 
 
         [HttpGet("list")]
-        [Authorize(Roles = "Admin,User,SuperAdmin")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetSportsList()
         {
             try
@@ -128,7 +128,7 @@ namespace Api.Controllers
 
 
         [HttpGet("category/{categorieId}")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetSportsByCategory(Guid categorieId)
         {
             try

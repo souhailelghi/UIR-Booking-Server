@@ -1,14 +1,14 @@
 ﻿
 using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.ReservationFeature.Commands.DeleteAllReservations;
+
 using Application.Features.ReservationFeature.Queries.CheckReservationAccessRequestQuerie;
+using Application.Features.ReservationFeature.Queries.CountTimeForReservation;
 using Application.Features.ReservationFeature.Queries.GetAllReservationQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByCategorieIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByCategoryIdAndStudentIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByStudentIdQuerie;
-using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
-using Application.Features.SportFeature.Queries.GetSportById;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -26,6 +26,37 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
+
+        //// Endpoint to check if a user or team can make a reservation
+        //[HttpPost("check-reservation-time")]
+        //public async Task<IActionResult> CheckReservationTime([FromBody] CountTimeForReservationQuery request)
+        //{
+        //    // Send the query to the handler and get the result
+        //    var result = await _mediator.Send(request);
+
+        //    if (result.StartsWith("You don't have permission"))
+        //    {
+        //        // If the user needs to wait, return a message with the remaining time
+        //        return Ok(result); // The message contains the remaining time
+        //    }
+
+        //    return Ok("You can make a reservation."); // If no restrictions, permission is granted
+        //}
+        [HttpPost("check-reservation-time")]
+        public async Task<IActionResult> CheckReservationTime([FromBody] CountTimeForReservationQuery request)
+        {
+            var result = await _mediator.Send(request);
+
+            if (result.StartsWith("You don't have permission"))
+            {
+                return Ok(result); // Return the remaining time message
+            }
+
+            return Ok(result); // Return a success message
+        }
+
+
+
         // Endpoint to check if a user or team can make a reservation
         [HttpPost("check-access")]
         public async Task<IActionResult> CheckReservationAccess([FromBody] CheckReservationAccessRequest request)
@@ -42,7 +73,7 @@ namespace Api.Controllers
 
 
         [HttpPost("AddReservations")]
-        [Authorize(Roles = "Admin,User,SuperAdmin")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<ActionResult<string>> AddReservations([FromBody] AddReservationCommand addReservationCommand)
         {
             if (addReservationCommand == null)

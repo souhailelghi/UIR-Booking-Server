@@ -20,7 +20,97 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-     
+        public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+        {
+            // Fetch the sport details
+            var sport = await FetchSportAsync(sportId);
+            if (sport == null)
+                return "Sport not found.";
+
+            // Fetch the student details
+            var student = await FetchStudentAsync(codeUIR);
+            if (student == null)
+                return "Student not found.";
+
+            // Check for missing students in the provided list
+            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+            if (missingStudents.Any())
+            {
+                return $"Some students are missing: {string.Join(", ", missingStudents)}.";
+            }
+
+            // Calculate the allowed delay time for making reservations
+            var delayTime = CalculateDelayTime(sport);
+
+            // Check if the user has made a recent reservation
+            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+            {
+                // Calculate the remaining wait time
+                var recentReservation = await GetMostRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime);
+                var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
+
+                if (remainingTime > TimeSpan.Zero)
+                {
+                    return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
+                }
+            }
+
+            // Check if any student in the list has a conflicting recent reservation
+            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            {
+                return "Conflicting reservation found for one or more students in the list.";
+            }
+
+            // All checks passed, user can make a reservation
+            return "You can make a reservation.";
+        }
+
+        private async Task<Reservation> GetMostRecentReservationAsync(string codeUIR, int referenceSport, DateTime delayTime)
+        {
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsByReferenceSportAsync(codeUIR, referenceSport);
+
+            return reservations
+                .Where(r => r.DateCreation >= delayTime)
+                .OrderByDescending(r => r.DateCreation)
+                .FirstOrDefault();
+        }
+
+        //public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+        //{
+        //    var sport = await FetchSportAsync(sportId);
+        //    if (sport == null) return "Sport not found.";
+
+        //    var student = await FetchStudentAsync(codeUIR);
+        //    if (student == null) return "Student not found.";
+
+        //    var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+        //    if (missingStudents.Any())
+        //    {
+        //        return "Some students are missing.";
+        //    }
+
+        //    var delayTime = CalculateDelayTime(sport);
+
+        //    // Check if the user has a recent reservation
+        //    if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+        //    {
+        //        // Calculate remaining time to wait
+        //        var remainingTime = delayTime - DateTime.UtcNow;
+        //        return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
+        //    }
+
+        //    // Validate that no `CodeUIR` in the provided list has been recently used in another list
+        //    if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+        //    {
+        //        return "Conflicting reservation found for one or more students in the list.";
+        //    }
+
+        //    return "You can make a reservation.";
+        //}
+
+
+
         public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         {
             if (codeUIRList != null && codeUIRList.Contains(codeUIR))
