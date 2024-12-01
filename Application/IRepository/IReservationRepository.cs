@@ -39,5 +39,7 @@ namespace Application.IRepository
 
         Task<List<Reservation>> GetReservationsByCodeUIRsAsync(List<string> codeUIRs, int referenceSport);
 
+        Task<List<Reservation>> GetReservationsByReferenceSportAndListCodeUIRAsync(List<string> codeUIRList, int referenceSport);
+
     }
 }

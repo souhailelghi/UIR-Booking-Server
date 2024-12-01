@@ -25,7 +25,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("checkCodeUIR/{codeUir}")]
-        [Authorize(Roles = "Admin,User,SuperAdmin")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> CheckCodeUIR(string codeUir)
         {
             try

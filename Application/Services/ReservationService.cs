@@ -20,6 +20,7 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
+
         //public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
         //{
         //    // Fetch the sport details
@@ -39,9 +40,12 @@ namespace Application.Services
         //        return $"Some students are missing: {string.Join(", ", missingStudents)}.";
         //    }
 
-
         //    // Calculate the allowed delay time for making reservations
-        //    var delayTime = CalculateDelayTime(sport);
+
+        //    if (!sport.Daysoff.HasValue)
+        //        return "The sport's day off value is not defined.";
+
+        //    var delayTime = DateTime.UtcNow.AddMinutes(-sport.Daysoff.Value);
 
         //    if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
         //    {
@@ -55,29 +59,28 @@ namespace Application.Services
         //        {
         //            return "The sport's day off value is not defined.";
         //        }
-        //        // Calculate the remaining wait time for the most recent reservation codeUIR in the list
-        //        var recentReservation = await GetDelayTimeAsync(codeUIRList, sportId, delayTime);
-        //        if (recentReservation == null)
+
+        //        // Get the delay time for the conflicting reservation
+        //        var remainingTime = await GetDelayTimeAsync(codeUIRList, sportId, delayTime);
+
+        //        // If there's a wait time, format it for user feedback
+        //        if (remainingTime > TimeSpan.Zero)
         //        {
-        //            return "No recent reservation found.";
+        //            return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
         //        }
-        //        //var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
-        //        var remainingTime = recentReservation;
 
-
-        //        return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
 
         //    }
-
-
-
-
 
         //    // Check if the user has made a recent reservation
         //    if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
         //    {
         //        // Calculate the remaining wait time
         //        var recentReservation = await GetMostRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime);
+        //        if (recentReservation == null)
+        //        {
+        //            return "No recent reservation found.";
+        //        }
         //        var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
 
         //        if (remainingTime > TimeSpan.Zero)
@@ -92,14 +95,18 @@ namespace Application.Services
         //        return "Conflicting reservation found for one or more students in the list.";
         //    }
 
-        //    // All checks passed, user can make a reservation
         //    return "You can make a reservation.";
         //}
 
-        public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+
+        // Updated all occurrences of HasConflictingCodeUIRListAsync
+       
+        
+        
+        public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, int referenceSport)
         {
             // Fetch the sport details
-            var sport = await FetchSportAsync(sportId);
+            var sport = await FetchSportByReferenceAsync(referenceSport);
             if (sport == null)
                 return "Sport not found.";
 
@@ -116,59 +123,41 @@ namespace Application.Services
             }
 
             // Calculate the allowed delay time for making reservations
-            //var delayTime = CalculateDelayTime(sport);
             if (!sport.Daysoff.HasValue)
                 return "The sport's day off value is not defined.";
 
             var delayTime = DateTime.UtcNow.AddMinutes(-sport.Daysoff.Value);
 
-            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            if (!await HasConflictingCodeUIRsAsync(codeUIRList, referenceSport, delayTime))
             {
-                // Check if sport and necessary fields are not null
                 if (!sport.ReferenceSport.HasValue)
                 {
                     return "Sport's reference value is missing.";
                 }
+           
 
-                if (sport.Daysoff == null)
-                {
-                    return "The sport's day off value is not defined.";
-                }
-
-                // Get the delay time for the conflicting reservation
-                var remainingTime = await GetDelayTimeAsync(codeUIRList, sportId, delayTime);
-
-                // If there's a wait time, format it for user feedback
-                if (remainingTime > TimeSpan.Zero)
-                {
-                    return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
-                }
-
-             
-            }
-
-            // Check if the user has made a recent reservation
-            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
-            {
-                // Calculate the remaining wait time
-                var recentReservation = await GetMostRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime);
-                var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
-
+                var remainingTime = await GetDelayTimeAsync(codeUIRList, sport.Id, delayTime);
                 if (remainingTime > TimeSpan.Zero)
                 {
                     return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
                 }
             }
 
-            // Check if any student in the list has a conflicting recent reservation
-            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            if (await HasRecentReservationAsync(codeUIR, referenceSport, delayTime))
             {
-                return "Conflicting reservation found for one or more students in the list.";
+                var recentReservation = await GetMostRecentReservationAsync(codeUIR, referenceSport, delayTime);
+                if (recentReservation != null)
+                {
+                    var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
+                    if (remainingTime > TimeSpan.Zero)
+                    {
+                        return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
+                    }
+                }
             }
 
             return "You can make a reservation.";
         }
-
         private async Task<TimeSpan> GetDelayTimeAsync(List<string> codeUIRList, Guid sportId, DateTime delayThreshold)
         {
             if (codeUIRList == null || !codeUIRList.Any())
@@ -198,27 +187,10 @@ namespace Application.Services
             return TimeSpan.Zero; // No conflict found
         }
 
-
-        private async Task<string> GetDelayTimeStringAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        // Add helper for fetching sport by ReferenceSport
+        private async Task<Sport> FetchSportByReferenceAsync(int referenceSport)
         {
-            if (codeUIRList == null || !codeUIRList.Any())
-                return "No CodeUIR list provided.";
-
-            var reservations = await _unitOfWork.ReservationRepository
-                .GetReservationsForSportAsync(sportId, delayTime);
-
-            // Check if any CodeUIR in the list exists in another reservation's CodeUIRList
-            var conflictingReservations = reservations.Any(r =>
-                r.CodeUIRList != null &&
-                r.CodeUIRList.Intersect(codeUIRList).Any());
-
-            if (conflictingReservations)
-            {
-                var delay = delayTime - DateTime.Now;
-                return $"Conflict detected. Delay time: {delay.TotalMinutes} minutes.";
-            }
-
-            return "No conflict detected.";
+            return await _unitOfWork.SportRepository.GetAsync(s => s.ReferenceSport == referenceSport);
         }
 
 
@@ -239,23 +211,7 @@ namespace Application.Services
 
 
 
-        private async Task<Reservation> GetMostRecentReservationCodeUIRListAsync(List<string> codeUIRList, int referenceSport, DateTime delayTime)
-        {
-            var reservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByCodeUIRsAsync(codeUIRList, referenceSport);
-
-            if (!reservations.Any()) return null; // Debug point: Ensure there are reservations fetched
-
-            var recentReservation = reservations
-                .Where(r => r.DateCreation >= delayTime)
-                .OrderByDescending(r => r.DateCreation)
-                .FirstOrDefault();
-
-            return recentReservation;
-        }
-
-     
-
+       
 
 
 
@@ -286,9 +242,10 @@ namespace Application.Services
             }
 
             // Validate that no `CodeUIR` in the provided list has been recently used in another list
-            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            var conflictingCodeUIRs = await GetConflictingCodeUIRsAsync(codeUIRList, sportId, delayTime);
+            if (conflictingCodeUIRs.Any())
             {
-                return "Certains CodeUIR de la liste sont déjà associés à une autre réservation durant la période concernée";
+                return $"Certains CodeUIR de la liste sont déjà associés à une autre réservation durant la période concernée: {string.Join(", ", conflictingCodeUIRs)}";
             }
 
             return "No conflicting reservations found";
@@ -329,6 +286,64 @@ namespace Application.Services
 
 
         //Helper Methods
+        private async Task<bool> HasConflictingCodeUIRListAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return false;
+
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsForSportAsync(sportId, delayTime);
+
+            // Check if any CodeUIR in the list exists in another reservation's CodeUIRList
+            var conflictingReservations = reservations.Any(r =>
+                r.CodeUIRList != null &&
+                r.CodeUIRList.Intersect(codeUIRList).Any());
+            return conflictingReservations;
+        }
+        private async Task<List<string>> GetConflictingCodeUIRsAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return new List<string>();
+
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsForSportAsync(sportId, delayTime);
+
+            // Find all conflicting CodeUIR values
+            var conflictingCodeUIRs = reservations
+                .SelectMany(r => r.CodeUIRList ?? new List<string>())
+                .Intersect(codeUIRList)
+                .ToList();
+
+            return conflictingCodeUIRs;
+        }
+
+
+
+
+
+
+        private async Task<bool> HasConflictingCodeUIRsAsync(List<string> codeUIRList, int referenceSport, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return false;
+
+            // Fetch reservations with overlapping CodeUIR values
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsByReferenceSportAndListCodeUIRAsync(codeUIRList, referenceSport);
+
+            // Check if any reservation has a conflict
+            var conflictingReservations = reservations.Any(r =>
+                r.CodeUIRList != null &&
+                r.CodeUIRList.Intersect(codeUIRList).Any());
+
+            return conflictingReservations;
+        }
+
+
+
+       
+        
+        
         private async Task<Sport> FetchSportAsync(Guid sportId)
         {
             return await _unitOfWork.SportRepository.GetAsync(s => s.Id == sportId);
@@ -373,21 +388,7 @@ namespace Application.Services
         }
 
 
-        //work with this one 
-        private async Task<bool> HasConflictingCodeUIRListAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
-        {
-            if (codeUIRList == null || !codeUIRList.Any())
-                return false;
-
-            var reservations = await _unitOfWork.ReservationRepository
-                .GetReservationsForSportAsync(sportId, delayTime);
-
-            // Check if any CodeUIR in the list exists in another reservation's CodeUIRList
-            var conflictingReservations = reservations.Any(r =>
-                r.CodeUIRList != null &&
-                r.CodeUIRList.Intersect(codeUIRList).Any());
-            return conflictingReservations;
-        }
+       
 
 
         //helper methods 

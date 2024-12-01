@@ -38,6 +38,19 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
             return reservations;
         }
+        public async Task<List<Reservation>> GetReservationsByReferenceSportAndListCodeUIRAsync(List<string> codeUIRList, int referenceSport)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return new List<Reservation>();
+
+            var reservations = await _context.Reservations
+                .Include(r => r.Sport) // Ensure Sport is loaded
+                .Where(r => r.Sport.ReferenceSport == referenceSport && codeUIRList.Contains(r.CodeUIR))
+                .ToListAsync();
+
+            return reservations;
+        }
+
 
 
         //fetch reservations by List of codeUIR

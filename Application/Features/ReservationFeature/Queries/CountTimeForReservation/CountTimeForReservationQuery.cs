@@ -11,6 +11,7 @@ namespace Application.Features.ReservationFeature.Queries.CountTimeForReservatio
     {
         public string CodeUIR { get; set; }
         public List<string> CodeUIRList { get; set; }
-        public Guid SportId { get; set; }
+        public int Reference { get; set; }
+     
     }
 }

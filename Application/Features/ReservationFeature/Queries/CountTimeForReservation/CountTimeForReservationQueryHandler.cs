@@ -20,7 +20,7 @@ namespace Application.Features.ReservationFeature.Queries.CountTimeForReservatio
         public async Task<string> Handle(CountTimeForReservationQuery request, CancellationToken cancellationToken)
         {
             // Delegate the logic to the service layer
-            return await _reservationService.CountTimeAsync(request.CodeUIR, request.CodeUIRList, request.SportId);
+            return await _reservationService.CountTimeAsync(request.CodeUIR, request.CodeUIRList, request.Reference );
         }
     }
 }

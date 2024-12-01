@@ -31,7 +31,8 @@ namespace Application.IServices
         Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId);
         Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR);
         //Task<string> CheckUserHaveAccessReservationAsync(string codeUIR,  Guid sportId);
-        Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId);
+        //Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId);
+        Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, int referenceSport  );
 
 
 
