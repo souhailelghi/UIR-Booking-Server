@@ -10,6 +10,7 @@ namespace Application.IUnitOfWorks
         ISportRepository SportRepository { get; }
         IStudentRepository StudentRepository { get; }
 
+        IEventRepository EventRepository { get; }
         IReservationRepository ReservationRepository { get; }
 
         IPlanningRepository PlanningRepository { get; }

@@ -71,6 +71,7 @@
 //    }
 //    }
 //using Application.Features.PlanningFeature.Commands.AddPlanning;
+using Application.Features.EventFeature.Commands.AddEvent;
 using Application.Features.PlanningFeature.Commands.UpdatePlanning;
 using Application.Features.ReservationFeature.Commands.AddReservation;
 using Application.Features.SportCategoryFeature.Commands.AddSportCategory;
@@ -109,6 +110,10 @@ namespace Application.Mapping
 
             //Student
             CreateMap<AddStudentCommand, Student>().ReverseMap();
+            //Event
+            CreateMap<AddEventCommand, Event>().ForMember(dest => dest.Image, opt => opt.MapFrom(src => ConvertImageToByteArray(src.ImageUpload)));
+
+
 
             //Reservation
             CreateMap<AddReservationCommand, Reservation>().ReverseMap();

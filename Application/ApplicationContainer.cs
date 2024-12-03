@@ -21,6 +21,7 @@ namespace Application
             services.AddTransient<IReservationService, ReservationService>();
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<ITimeRangeService, TimeRangeService>();
+            services.AddTransient<IEventService, EventService>();
 
 
 

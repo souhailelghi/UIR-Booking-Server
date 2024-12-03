@@ -16,6 +16,8 @@ namespace Infrastructure.Db
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Sport> Sports { get; set; }
         public DbSet<Student> Students { get; set; }
+
+        public DbSet<Event> Events { get; set; }
         public DbSet<SystemeInfo> SystemeInfos { get; set; }
         public DbSet<TimeRange> TimeRanges { get; set; }
 
@@ -97,8 +99,18 @@ namespace Infrastructure.Db
             modelBuilder.Entity<SystemeInfo>()
                 .Property(si => si.AboutUs)
                 .IsRequired();
+            //Event properties constraints
+            modelBuilder.Entity<Event>()
+                .Property(s => s.Title)
+                .IsRequired()
+                .HasMaxLength(100);
 
-            // Sport entity constraints
+            modelBuilder.Entity<Event>()
+                .Property(s => s.Description)
+                .IsRequired()
+                .HasMaxLength(1000);
+
+            //Sport entity constraints
             modelBuilder.Entity<Sport>()
                 .Property(s => s.Name)
                 .IsRequired()

@@ -17,6 +17,11 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+
+
+     
+
+
         //--------
         public async Task<Reservation> GetAsync(Expression<Func<Reservation, bool>> filter)
         {
@@ -27,12 +32,36 @@ namespace Infrastructure.Repositories
         // Fetch reservations by ReferenceSport for a single student
         public async Task<List<Reservation>> GetReservationsByReferenceSportAsync(string codeUIR, int referenceSport)
         {
-            return await _context.Reservations
+            var reservations = await _context.Reservations
                 .Include(r => r.Sport) // Ensure Sport is loaded
                 .Where(r => r.Sport.ReferenceSport == referenceSport && r.CodeUIR == codeUIR)
                 .ToListAsync();
+            return reservations;
+        }
+        public async Task<List<Reservation>> GetReservationsByReferenceSportAndListCodeUIRAsync(List<string> codeUIRList, int referenceSport)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return new List<Reservation>();
+
+            var reservations = await _context.Reservations
+                .Include(r => r.Sport) // Ensure Sport is loaded
+                .Where(r => r.Sport.ReferenceSport == referenceSport && codeUIRList.Contains(r.CodeUIR))
+                .ToListAsync();
+
+            return reservations;
         }
 
+
+
+        //fetch reservations by List of codeUIR
+        public async Task<List<Reservation>> GetReservationsByCodeUIRsAsync(List<string> codeUIRs , int referenceSport)
+        {
+            var reservations = await _context.Reservations
+               .Include(r => r.Sport) 
+               .Where(r => r.Sport.ReferenceSport == referenceSport && codeUIRs.Contains(r.CodeUIR))
+               .ToListAsync();
+            return reservations;
+        }
 
 
 
