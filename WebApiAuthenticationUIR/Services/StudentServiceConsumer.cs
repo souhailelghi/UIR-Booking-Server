@@ -21,7 +21,7 @@ namespace WebApiAuthenticationUIR.Services
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync("https://localhost:7010/api/Student/CheckEmailAndPassword", loginRequest);
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7019/api/Student/CheckEmailAndPassword", loginRequest);
 
             return response.IsSuccessStatusCode; // Return true if login is valid, otherwise false
         }
@@ -35,7 +35,7 @@ namespace WebApiAuthenticationUIR.Services
                 Password = password
             };
 
-            var response = await _httpClient.PostAsJsonAsync("https://localhost:7010/api/Student/CheckEmailAndPassword", loginRequest);
+            var response = await _httpClient.PostAsJsonAsync("https://localhost:7019/api/Student/CheckEmailAndPassword", loginRequest);
 
             if (response.IsSuccessStatusCode)
             {
