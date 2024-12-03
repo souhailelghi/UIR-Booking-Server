@@ -11,19 +11,21 @@ namespace Application.Services
 
         public ISportService SportService { get; set; }
 
-        public IStudentService StudentService {  get; set; }
+        public IStudentService StudentService { get; set; }
+        public IEventService EventService { get; }
 
         public IReservationService ReservationService {  get; set; }
 
         public IPlanningService PlanningService { get; }
         public ITimeRangeService TimeRangeService { get;  }
 
-        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IReservationService reservationService , IPlanningService planningService, ITimeRangeService timeRangeService)
+        public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IEventService eventService, IReservationService reservationService , IPlanningService planningService, ITimeRangeService timeRangeService)
         {
             Mapper = mapper;
             SportCategoryService = sportCategoryService;
             SportService = sportService;
             StudentService = studentService;
+            EventService = eventService;
             ReservationService = reservationService;
             PlanningService = planningService;
             TimeRangeService = timeRangeService;

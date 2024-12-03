@@ -23,17 +23,20 @@ namespace Infrastructure.UnitOfWorks
 
         public IStudentRepository StudentRepository  { get; }
 
+        public IEventRepository EventRepository { get; }
+
         public IReservationRepository ReservationRepository { get; }
 
         public IPlanningRepository PlanningRepository { get; }
         public ITimeRangeRepository TimeRangeRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository , IReservationRepository reservationRepository , IPlanningRepository planningRepository , ITimeRangeRepository timeRangeRepository)
+        public UnitOfWork(ApplicationDbContext dbContext , ISportCategoryRepository sportCategoryRepository , ISportRepository sportRepository , IStudentRepository studentRepository ,IEventRepository eventRepository ,IReservationRepository reservationRepository , IPlanningRepository planningRepository , ITimeRangeRepository timeRangeRepository)
         {
              _dbContext = dbContext;
             SportCategoryRepository = sportCategoryRepository;
             SportRepository = sportRepository;
             StudentRepository = studentRepository;
+            EventRepository = eventRepository;
             ReservationRepository = reservationRepository;
             PlanningRepository = planningRepository;
             TimeRangeRepository = timeRangeRepository;

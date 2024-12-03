@@ -8,14 +8,14 @@ using System.Linq.Expressions;
 
 namespace Infrastructure.Repositories
 {
-    public class ReservationRepository : GenericRepository<Reservation> , IReservationRepository
+    public class ReservationRepository : GenericRepository<Reservation>, IReservationRepository
     {
 
         private readonly ApplicationDbContext _context;
 
         public ReservationRepository(ApplicationDbContext context) : base(context)
         {
-            _context = context;   
+            _context = context;
         }
 
 
@@ -83,16 +83,16 @@ namespace Infrastructure.Repositories
         }
 
 
-   
+
         public async Task<List<Reservation>> GetReservationsBySportIdAsync(Guid sportId)
         {
-           
+
             return await _context.Reservations
                 .Where(r => r.SportId == sportId)
                 .ToListAsync();
         }
 
-        public async Task<List<Reservation>> GetReservationsForDateAsync( string codeUIR, List<string> teamMembersIds)
+        public async Task<List<Reservation>> GetReservationsForDateAsync(string codeUIR, List<string> teamMembersIds)
         {
             return await _context.Reservations
                 .Where(r => (r.CodeUIR == codeUIR || teamMembersIds.Contains(r.CodeUIR)))
@@ -101,14 +101,14 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Reservation>> GetReservationsDateAsync(string codeUIR, List<string> teamMembersIds)
         {
-           var res = await _context.Reservations
-                .Where(r => teamMembersIds.Contains(r.CodeUIR)) // Filter by team members
-                .ToListAsync();
+            var res = await _context.Reservations
+                 .Where(r => teamMembersIds.Contains(r.CodeUIR)) // Filter by team members
+                 .ToListAsync();
             return res;
         }
 
 
-     
+
 
 
 
@@ -123,8 +123,8 @@ namespace Infrastructure.Repositories
         }
 
 
-     
-     
+
+
         public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR)
         {
             return await _context.Reservations

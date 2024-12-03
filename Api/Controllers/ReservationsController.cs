@@ -147,7 +147,7 @@ namespace Api.Controllers
 
 
 
-       
+
 
         [HttpDelete("deleteAll")]
         [Authorize(Roles = "SuperAdmin")]
@@ -198,7 +198,7 @@ namespace Api.Controllers
         }
 
 
-       
+
 
     }
 }

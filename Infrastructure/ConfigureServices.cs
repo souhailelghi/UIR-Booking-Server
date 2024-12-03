@@ -16,6 +16,7 @@ namespace Infrastructure
 
             services.AddScoped<ISportCategoryRepository, SportCategoryRepository>();
             services.AddScoped<ISportRepository, SportRepository>();
+            services.AddScoped<IEventRepository, EventRepository>();
             services.AddScoped<IStudentRepository, StudentRepository>();
             services.AddScoped<IReservationRepository, ReservationRepository>();
             services.AddScoped<IPlanningRepository, PlanningRepository>();

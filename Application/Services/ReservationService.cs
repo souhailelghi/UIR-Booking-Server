@@ -394,7 +394,7 @@ namespace Application.Services
 
 
 
-       
+
         public async Task DeleteAllReservationsAsync()
         {
             var reservations = await _unitOfWork.ReservationRepository.GetAllAsTracking();
@@ -420,6 +420,6 @@ namespace Application.Services
             return reservationsList;
         }
 
-      
+
     }
 }
