@@ -63,7 +63,7 @@ namespace Api.Controllers
         {
             var result = await _mediator.Send(request);
 
-            if (result==false)
+            if (result == false)
             {
                 return Ok(false); // If there are any errors, return BadRequest
             }

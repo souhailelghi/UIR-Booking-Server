@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
         }
 
 
-     
+
 
 
         //--------
@@ -54,10 +54,10 @@ namespace Infrastructure.Repositories
 
 
         //fetch reservations by List of codeUIR
-        public async Task<List<Reservation>> GetReservationsByCodeUIRsAsync(List<string> codeUIRs , int referenceSport)
+        public async Task<List<Reservation>> GetReservationsByCodeUIRsAsync(List<string> codeUIRs, int referenceSport)
         {
             var reservations = await _context.Reservations
-               .Include(r => r.Sport) 
+               .Include(r => r.Sport)
                .Where(r => r.Sport.ReferenceSport == referenceSport && codeUIRs.Contains(r.CodeUIR))
                .ToListAsync();
             return reservations;
