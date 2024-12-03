@@ -40,26 +40,7 @@ namespace Api.Controllers
             }
         }
 
-        //[HttpPost("add")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> AddSportCategory([FromBody] AddSportCategoryCommand addSportCategoryCommand)
-        //{
-        //    try
-        //    {
-        //        if (addSportCategoryCommand == null)
-        //        {
-        //            return BadRequest("SportCategory cannot be null.");
-        //        }
-
-        //        SportCategory addedSportCategory = await _mediator.Send(addSportCategoryCommand);
-        //        return Ok(addedSportCategory);
-        //    }
-        //    catch (Exception ex)
-        //    {
-
-        //        return StatusCode(500, $"An error occurred while adding the SportCategory. Details: {ex.Message}");
-        //    }
-        //}
+      
 
         [HttpPost("add")]
         [Authorize(Roles = "SuperAdmin")]
@@ -110,20 +91,6 @@ namespace Api.Controllers
 
         [HttpPut("update")]
          [Authorize(Roles = "SuperAdmin")]
-        //public async Task<IActionResult> UpdateSportCategory([FromBody] UpdateSportCategoryCommand command)
-        //{
-        //    try
-        //    {
-        //        await _mediator.Send(command);
-        //        return Ok("SportCategory Updated Successfully");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, $"An error occurred while updating the SportCategory. Details: {ex.Message}");
-        //    }
-        //}
-
-
         public async Task<IActionResult> UpdateSportCategory([FromForm] UpdateSportCategoryCommand command)
         {
             try

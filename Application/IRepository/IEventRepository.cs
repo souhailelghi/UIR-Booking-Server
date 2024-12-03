@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Application.IRepository
 {
-    public interface IEventRepository:IGenericRepository<Event>
+    public interface IEventRepository : IGenericRepository<Event>
     {
         Task AddAsync(Event eventEntity);
+   
 
     }
 }

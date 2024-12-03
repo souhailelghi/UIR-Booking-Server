@@ -80,16 +80,6 @@ namespace Application.Services
             return sportCategory;
         }
 
-        public async Task<List<SportCategory>> GetSportCategorysList()
-        {
-            List<SportCategory> sportCategorysList = await _unitOfWork.SportCategoryRepository.GetAllAsNoTracking();
-            //if (sportCategorysList.IsNullOrEmpty())
-            //{
-            //    throw new ArgumentException("No sportCategorysList  found.");
-            //}
-            return sportCategorysList;
-        }
-
         public async Task UpdateSportCategoryAsync(SportCategory sport)
         {
 
@@ -130,5 +120,20 @@ namespace Application.Services
                 throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
             }
         }
+      
+        
+        public async Task<List<SportCategory>> GetSportCategorysList()
+        {
+            List<SportCategory> sportCategorysList = await _unitOfWork.SportCategoryRepository.GetAllAsNoTracking();
+            //if (sportCategorysList.IsNullOrEmpty())
+            //{
+            //    throw new ArgumentException("No sportCategorysList  found.");
+            //}
+            return sportCategorysList;
+        }
+
+    
+    
+    
     }
 }

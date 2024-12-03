@@ -18,6 +18,7 @@ namespace Application.Services
 
         public IPlanningService PlanningService { get; }
         public ITimeRangeService TimeRangeService { get;  }
+    
 
         public UnitOfService(IMapper mapper , ISportCategoryService sportCategoryService , ISportService sportService , IStudentService studentService , IEventService eventService, IReservationService reservationService , IPlanningService planningService, ITimeRangeService timeRangeService)
         {

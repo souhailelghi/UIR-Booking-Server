@@ -55,5 +55,82 @@ namespace Application.Services
             // Retourner la liste des événements
             return events;
         }
+
+        // get by id , delete , update : 
+
+        public async Task DeleteEventAsync(Guid id)
+        {
+            Event Event = await _unitOfWork.EventRepository.GetAsNoTracking(u => u.Id == id);
+            if (Event == null)
+            {
+            throw new ArgumentException("event not found.");
+        }
+
+            try
+            {
+
+            await _unitOfWork.EventRepository.RemoveAsync(Event);
+        await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+}
+        }
+
+
+
+        public async Task<Event> GetEventByIdAsync(Guid id)
+        {
+            Event Events = await _unitOfWork.EventRepository.GetAsNoTracking(u => u.Id == id);
+
+            return Events;
+        }
+
+        public async Task UpdateEventAsync(Event Events)
+        {
+
+
+
+
+            if (Events == null)
+            {
+                throw new ArgumentNullException(nameof(Events));
+            }
+
+        // Use GetAsync with a filter expression to find the Event by Id
+        Event existingEvent = await _unitOfWork.EventRepository.GetAsNoTracking(d => d.Id == Events.Id);
+            if (existingEvent == null)
+            {
+                throw new ArgumentException("Event not found.");
+            }
+
+            existingEvent.Title = Events.Title;
+            existingEvent.Description = Events.Description;
+            existingEvent.lien = Events.lien;
+
+
+            // Update image if provided
+            if (Events.Image != null)
+            {
+                existingEvent.Image = Events.Image;
+            }
+
+
+
+            try
+            {
+                await _unitOfWork.EventRepository.UpdateAsync(existingEvent);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+
+                throw new ArgumentException($"Exception: {ex.Message}\nStackTrace: {ex.StackTrace}");
+            }
+        }
+
+
+
     }
 }

@@ -1,21 +1,18 @@
-﻿using Domain.Entities;
-using MediatR;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Features.EventFeature.Queries.GetEventById
+namespace Application.Features.EventFeature.Commands.DeleteEvent
 {
-    public class GetEventByIdQueries : IRequest<Event>
+    public class DeleteEventCommand : IRequest<string>
     {
         public Guid Id { get; set; }
-
-        public GetEventByIdQueries(Guid id)
+        public DeleteEventCommand(Guid id)
         {
             Id = id;
-
         }
     }
 }
