@@ -20,7 +20,7 @@ namespace Application.Services
                 await client.ConnectAsync("smtp.gmail.com", 587, MailKit.Security.SecureSocketOptions.StartTls);
 
                 // Authenticate with the SMTP server
-                await client.AuthenticateAsync("@gmail.com", "psw");
+                await client.AuthenticateAsync("souhailelghiouane98@gmail.com", "fpcz jyfw yyks hmsm ");
 
                 // Send the email
                 await client.SendAsync(emailMessage);
