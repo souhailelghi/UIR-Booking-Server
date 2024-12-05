@@ -22,10 +22,11 @@ namespace Application
             services.AddTransient<IPlanningService, PlanningService>();
             services.AddTransient<ITimeRangeService, TimeRangeService>();
             services.AddTransient<IEventService, EventService>();
+            services.AddTransient<IEmailSender, EmailSender>();
 
 
 
-         
+
             //configuration of mediator
             services.AddMediatR(Assembly.GetExecutingAssembly());
             //configuration of auto mapper

@@ -1,5 +1,6 @@
 ﻿using Application.Features.EmailFeature.Queries;
 using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
+using Application.IServices;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -11,11 +12,12 @@ namespace Api.Controllers
     [ApiController]
     public class EmailController : ControllerBase
     {
-        private readonly IMediator _mediator;
+        //private readonly IMediator _mediator;
+        private readonly IEmailSender emailSender;
 
-        public EmailController(IMediator mediator)
+        public EmailController(IEmailSender emailSender)
         {
-            _mediator = mediator;
+            this.emailSender = emailSender;
         }
         //[HttpGet("{id}")]
         //[Authorize(Roles = "Admin,User")]
@@ -31,5 +33,24 @@ namespace Api.Controllers
         //        return StatusCode(500, ex.Message);
         //    }
         //}
+
+        [HttpPost("SendEmail")]
+        public async Task<IActionResult> SendEmail([FromBody] EmailRequest emailRequest)
+        {
+            if (emailRequest == null || string.IsNullOrWhiteSpace(emailRequest.Email))
+            {
+                return BadRequest("Invalid email details.");
+            }
+
+            await emailSender.SendEmailAsync(emailRequest.Email, emailRequest.Subject, emailRequest.Message);
+            return Ok("Email sent successfully.");
+        }
+    }
+    public class EmailRequest
+    {
+        public string Email { get; set; }
+        public string Subject { get; set; }
+        public string Message { get; set; }
+
     }
 }

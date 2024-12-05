@@ -139,7 +139,7 @@ namespace Application.Services
                 var remainingTime = await GetDelayTimeAsync(codeUIRList, sport.Id, delayTime);
                 if (remainingTime > TimeSpan.Zero)
                 {
-                    return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
+                    return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
                 }
             }
 
@@ -151,13 +151,16 @@ namespace Application.Services
                     var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
                     if (remainingTime > TimeSpan.Zero)
                     {
-                        return $"You don't have permission to make a reservation. Please wait for {remainingTime:hh\\:mm\\:ss}.";
+                        return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
                     }
                 }
             }
 
             return "You can make a reservation.";
         }
+      
+        
+        
         private async Task<TimeSpan> GetDelayTimeAsync(List<string> codeUIRList, Guid sportId, DateTime delayThreshold)
         {
             if (codeUIRList == null || !codeUIRList.Any())
