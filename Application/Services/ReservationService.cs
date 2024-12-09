@@ -166,16 +166,19 @@ namespace Application.Services
             if (codeUIRList == null || !codeUIRList.Any())
                 throw new ArgumentException("No CodeUIR list provided.");
 
+            var sport = await FetchSportAsync(sportId);
+            var ReferenceSport = sport.ReferenceSport.Value;
+
             // Fetch reservations for the sport within the delay threshold
             var reservations = await _unitOfWork.ReservationRepository
-                .GetReservationsForSportAsync(sportId, delayThreshold);
+                .GetReservationsByReferenceSportWithCodeUIRAsync(ReferenceSport, delayThreshold);
 
             // Find the most recent conflicting reservation
             var conflictingReservation = reservations
                 .Where(r => r.CodeUIRList != null)
                 .FirstOrDefault(r => r.CodeUIRList.Intersect(codeUIRList).Any());
 
-            var sport = await FetchSportAsync(sportId);
+         
 
 
             if (conflictingReservation != null)
@@ -190,6 +193,31 @@ namespace Application.Services
             return TimeSpan.Zero; // No conflict found
         }
 
+
+
+
+        private async Task<List<string>> GetConflictingCodeUIRsAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
+        {
+            if (codeUIRList == null || !codeUIRList.Any())
+                return new List<string>();
+
+
+            var sport = await FetchSportAsync(sportId);
+            var ReferenceSport = sport.ReferenceSport.Value;
+
+            var reservations = await _unitOfWork.ReservationRepository
+                .GetReservationsByReferenceSportWithCodeUIRAsync(ReferenceSport, delayTime);
+
+            // Find all conflicting CodeUIR values
+            var conflictingCodeUIRs = reservations
+                .SelectMany(r => r.CodeUIRList ?? new List<string>())
+                .Intersect(codeUIRList)
+                .ToList();
+
+            //return reservationsWithCodeUIR.Any(r => r.CodeUIRList != null && r.CodeUIRList.Contains(codeUIR));
+
+            return conflictingCodeUIRs;
+        }
         // Add helper for fetching sport by ReferenceSport
         private async Task<Sport> FetchSportByReferenceAsync(int referenceSport)
         {
@@ -313,28 +341,7 @@ namespace Application.Services
                 r.CodeUIRList.Intersect(codeUIRList).Any());
             return conflictingReservations;
         }
-        private async Task<List<string>> GetConflictingCodeUIRsAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
-        {
-            if (codeUIRList == null || !codeUIRList.Any())
-                return new List<string>();
-
-
-            var sport = await FetchSportAsync(sportId);
-            var ReferenceSport = sport.ReferenceSport.Value;
-
-            var reservations = await _unitOfWork.ReservationRepository
-                .GetReservationsByReferenceSportWithCodeUIRAsync(ReferenceSport, delayTime);
-
-            // Find all conflicting CodeUIR values
-            var conflictingCodeUIRs = reservations
-                .SelectMany(r => r.CodeUIRList ?? new List<string>())
-                .Intersect(codeUIRList)
-                .ToList();
-
-            //return reservationsWithCodeUIR.Any(r => r.CodeUIRList != null && r.CodeUIRList.Contains(codeUIR));
-
-            return conflictingCodeUIRs;
-        }
+     
 
 
 

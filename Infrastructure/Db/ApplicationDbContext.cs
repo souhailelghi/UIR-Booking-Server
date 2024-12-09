@@ -45,6 +45,8 @@ namespace Infrastructure.Db
                 .HasIndex(s => s.CodeUIR)
                 .IsUnique();
 
+            //modelBuilder.Entity<Student>().HasQueryFilter(u => !u.IsDeleted);
+
             // Relationship between BlackList and Reservation (many-to-one)
             modelBuilder.Entity<BlackList>()
                 .HasOne<Reservation>()

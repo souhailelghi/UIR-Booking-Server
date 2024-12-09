@@ -18,6 +18,7 @@ namespace Domain.Entities
         [Required]
         [MaxLength(50)]
         public string CodeUIR { get; set; }
+        //public bool IsDeleted { get; set; } = false;
     }
 }
                  
