@@ -27,21 +27,6 @@ namespace Api.Controllers
             _mediator = mediator;
         }
 
-        //// Endpoint to check if a user or team can make a reservation
-        //[HttpPost("check-reservation-time")]
-        //public async Task<IActionResult> CheckReservationTime([FromBody] CountTimeForReservationQuery request)
-        //{
-        //    // Send the query to the handler and get the result
-        //    var result = await _mediator.Send(request);
-
-        //    if (result.StartsWith("You don't have permission"))
-        //    {
-        //        // If the user needs to wait, return a message with the remaining time
-        //        return Ok(result); // The message contains the remaining time
-        //    }
-
-        //    return Ok("You can make a reservation."); // If no restrictions, permission is granted
-        //}
         [HttpPost("check-reservation-time")]
         public async Task<IActionResult> CheckReservationTime([FromBody] CountTimeForReservationQuery request)
         {

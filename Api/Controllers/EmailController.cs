@@ -19,20 +19,7 @@ namespace Api.Controllers
         {
             this.emailSender = emailSender;
         }
-        //[HttpGet("{id}")]
-        //[Authorize(Roles = "Admin,User")]
-        //public async Task<IActionResult> GetSportCategoryById(Guid id)
-        //{
-        //    try
-        //    {
-        //        Email OneEmail = await _mediator.Send(new GetAllEmailQuerie(id));
-        //        return Ok(OneEmail);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return StatusCode(500, ex.Message);
-        //    }
-        //}
+      
 
         [HttpPost("SendEmail")]
         public async Task<IActionResult> SendEmail([FromBody] EmailRequest emailRequest)
