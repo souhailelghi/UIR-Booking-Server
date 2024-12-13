@@ -50,17 +50,36 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             Sport result = await _unitOfService.SportService.GetSportByIdAsync(request.SportId);
             var nameSport = result.Name;
 
+
             //    if (bookingMessage == "Reservation successfully created.")
             //    {
-            //        // Convert CodeUIRList to a readable string
+            //        // Fetch names of all students in CodeUIRList
+            //        string studentNamesFormatted = "No students found";
+            //        var students = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(request.CodeUIR);
             //        string codeUIRListFormatted = request.CodeUIRList != null ? string.Join(", ", request.CodeUIRList) : "No codes provided";
-            //        var student = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(request.CodeUIR);
-            //        // Send email notification
+
+            //        if (request.CodeUIRList != null && request.CodeUIRList.Count > 0)
+            //        {
+            //            var studentNames = new List<string>();
+
+            //            foreach (var codeUIR in request.CodeUIRList)
+            //            {
+            //                var student = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(codeUIR);
+            //                if (student != null)
+            //                {
+            //                    studentNames.Add($"{student.FirstName} {student.LastName}");
+            //                }
+            //            }
+
+            //            studentNamesFormatted = string.Join(", ", studentNames);
+            //        }
+
+            //        // Prepare the email notification
             //        string emailSubject = "New Reservation Created";
             //        string emailBody = $@"
             //A new reservation has been successfully created for:
-            //- CodeUIR: {request.CodeUIR} - name student: {student.FirstName} {student.LastName}
-            //- List of codes: {codeUIRListFormatted}
+            //- CodeUIR: {request.CodeUIR} - name studnet : - name student: {students.FirstName} {students.LastName}
+            //- List of codes: {codeUIRListFormatted} name student: {studentNamesFormatted}
             //- Hour start: {request.HourStart}
             //- Hour end: {request.HourEnd}
             //- Sport reserved: {nameSport}";
@@ -68,35 +87,43 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             //        await _emailSender.SendEmailAsync("contact@souhail.me", emailSubject, emailBody);
             //    }
 
+
             if (bookingMessage == "Reservation successfully created.")
             {
-                // Fetch names of all students in CodeUIRList
-                string studentNamesFormatted = "No students found";
+                // Prepare a mapping of CodeUIR to student names
+                var codeUIRWithStudents = new List<string>();
                 var students = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(request.CodeUIR);
-                string codeUIRListFormatted = request.CodeUIRList != null ? string.Join(", ", request.CodeUIRList) : "No codes provided";
 
                 if (request.CodeUIRList != null && request.CodeUIRList.Count > 0)
                 {
-                    var studentNames = new List<string>();
-
                     foreach (var codeUIR in request.CodeUIRList)
                     {
                         var student = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(codeUIR);
                         if (student != null)
                         {
-                            studentNames.Add($"{student.FirstName} {student.LastName}");
+                            codeUIRWithStudents.Add($"{codeUIR}: {student.FirstName} {student.LastName}");
+                        }
+                        else
+                        {
+                            codeUIRWithStudents.Add($"{codeUIR}: Student not found");
                         }
                     }
-
-                    studentNamesFormatted = string.Join(", ", studentNames);
                 }
+                else
+                {
+                    codeUIRWithStudents.Add("No codes provided");
+                }
+
+                // Format the CodeUIR-Student pairs as a string
+                string codeUIRListFormatted = string.Join("\n", codeUIRWithStudents);
 
                 // Prepare the email notification
                 string emailSubject = "New Reservation Created";
                 string emailBody = $@"
         A new reservation has been successfully created for:
-        - CodeUIR: {request.CodeUIR} - name studnet : - name student: {students.FirstName} {students.LastName}
-        - List of codes: {codeUIRListFormatted} name student: {studentNamesFormatted}
+            - Students and codes:
+        {request.CodeUIR}: {students.FirstName} {students.LastName}
+          {codeUIRListFormatted}
         - Hour start: {request.HourStart}
         - Hour end: {request.HourEnd}
         - Sport reserved: {nameSport}";
