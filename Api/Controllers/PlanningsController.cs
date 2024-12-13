@@ -32,7 +32,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("get-timeRanges-by-sport-and-day-not-reserved/{sportId}")]
-         [Authorize(Roles = "Admin,User,SuperAdmin")]
+         //[Authorize(Roles = "Admin,User,SuperAdmin")]
         public async Task<IActionResult> GetAvailableTimeRangesBySportAndDay(Guid sportId)
         {
             try

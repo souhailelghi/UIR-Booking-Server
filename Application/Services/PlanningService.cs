@@ -140,8 +140,14 @@ namespace Application.Services
                 .Where(tr => !todayReservations
                     .Any(res => res.HourStart < tr.HourEnd && res.HourEnd > tr.HourStart)) // Overlap check
                 .ToList();
+            // Additional filtering to remove times earlier than the current time
+            var currentTime = today.TimeOfDay;
+            var finalFilteredTimeRanges = filteredTimeRanges
+    .Where(tr => tr.HourStart >= currentTime)
+    .ToList();
 
-            return filteredTimeRanges;
+            //return filteredTimeRanges;
+            return finalFilteredTimeRanges;
         }
 
         // Helper method to map System.DayOfWeek to DayOfWeekEnum

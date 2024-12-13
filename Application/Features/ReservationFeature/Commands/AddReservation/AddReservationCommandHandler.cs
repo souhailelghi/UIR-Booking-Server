@@ -50,44 +50,6 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
             Sport result = await _unitOfService.SportService.GetSportByIdAsync(request.SportId);
             var nameSport = result.Name;
 
-
-            //    if (bookingMessage == "Reservation successfully created.")
-            //    {
-            //        // Fetch names of all students in CodeUIRList
-            //        string studentNamesFormatted = "No students found";
-            //        var students = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(request.CodeUIR);
-            //        string codeUIRListFormatted = request.CodeUIRList != null ? string.Join(", ", request.CodeUIRList) : "No codes provided";
-
-            //        if (request.CodeUIRList != null && request.CodeUIRList.Count > 0)
-            //        {
-            //            var studentNames = new List<string>();
-
-            //            foreach (var codeUIR in request.CodeUIRList)
-            //            {
-            //                var student = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(codeUIR);
-            //                if (student != null)
-            //                {
-            //                    studentNames.Add($"{student.FirstName} {student.LastName}");
-            //                }
-            //            }
-
-            //            studentNamesFormatted = string.Join(", ", studentNames);
-            //        }
-
-            //        // Prepare the email notification
-            //        string emailSubject = "New Reservation Created";
-            //        string emailBody = $@"
-            //A new reservation has been successfully created for:
-            //- CodeUIR: {request.CodeUIR} - name studnet : - name student: {students.FirstName} {students.LastName}
-            //- List of codes: {codeUIRListFormatted} name student: {studentNamesFormatted}
-            //- Hour start: {request.HourStart}
-            //- Hour end: {request.HourEnd}
-            //- Sport reserved: {nameSport}";
-
-            //        await _emailSender.SendEmailAsync("contact@souhail.me", emailSubject, emailBody);
-            //    }
-
-
             if (bookingMessage == "Reservation successfully created.")
             {
                 // Prepare a mapping of CodeUIR to student names
@@ -101,7 +63,7 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
                         var student = await _unitOfService.StudentService.GetStudentByCodeUIRAsync(codeUIR);
                         if (student != null)
                         {
-                            codeUIRWithStudents.Add($"{codeUIR}: {student.FirstName} {student.LastName}");
+                            codeUIRWithStudents.Add($" {student.FirstName} {student.LastName} (UIR code :   {codeUIR})");
                         }
                         else
                         {
@@ -118,15 +80,32 @@ namespace Application.Features.ReservationFeature.Commands.AddReservation
                 string codeUIRListFormatted = string.Join("\n", codeUIRWithStudents);
 
                 // Prepare the email notification
-                string emailSubject = "New Reservation Created";
+                //        string emailSubject = "Nouvelle réservation créée";
+                //        string emailBody = $@"
+                //A new reservation has been successfully created for:
+                //    - Students and codes:
+                // {students.FirstName} {students.LastName} UIR code : {request.CodeUIR}
+                //  {codeUIRListFormatted}
+                //- Hour start: {request.HourStart}
+                //- Hour end: {request.HourEnd}
+                //- Sport reserved: {nameSport}";
+                string emailSubject = "Nouvelle réservation confirmée";
                 string emailBody = $@"
-        A new reservation has been successfully created for:
-            - Students and codes:
-        {request.CodeUIR}: {students.FirstName} {students.LastName}
-          {codeUIRListFormatted}
-        - Hour start: {request.HourStart}
-        - Hour end: {request.HourEnd}
-        - Sport reserved: {nameSport}";
+Bonjour,
+
+Une nouvelle réservation a été confirmée avec succès. Voici les détails :
+
+- **Participants :**  
+  {students.FirstName} {students.LastName} (Code UIR : {request.CodeUIR})  
+  {codeUIRListFormatted}
+
+- **Heure de début :** {request.HourStart}  
+- **Heure de fin :** {request.HourEnd}  
+- **Sport réservé :** {nameSport}  
+
+Merci et à bientôt.  
+Cordialement,  
+[L'équipe de réservation]";
 
                 await _emailSender.SendEmailAsync("contact@souhail.me", emailSubject, emailBody);
             }
