@@ -14,15 +14,19 @@ namespace Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
 
-
+        #region Constructors 
         public ReservationService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
+        #endregion
 
 
-       
+        //Public Methods : 
 
+        #region Public Methods : 
+
+        #region count time 
         public async Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, int referenceSport)
         {
             // Fetch the sport details
@@ -46,7 +50,9 @@ namespace Application.Services
             if (!sport.Daysoff.HasValue)
                 return "The sport's day off value is not defined.";
 
-            var delayTime = DateTime.UtcNow.AddMinutes(-sport.Daysoff.Value);
+            var delayTime = DateTime.UtcNow.AddDays(-sport.Daysoff.Value);
+            Console.WriteLine($"***************************** sport.Daysoff.Value  : {sport.Daysoff.Value} **************");
+            Console.WriteLine($"***************************** delayTime : {delayTime} ***************");
 
             if (!await HasConflictingCodeUIRsAsync(codeUIRList, referenceSport, delayTime))
             {
@@ -57,30 +63,240 @@ namespace Application.Services
 
 
                 var remainingTime = await GetDelayTimeAsync(codeUIRList, sport.Id, delayTime);
+                var totalHours = Math.Floor(remainingTime.TotalHours); // Full hours
+                var minutes = remainingTime.Minutes;
+                var seconds = remainingTime.Seconds;
                 if (remainingTime > TimeSpan.Zero)
                 {
-                    return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
+                    //return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
+                    return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {totalHours:00}:{minutes:00}:{seconds:00}.";
                 }
             }
 
             if (await HasRecentReservationAsync(codeUIR, referenceSport, delayTime))
             {
                 var recentReservation = await GetMostRecentReservationAsync(codeUIR, referenceSport, delayTime);
+                Console.WriteLine($"----------------------------DateCreation: {recentReservation.DateCreation}, Current UTC: {DateTime.UtcNow}");
+
+                Console.WriteLine($"-----------with-add--------DateCreation: {recentReservation.DateCreation.AddDays(sport.Daysoff.Value)}");
+
                 if (recentReservation != null)
                 {
-                    var remainingTime = recentReservation.DateCreation.AddMinutes(sport.Daysoff.Value) - DateTime.UtcNow;
+                    //var remainingTime = recentReservation.DateCreation.AddDays(sport.Daysoff.Value) - DateTime.UtcNow;
+                    var expectedTime = recentReservation.DateCreation.AddDays(sport.Daysoff.Value);
+                    var remainingTime = expectedTime - DateTime.UtcNow;
+                    // Format the remaining time in total hours
+                    var totalHours = Math.Floor(remainingTime.TotalHours); // Full hours
+                    var minutes = remainingTime.Minutes;
+                    var seconds = remainingTime.Seconds;
+                    Console.WriteLine($"**********remainingTime :  {remainingTime} :::::::: {expectedTime} ");
                     if (remainingTime > TimeSpan.Zero)
                     {
-                        return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
+                        //return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {remainingTime:hh\\:mm\\:ss}.";
+                        return $"Vous n'avez pas la permission de faire une réservation. Veuillez attendre {totalHours:00}:{minutes:00}:{seconds:00}.";
                     }
                 }
             }
 
             return "You can make a reservation.";
         }
-      
-        
-        
+
+
+
+        #endregion
+
+
+        #region CanTeamOrUserBookAsync : 
+        public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+        {
+            if (codeUIRList != null && codeUIRList.Contains(codeUIR))
+            {
+                return "Le CodeUIR de l'étudiant ne peut pas être inclus dans la liste des CodeUIR.";
+            }
+
+            var sport = await FetchSportAsync(sportId);
+            if (sport == null) return "Sport not found or ReferenceSport is null";
+
+            var student = await FetchStudentAsync(codeUIR);
+            if (student == null) return "Student's CodeUIR not found";
+
+            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+
+            if (missingStudents.Any())
+            {
+                return $"Certains élèves ne sont pas enregistrés dans la base de données. Les codes est incorrect.: {string.Join(", ", missingStudents)}";
+            }
+
+            var delayTime = CalculateDelayTime(sport);
+            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+            {
+                return "Vous avez déjà une réservation en cours pour la période concernée.";
+            }
+
+            // Validate that no `CodeUIR` in the provided list has been recently used in another list
+            var conflictingCodeUIRs = await GetConflictingCodeUIRsAsync(codeUIRList, sportId, delayTime);
+            if (conflictingCodeUIRs.Any())
+            {
+                //return $"Certains CodeUIR de la liste sont déjà associés à une autre réservation durant la période concernée: {string.Join(", ", conflictingCodeUIRs
+                //     // Check if only onecode uir list
+                if (conflictingCodeUIRs.Count == 1)
+                {
+                    return $"Cette code étudiant  sont déjà associés à une autre réservation.: {string.Join(", ", conflictingCodeUIRs)}";
+                }
+                // If more than one code uir list
+                else
+                {
+                    return $"Les codes étudiants suivants sont déjà associés à une autre réservation.: {string.Join(", ", conflictingCodeUIRs)}";
+                }
+            }
+
+            return "No conflicting reservations found";
+        }
+
+        #endregion
+
+
+        #region CheckUserHaveAccessReservationAsync
+        public async Task<bool> CheckUserHaveAccessReservationAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
+        {
+
+
+            var sport = await FetchSportAsync(sportId);
+            if (sport == null) return false;
+
+            var student = await FetchStudentAsync(codeUIR);
+            if (student == null) return false;
+
+            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
+
+            if (missingStudents.Any())
+            {
+                return false;
+            }
+
+            var delayTime = CalculateDelayTime(sport);
+            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
+            {
+                return false;
+            }
+
+            // Validate that no `CodeUIR` in the provided list has been recently used in another list
+            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
+            {
+                return false;
+            }
+
+            return true;
+        }
+        #endregion
+
+        #region BookAsync
+        public async Task<string> BookAsync(string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
+           TimeSpan hourEnd, List<string> codeUIRList, Guid sportId)
+        {
+            // Check if the student or team can book
+            string canBookResult = await CanTeamOrUserBookAsync(codeUIR, codeUIRList, sportId);
+            if (!canBookResult.Contains("No conflicting reservations found"))
+            {
+                return "Booking not allowed. Either the student or team has a recent reservation or does not meet booking criteria.";
+            }
+
+            // Fetch the student's entity using CodeUIR
+            var student = await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
+            if (student == null)
+            {
+                return "Student not found with the provided CodeUIR.";
+            }
+
+            // Create the reservation
+            var reservation = new Reservation
+            {
+                Id = Guid.NewGuid(),
+                CodeUIR = student.CodeUIR,
+                SportId = sportId,
+                SportCategoryId = sportCategoryId,
+                ReservationDate = reservationDate,
+                DayBooking = dayBooking,
+                HourStart = hourStart,
+                HourEnd = hourEnd,
+                OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
+                DateCreation = DateTime.UtcNow,
+                CodeUIRList = codeUIRList ?? new List<string>()
+            };
+
+            await _unitOfWork.ReservationRepository.CreateAsync(reservation);
+            await _unitOfWork.CommitAsync();
+
+            return "Reservation successfully created.";
+        }
+        #endregion
+
+        #region GetReservationsByCategoryAndStudentIdAsync 
+        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR)
+        {
+            return await _unitOfWork.ReservationRepository.GetReservationsByCategoryAndStudentIdAsync(sportCategoryId, codeUIR);
+        }
+        #endregion
+
+        #region GetReservationsBySportCategoryIdAsync
+        public async Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBysportCategoryIdAsync(sportCategoryId);
+            return reservations;
+        }
+        #endregion
+
+        #region GetReservationsByStudentIdAsync 
+        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR)
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetReservationsByStudentIdAsync(codeUIR);
+            return reservations;
+        }
+        #endregion
+
+        #region DeleteAllReservationsAsync
+        public async Task DeleteAllReservationsAsync()
+        {
+            var reservations = await _unitOfWork.ReservationRepository.GetAllAsTracking();
+            if (reservations == null || reservations.Count == 0)
+            {
+                throw new ArgumentException("No reservations found to delete.");
+            }
+
+            await _unitOfWork.ReservationRepository.RemoveAllAsync();
+            await _unitOfWork.CommitAsync();
+        }
+
+        #endregion
+
+
+        #region GetReservationByIdAsync
+        public async Task<Reservation> GetReservationByIdAsync(Guid id)
+        {
+            Reservation reservation = await _unitOfWork.ReservationRepository.GetAsNoTracking(u => u.Id == id);
+
+            return reservation;
+        }
+        #endregion
+
+
+        #region GetReservationsListAsync
+
+        public async Task<List<Reservation>> GetReservationsListAsync()
+        {
+            List<Reservation> reservationsList = await _unitOfWork.ReservationRepository.GetAllAsNoTracking();
+            return reservationsList;
+        }
+        #endregion
+
+
+        #endregion
+
+
+        // Herlper Methods : 
+
+        #region Helpers methods  
+
         private async Task<TimeSpan> GetDelayTimeAsync(List<string> codeUIRList, Guid sportId, DateTime delayThreshold)
         {
             if (codeUIRList == null || !codeUIRList.Any())
@@ -98,13 +314,13 @@ namespace Application.Services
                 .Where(r => r.CodeUIRList != null)
                 .FirstOrDefault(r => r.CodeUIRList.Intersect(codeUIRList).Any());
 
-         
+
 
 
             if (conflictingReservation != null)
             {
                 // Calculate the delay time based on the most recent reservation's creation date
-                var allowedNextReservationTime = conflictingReservation.DateCreation.AddMinutes(sport.Daysoff.Value);
+                var allowedNextReservationTime = conflictingReservation.DateCreation.AddDays(sport.Daysoff.Value);
                 var delay = allowedNextReservationTime - DateTime.UtcNow;
 
                 return delay > TimeSpan.Zero ? delay : TimeSpan.Zero; // Ensure no negative delay
@@ -159,93 +375,6 @@ namespace Application.Services
 
 
 
-
-
-
-
-
-
-
-        public async Task<string> CanTeamOrUserBookAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
-        {
-            if (codeUIRList != null && codeUIRList.Contains(codeUIR))
-            {
-                return "Le CodeUIR de l'étudiant ne peut pas être inclus dans la liste des CodeUIR.";
-            }
-
-            var sport = await FetchSportAsync(sportId);
-            if (sport == null) return "Sport not found or ReferenceSport is null";
-
-            var student = await FetchStudentAsync(codeUIR);
-            if (student == null) return "Student's CodeUIR not found";
-
-            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
-
-            if (missingStudents.Any())
-            {
-                return $"Certains élèves ne sont pas enregistrés dans la base de données. Les codes est incorrect.: {string.Join(", ", missingStudents)}";
-            }
-
-            var delayTime = CalculateDelayTime(sport);
-            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
-            {
-                return "Vous avez déjà une réservation en cours pour la période concernée.";
-            }
-
-            // Validate that no `CodeUIR` in the provided list has been recently used in another list
-            var conflictingCodeUIRs = await GetConflictingCodeUIRsAsync(codeUIRList, sportId, delayTime);
-            if (conflictingCodeUIRs.Any())
-            {
-                //return $"Certains CodeUIR de la liste sont déjà associés à une autre réservation durant la période concernée: {string.Join(", ", conflictingCodeUIRs
-                //     // Check if only onecode uir list
-                if (conflictingCodeUIRs.Count == 1)
-                {
-                    return $"Cette code étudiant  sont déjà associés à une autre réservation.: {string.Join(", ", conflictingCodeUIRs)}";
-                }
-                // If more than one code uir list
-                else
-                {
-                    return $"Les codes étudiants suivants sont déjà associés à une autre réservation.: {string.Join(", ", conflictingCodeUIRs)}";
-                }
-            }
-
-            return "No conflicting reservations found";
-        }
-
-        public async Task<bool> CheckUserHaveAccessReservationAsync(string codeUIR, List<string> codeUIRList, Guid sportId)
-        {
-
-
-            var sport = await FetchSportAsync(sportId);
-            if (sport == null) return false;
-
-            var student = await FetchStudentAsync(codeUIR);
-            if (student == null) return false;
-
-            var missingStudents = await AreStudentsMissingAsync(codeUIRList);
-
-            if (missingStudents.Any())
-            {
-                return false;
-            }
-
-            var delayTime = CalculateDelayTime(sport);
-            if (await HasRecentReservationAsync(codeUIR, sport.ReferenceSport.Value, delayTime))
-            {
-                return false;
-            }
-
-            // Validate that no `CodeUIR` in the provided list has been recently used in another list
-            if (await HasConflictingCodeUIRListAsync(codeUIRList, sportId, delayTime))
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-
-
         //Helper Methods
         private async Task<bool> HasConflictingCodeUIRListAsync(List<string> codeUIRList, Guid sportId, DateTime delayTime)
         {
@@ -261,7 +390,7 @@ namespace Application.Services
                 r.CodeUIRList.Intersect(codeUIRList).Any());
             return conflictingReservations;
         }
-     
+
 
 
 
@@ -302,7 +431,7 @@ namespace Application.Services
         private DateTime CalculateDelayTime(Sport sport)
         {
             var delayTimeMinutes = sport.Daysoff ?? 0;
-            return DateTime.UtcNow.AddMinutes(-delayTimeMinutes);
+            return DateTime.UtcNow.AddDays(-delayTimeMinutes);
         }
 
         private async Task<bool> HasRecentReservationAsync(string codeUIR, int referenceSport, DateTime delayTime)
@@ -336,96 +465,7 @@ namespace Application.Services
 
 
 
-
-        //helper methods 
-
-
-        public async Task<string> BookAsync(string codeUIR, Guid sportCategoryId, DateTime reservationDate, DayOfWeekEnum dayBooking, TimeSpan hourStart,
-           TimeSpan hourEnd, List<string> codeUIRList, Guid sportId)
-        {
-            // Check if the student or team can book
-            string canBookResult = await CanTeamOrUserBookAsync(codeUIR, codeUIRList, sportId);
-            if (!canBookResult.Contains("No conflicting reservations found"))
-            {
-                return "Booking not allowed. Either the student or team has a recent reservation or does not meet booking criteria.";
-            }
-
-            // Fetch the student's entity using CodeUIR
-            var student = await _unitOfWork.StudentRepository.GetAsync(s => s.CodeUIR == codeUIR);
-            if (student == null)
-            {
-                return "Student not found with the provided CodeUIR.";
-            }
-
-            // Create the reservation
-            var reservation = new Reservation
-            {
-                Id = Guid.NewGuid(),
-                CodeUIR = student.CodeUIR,
-                SportId = sportId,
-                SportCategoryId = sportCategoryId,
-                ReservationDate = reservationDate,
-                DayBooking = dayBooking,
-                HourStart = hourStart,
-                HourEnd = hourEnd,
-                OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                DateCreation = DateTime.UtcNow,
-                CodeUIRList = codeUIRList ?? new List<string>()
-            };
-
-            await _unitOfWork.ReservationRepository.CreateAsync(reservation);
-            await _unitOfWork.CommitAsync();
-
-            return "Reservation successfully created.";
-        }
-
-
-        //get reservation : -----------------------------
-        public async Task<List<Reservation>> GetReservationsByCategoryAndStudentIdAsync(Guid sportCategoryId, string codeUIR)
-        {
-            return await _unitOfWork.ReservationRepository.GetReservationsByCategoryAndStudentIdAsync(sportCategoryId, codeUIR);
-        }
-
-        public async Task<List<Reservation>> GetReservationsBySportCategoryIdAsync(Guid sportCategoryId)
-        {
-            var reservations = await _unitOfWork.ReservationRepository.GetReservationsBysportCategoryIdAsync(sportCategoryId);
-            return reservations;
-        }
-
-        public async Task<List<Reservation>> GetReservationsByStudentIdAsync(string codeUIR)
-        {
-            var reservations = await _unitOfWork.ReservationRepository.GetReservationsByStudentIdAsync(codeUIR);
-            return reservations;
-        }
-
-
-
-
-        public async Task DeleteAllReservationsAsync()
-        {
-            var reservations = await _unitOfWork.ReservationRepository.GetAllAsTracking();
-            if (reservations == null || reservations.Count == 0)
-            {
-                throw new ArgumentException("No reservations found to delete.");
-            }
-
-            await _unitOfWork.ReservationRepository.RemoveAllAsync();
-            await _unitOfWork.CommitAsync();
-        }
-
-        public async Task<Reservation> GetReservationByIdAsync(Guid id)
-        {
-            Reservation reservation = await _unitOfWork.ReservationRepository.GetAsNoTracking(u => u.Id == id);
-
-            return reservation;
-        }
-
-        public async Task<List<Reservation>> GetReservationsListAsync()
-        {
-            List<Reservation> reservationsList = await _unitOfWork.ReservationRepository.GetAllAsNoTracking();
-            return reservationsList;
-        }
-
+        #endregion
 
     }
 }
