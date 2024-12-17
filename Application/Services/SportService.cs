@@ -129,6 +129,16 @@ namespace Application.Services
             List<Sport> ListCourt = await _unitOfWork.SportRepository.GetAllAsNoTracking();
             return ListCourt.Count();
         }
-    
+
+
+
+        public async Task<int> FetchTotalCourtsBysportIdAsync(Guid categorieId)
+        {
+            // Fetch the sports from the repository based on the CategorieId
+            List<Sport> sportsList = await _unitOfWork.SportRepository.GetAllAsNoTracking(s => s.CategorieId == categorieId);
+
+            return sportsList.Count();
+        }
+
     }
 }

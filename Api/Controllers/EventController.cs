@@ -3,6 +3,7 @@ using Application.Features.EventFeature.Commands.DeleteEvent;
 using Application.Features.EventFeature.Commands.UpdateEvent;
 using Application.Features.EventFeature.Queries.GetAllEventQueries;
 using Application.Features.EventFeature.Queries.GetEventById;
+using Application.Features.EventFeature.Queries.GetTotalEventsQueries;
 using Application.Features.SportCategoryFeature.Commands.DeleteSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueries;
@@ -13,6 +14,7 @@ using Application.Features.SportFeature.Commands.UpdateSport;
 using Application.Features.SportFeature.Queries.GetAllSportByCategorieIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
+using Application.Features.SportFeature.Queries.GetTotalCourtsQuerie;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +33,22 @@ namespace Api.Controllers
         {
             _mediator = mediator;
         }
+
+        [HttpGet("total-events")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
+        public async Task<IActionResult> GetTotalEvents()
+        {
+            try
+            {
+                int EventTotal = await _mediator.Send(new GetTotalEventsQuery());
+                return Ok(EventTotal);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
         [HttpGet("list")]
         // [Authorize(Roles = "Admin,User")]
         public async Task<IActionResult> GetEventsList()

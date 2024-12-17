@@ -5,6 +5,7 @@ using Application.Features.SportFeature.Commands.UpdateSport;
 using Application.Features.SportFeature.Queries.GetAllSportByCategorieIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
+using Application.Features.SportFeature.Queries.GetTotalCourtsBysportIdQueries;
 using Application.Features.SportFeature.Queries.GetTotalCourtsQuerie;
 using Domain.Entities;
 using MediatR;
@@ -155,6 +156,22 @@ namespace Api.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, $"An error occurred while fetching the sports. Details: {ex.Message}");
+            }
+        }
+
+
+        [HttpGet("total-category/{categorieId}")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
+        public async Task<IActionResult> GetTotalSportsByCategory(Guid categorieId)
+        {
+            try
+            {
+               int sportsList = await _mediator.Send(new GetTotalCourtsBysportIdQuery(categorieId));
+                return Ok(sportsList);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"An error occurred while fetching the total sports. Details: {ex.Message}");
             }
         }
 

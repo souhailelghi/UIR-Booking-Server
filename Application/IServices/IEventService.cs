@@ -10,5 +10,6 @@ namespace Application.IServices
         Task DeleteEventAsync(Guid id);
         Task<Event> GetEventByIdAsync(Guid id);
         Task UpdateEventAsync(Event Events);
+        Task<int> GetTotalEventsList();
     }
 }

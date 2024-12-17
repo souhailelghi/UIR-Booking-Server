@@ -19,6 +19,15 @@ namespace Application.Services
             _mapper = mapper;
         }
 
+        public async Task<int> GetTotalEventsList()
+        {
+            // Utiliser le UnitOfWork pour récupérer les événements depuis le dépôt
+            var events = await _unitOfWork.EventRepository.GetAllAsNoTracking();
+
+            // Retourner la liste des événements
+            return events.Count();
+        }
+
         public async Task<Event> AddEventAsync(Event eventEntity)
         {
             if (eventEntity == null)

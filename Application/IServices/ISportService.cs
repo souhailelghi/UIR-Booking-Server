@@ -12,5 +12,6 @@ namespace Application.IServices
         Task DeleteSportAsync(Guid id);
         Task<List<Sport>> GetAllSportByCategorieIdAsync(Guid categorieId);
         Task<int> GetTotalCourtsAsync();
+        Task<int> FetchTotalCourtsBysportIdAsync(Guid categorieId);
     }
 }
