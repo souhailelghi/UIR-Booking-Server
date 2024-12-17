@@ -34,6 +34,8 @@ namespace Application.IServices
         //Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, Guid sportId);
         Task<string> CountTimeAsync(string codeUIR, List<string> codeUIRList, int referenceSport);
 
+        Task<int> GetTotalReservationsListAsync();
+
 
 
 

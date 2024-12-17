@@ -15,6 +15,8 @@ namespace Application.IServices
         Task<SportCategory> AddSportCategoryAsync(SportCategory sportCategory);
         Task UpdateSportCategoryAsync(SportCategory sportCategory);
         Task DeleteSportCategoryAsync(Guid id);
-        
+        Task<int> GetTotalSportCategorysAsync();
+
+
     }
 }

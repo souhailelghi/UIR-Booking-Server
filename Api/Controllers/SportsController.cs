@@ -1,9 +1,11 @@
-﻿using Application.Features.SportFeature.Commands.AddSport;
+﻿using Application.Features.SportCategoryFeature.Queries.GetTotalSportCategoryQueries;
+using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.SportFeature.Commands.DeleteSport;
 using Application.Features.SportFeature.Commands.UpdateSport;
 using Application.Features.SportFeature.Queries.GetAllSportByCategorieIdQuerie;
 using Application.Features.SportFeature.Queries.GetAllSportsQuerie;
 using Application.Features.SportFeature.Queries.GetSportById;
+using Application.Features.SportFeature.Queries.GetTotalCourtsQuerie;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -20,6 +22,20 @@ namespace Api.Controllers
         public SportsController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+        [HttpGet("total-courts")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
+        public async Task<IActionResult> GetTotalSportCategorys()
+        {
+            try
+            {
+                int CourtTotal = await _mediator.Send(new GetTotalCourtsQuery());
+                return Ok(CourtTotal);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("add")]

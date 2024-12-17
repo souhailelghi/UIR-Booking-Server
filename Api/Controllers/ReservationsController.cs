@@ -9,6 +9,8 @@ using Application.Features.ReservationFeature.Queries.GetReservationByIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByCategorieIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByCategoryIdAndStudentIdQuerie;
 using Application.Features.ReservationFeature.Queries.GetReservationsByStudentIdQuerie;
+using Application.Features.ReservationFeature.Queries.GetTotalReservationsQuerie;
+using Application.Features.SportFeature.Queries.GetTotalCourtsQuerie;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -25,6 +27,22 @@ namespace Api.Controllers
         public ReservationsController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+
+        [HttpGet("total-reservations")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
+        public async Task<IActionResult> GetTotalReservations()
+        {
+            try
+            {
+                int reservationTotal = await _mediator.Send(new GetTotalReservationsQuery());
+                return Ok(reservationTotal);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
         }
 
         [HttpPost("check-reservation-time")]

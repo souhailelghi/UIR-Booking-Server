@@ -123,5 +123,12 @@ namespace Application.Services
             return sportsList;
         }
 
+    
+        public async Task<int> GetTotalCourtsAsync()
+        {
+            List<Sport> ListCourt = await _unitOfWork.SportRepository.GetAllAsNoTracking();
+            return ListCourt.Count();
+        }
+    
     }
 }

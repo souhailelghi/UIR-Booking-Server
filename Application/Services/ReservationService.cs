@@ -290,6 +290,16 @@ namespace Application.Services
         #endregion
 
 
+
+        #region GetTotalReservationsListAsync
+
+        public async Task<int> GetTotalReservationsListAsync()
+        {
+            List<Reservation> reservationsList = await _unitOfWork.ReservationRepository.GetAllAsNoTracking();
+            return reservationsList.Count();
+        }
+        #endregion
+
         #endregion
 
 

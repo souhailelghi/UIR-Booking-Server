@@ -125,15 +125,19 @@ namespace Application.Services
         public async Task<List<SportCategory>> GetSportCategorysList()
         {
             List<SportCategory> sportCategorysList = await _unitOfWork.SportCategoryRepository.GetAllAsNoTracking();
-            //if (sportCategorysList.IsNullOrEmpty())
-            //{
-            //    throw new ArgumentException("No sportCategorysList  found.");
-            //}
             return sportCategorysList;
         }
 
-    
-    
-    
+
+        public async Task<int> GetTotalSportCategorysAsync()
+        {
+            List<SportCategory> sportCategorysList = await _unitOfWork.SportCategoryRepository.GetAllAsNoTracking();
+            int totalcount = sportCategorysList.Count();
+
+            return totalcount;
+        }
+
+
+
     }
 }

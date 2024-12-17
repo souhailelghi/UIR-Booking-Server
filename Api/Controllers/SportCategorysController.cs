@@ -3,6 +3,7 @@ using Application.Features.SportCategoryFeature.Commands.DeleteSportCategory;
 using Application.Features.SportCategoryFeature.Commands.UpdateSportCategory;
 using Application.Features.SportCategoryFeature.Queries.GetAllSportCategoryQueries;
 using Application.Features.SportCategoryFeature.Queries.GetSportCategoryById;
+using Application.Features.SportCategoryFeature.Queries.GetTotalSportCategoryQueries;
 using Application.Features.SportFeature.Commands.AddSport;
 using Application.Features.SportFeature.Commands.UpdateSport;
 using Domain.Entities;
@@ -40,7 +41,23 @@ namespace Api.Controllers
             }
         }
 
-      
+
+        [HttpGet("total-sports")]
+        //[Authorize(Roles = "Admin,User,SuperAdmin")]
+        public async Task<IActionResult> GetTotalSportCategorys()
+        {
+            try
+            {
+               int SportTotalCategorys = await _mediator.Send(new GetTotalSportCategoryQuery());
+                return Ok(SportTotalCategorys);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ex.Message);
+            }
+        }
+
+
 
         [HttpPost("add")]
         [Authorize(Roles = "SuperAdmin")]
