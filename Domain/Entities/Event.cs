@@ -23,5 +23,10 @@ namespace Domain.Entities
         public byte[] Image { get; set; }
         
         public string lien { get; set; }
+
+        public DateTime DateCreation { get; set; }
+        public DateTime DateDepart { get; set; }
+        public DateTime DateFin { get; set; }
+
     }
 }

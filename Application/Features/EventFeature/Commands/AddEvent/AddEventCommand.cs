@@ -15,6 +15,9 @@ namespace Application.Features.EventFeature.Commands.AddEvent
         public string? Title { get; set; }
         public string? Description { get; set; }
         public IFormFile ImageUpload { get; set; }
-        public string? lien { get; set; } 
+        public string? lien { get; set; }
+
+        public DateTime DateDepart { get; set; }
+        public DateTime DateFin { get; set; }
     }
 }

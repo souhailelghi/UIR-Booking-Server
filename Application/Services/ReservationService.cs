@@ -50,7 +50,7 @@ namespace Application.Services
             if (!sport.Daysoff.HasValue)
                 return "The sport's day off value is not defined.";
 
-            var delayTime = DateTime.UtcNow.AddDays(-sport.Daysoff.Value);
+            var delayTime = DateTime.Now.AddDays(-sport.Daysoff.Value);
             Console.WriteLine($"***************************** sport.Daysoff.Value  : {sport.Daysoff.Value} **************");
             Console.WriteLine($"***************************** delayTime : {delayTime} ***************");
 
@@ -76,15 +76,15 @@ namespace Application.Services
             if (await HasRecentReservationAsync(codeUIR, referenceSport, delayTime))
             {
                 var recentReservation = await GetMostRecentReservationAsync(codeUIR, referenceSport, delayTime);
-                Console.WriteLine($"----------------------------DateCreation: {recentReservation.DateCreation}, Current UTC: {DateTime.UtcNow}");
+                Console.WriteLine($"----------------------------DateCreation: {recentReservation.DateCreation}, Current UTC: {DateTime.Now}");
 
                 Console.WriteLine($"-----------with-add--------DateCreation: {recentReservation.DateCreation.AddDays(sport.Daysoff.Value)}");
 
                 if (recentReservation != null)
                 {
-                    //var remainingTime = recentReservation.DateCreation.AddDays(sport.Daysoff.Value) - DateTime.UtcNow;
+                    //var remainingTime = recentReservation.DateCreation.AddDays(sport.Daysoff.Value) - DateTime.Now;
                     var expectedTime = recentReservation.DateCreation.AddDays(sport.Daysoff.Value);
-                    var remainingTime = expectedTime - DateTime.UtcNow;
+                    var remainingTime = expectedTime - DateTime.Now;
                     // Format the remaining time in total hours
                     var totalHours = Math.Floor(remainingTime.TotalHours); // Full hours
                     var minutes = remainingTime.Minutes;
@@ -219,8 +219,8 @@ namespace Application.Services
                 DayBooking = dayBooking,
                 HourStart = hourStart,
                 HourEnd = hourEnd,
-                OnlyDate = DateOnly.FromDateTime(DateTime.UtcNow),
-                DateCreation = DateTime.UtcNow,
+                OnlyDate = DateOnly.FromDateTime(DateTime.Now),
+                DateCreation = DateTime.Now,
                 CodeUIRList = codeUIRList ?? new List<string>()
             };
 
@@ -331,7 +331,7 @@ namespace Application.Services
             {
                 // Calculate the delay time based on the most recent reservation's creation date
                 var allowedNextReservationTime = conflictingReservation.DateCreation.AddDays(sport.Daysoff.Value);
-                var delay = allowedNextReservationTime - DateTime.UtcNow;
+                var delay = allowedNextReservationTime - DateTime.Now;
 
                 return delay > TimeSpan.Zero ? delay : TimeSpan.Zero; // Ensure no negative delay
             }
@@ -441,7 +441,7 @@ namespace Application.Services
         private DateTime CalculateDelayTime(Sport sport)
         {
             var delayTimeMinutes = sport.Daysoff ?? 0;
-            return DateTime.UtcNow.AddDays(-delayTimeMinutes);
+            return DateTime.Now.AddDays(-delayTimeMinutes);
         }
 
         private async Task<bool> HasRecentReservationAsync(string codeUIR, int referenceSport, DateTime delayTime)

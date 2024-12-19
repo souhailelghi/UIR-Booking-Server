@@ -19,7 +19,10 @@ namespace Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
-                    lien = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    lien = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DateCreation = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateDepart = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    DateFin = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {

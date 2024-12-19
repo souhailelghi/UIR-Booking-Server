@@ -46,7 +46,7 @@ namespace Application.Services
             }
 
             eventEntity.Id = Guid.NewGuid(); // Generate a new unique ID
-
+            eventEntity.DateCreation = DateTime.Now;
             // Add the event entity to the repository
             await _unitOfWork.EventRepository.AddAsync(eventEntity);
 
@@ -58,11 +58,13 @@ namespace Application.Services
 
         public async Task<List<Event>> GetEventsList()
         {
-            // Utiliser le UnitOfWork pour récupérer les événements depuis le dépôt
+            
             var events = await _unitOfWork.EventRepository.GetAllAsNoTracking();
 
-            // Retourner la liste des événements
-            return events;
+            // Filter events where DateFin is not in the past
+            var filteredEvents = events.Where(e => e.DateFin >= DateTime.Now).ToList();
+
+            return filteredEvents;
         }
 
         // get by id , delete , update : 

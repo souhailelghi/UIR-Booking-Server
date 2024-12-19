@@ -113,7 +113,7 @@ namespace Application.Services
             }
 
             // Determine today's day of the week
-            var today = DateTime.UtcNow; // Use current UTC time without adjustment
+            var today = DateTime.Now; // Use current UTC time without adjustment
             var todayDayOfWeek = GetDayOfWeekEnum(today.DayOfWeek);
 
             // Log the day for debugging
