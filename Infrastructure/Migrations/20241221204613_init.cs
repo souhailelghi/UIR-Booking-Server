@@ -34,8 +34,8 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    MYDATE = table.Column<DateOnly>(type: "date", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MYDATE = table.Column<DateOnly>(type: "date", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Image = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     DateCreation = table.Column<DateTime>(type: "datetime2", nullable: true),

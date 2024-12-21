@@ -6,12 +6,13 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities
 {
+    
     public class SportCategory
     {
         [Key]
         public Guid Id { get; set; }
-        public DateOnly MYDATE { get; set; }
-        public string Name { get; set; }
+        public DateOnly? MYDATE { get; set; }
+        public string? Name { get; set; }
 
 
         // For uploading the image
